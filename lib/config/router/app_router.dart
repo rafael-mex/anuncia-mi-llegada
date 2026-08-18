@@ -1,7 +1,9 @@
+import 'package:anuncia_mi_llegada/presentation/screens/settings/settings_screen.dart';
+import 'package:anuncia_mi_llegada/presentation/screens/splash_page/splash_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anuncia_mi_llegada/features/splash/presentation/pages/splash_page.dart';
-import 'package:anuncia_mi_llegada/features/transports/presentation/pages/transports_screen.dart';
-import 'package:anuncia_mi_llegada/views/configuration/settings_screen.dart';
+import 'package:anuncia_mi_llegada/presentation/screens/selectors/transports/transports_screen.dart';
+
+
 
 final appRouter = GoRouter(
   initialLocation: '/splash',

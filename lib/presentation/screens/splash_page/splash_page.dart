@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anuncia_mi_llegada/features/transports/presentation/pages/transports_screen.dart';
+import 'package:anuncia_mi_llegada/presentation/screens/selectors/transports/transports_screen.dart';
+
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
