@@ -16,6 +16,8 @@ class TransportsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          //Transports Selector (selector de transportes)
+          _TransportSelector(),
           //Map Icon for Light Mode (MAp Icon para el modo claro)
           Positioned(
             left: 0,
@@ -29,8 +31,6 @@ class TransportsScreen extends StatelessWidget {
               ),
             ),
           ),
-          //Transports Selector (selector de transportes)
-          _TransportSelector(),
           //Settings button 
           Positioned(
             left: 0,
