@@ -38,6 +38,7 @@ dependencies:
   flutter_inner_shadow: ^0.0.1
   blur: ^4.0.2
   google_fonts: ^8.2.1
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
