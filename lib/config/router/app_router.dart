@@ -1,9 +1,5 @@
-import 'package:anuncia_mi_llegada/presentation/screens/settings/settings_screen.dart';
-import 'package:anuncia_mi_llegada/presentation/screens/splash_page/splash_page.dart';
+import 'package:anuncia_mi_llegada/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anuncia_mi_llegada/presentation/screens/selectors/transports/transports_screen.dart';
-
-
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
@@ -17,6 +13,16 @@ final appRouter = GoRouter(
       path: '/',
       name: TransportsScreen.name,
       builder: (context, state) => const TransportsScreen(),
+    ),
+    GoRoute(
+      path: '/lineas',
+      name: LinesScreen.name,
+      builder: (context, state) => const LinesScreen(),
+    ),
+    GoRoute(
+      path: '/estaciones',
+      name: StationsScreen.name,
+      builder: (context, state) => const StationsScreen(),
     ),
     GoRoute(
       path: '/settings',
