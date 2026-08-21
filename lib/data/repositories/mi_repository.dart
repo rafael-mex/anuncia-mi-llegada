@@ -42,12 +42,17 @@ class MiRepository {
   }) {
     final List<TransportsModel> transports = [];
 
-    for (final transportEntry in jsonMap.entries) {
+    final sortedTransportEntries = jsonMap.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+
+    for (final transportEntry in sortedTransportEntries) {
       final String transportName = transportEntry.key;
       final Map<String, dynamic> linesMap = transportEntry.value;
       final List<LinesModel> lines = [];
 
-      for (final lineEntry in linesMap.entries) {
+      final sortedLineEntries = linesMap.entries.toList();
+
+      for (final lineEntry in sortedLineEntries) {
         final String lineName = lineEntry.key;
         final List<dynamic> fullArray = lineEntry.value;
 
