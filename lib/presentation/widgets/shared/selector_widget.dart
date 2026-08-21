@@ -16,7 +16,7 @@ class SelectorWidget extends StatelessWidget {
     super.key,
     required this.selectorsTitle,
     required this.listItems,
-    this.glassContainerWidth = 320,
+    this.glassContainerWidth = 300,
     this.glassContainerHeight = 255,
     this.orangePadding = 20,
     this.listContentPadding = 5,

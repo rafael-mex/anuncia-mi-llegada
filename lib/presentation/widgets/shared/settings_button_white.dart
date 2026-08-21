@@ -11,7 +11,7 @@ class SettingsButton extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      top: 794,
+      top: 760,
       child: Container(
         width: 48,
         height: 48,

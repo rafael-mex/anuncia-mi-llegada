@@ -10,7 +10,7 @@ class MapIconLight extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      top: 115,
+      top: 100,
       child: Center(
         child: Image(
           image: AssetImage('assets/icons/Map_Icon_W.png'),
