@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class TransportsScreen extends StatelessWidget {
-  
   static const name = 'transports_screen';
 
   const TransportsScreen({super.key});
@@ -18,8 +17,8 @@ class TransportsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
+        //Transports Selector (selector de transportes)
         children: [
-      //Transports Selector (selector de transportes)
           FutureBuilder<List<TransportsModel>>(
             future: MiRepository().loadTransports(
               showLineNamesInMessage: true,
@@ -30,41 +29,39 @@ class TransportsScreen extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return Center(child: Text('No se supone que debería de haber esto ;( : ${snapshot.error}'));
               }
               final transports = snapshot.data ?? [];
               return SelectorWidget(
                 selectorsTitle: 'Selecciona un \n medio de transporte:',
-                listContent: ListView.separated(
-                  itemCount: transports.length,
-                  separatorBuilder: (context, index) =>
-                      const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final transport = transports[index];
-                    return ListTile(
-                      title: Text(transport.name),
+                listItems: [
+                  for (final transport in transports)
+                    ListTile(
+                      title: Text(
+                        transport.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                          height: 1,
+                          fontFamily: 'Nunito',
+                          fontSize: 17,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       onTap: () {
-                        context.pushNamed(
-                          LinesScreen.name,
-                          extra: transport,
-                        );
+                        context.pushNamed(LinesScreen.name, extra: transport);
                       },
-                    );
-                  },
-                ),
+                    ),
+                ],
               );
             },
           ),
-      //Map Icon for Light Mode (Map Icon para el modo claro)
+          //Map Icon for Light Mode (Map Icon para el modo claro)
           MapIconLight(),
-      //Settings button
+          //Settings button
           SettingsButton(),
         ],
       ),
     );
   }
 }
-
-
-
-

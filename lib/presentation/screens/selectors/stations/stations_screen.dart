@@ -1,5 +1,8 @@
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/map_icon_white.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/return_button.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_widget.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button_white.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,34 +18,55 @@ class StationsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SelectorWidget(
-        selectorsTitle: 'Selecciona una \n estación:',
-        listContent: ListView.separated(
-          itemCount: hasLineNameInMessage
-              ? line.stations.length + 1
-              : line.stations.length,
-          separatorBuilder: (context, index) => const Divider(height: 1),
-          itemBuilder: (context, index) {
-            if (hasLineNameInMessage && index == 0) {
-              return ListTile(
-                title: const Text('Únicamente mencionar el nombre de la línea'),
-                onTap: () {
-                  debugPrint('Ya estoy en la ${line.lineNameInMessage}');
-                },
-              );
-            }
-
-            final stationIndex = hasLineNameInMessage ? index - 1 : index;
-            final station = line.stations[stationIndex];
-
-            return ListTile(
-              title: Text(station),
-              onTap: () {
-                debugPrint('Ya estoy en la estación $station');
-              },
-            );
-          },
-        ),
+      body: Stack(
+        children: [
+        //Stations Selector (selector de estanciones)
+          SelectorWidget(
+            selectorsTitle: 'Selecciona \n la estación:',
+            listItems: [
+              if (hasLineNameInMessage)
+                ListTile(
+                  title:
+                      const Text(
+                        style: TextStyle(
+                          color: Colors.white,
+                          height: 1,
+                          fontFamily: 'Nunito',
+                          fontSize: 17,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        'Únicamente mencionar el nombre de la línea'),
+                  onTap: () {
+                    debugPrint('Ya estoy en la ${line.lineNameInMessage}');
+                  },
+                ),
+              for (final station in line.stations)
+                ListTile(
+                  title: Text(
+                    style: TextStyle(
+                          color: Colors.white,
+                          height: 1,
+                          fontFamily: 'Nunito',
+                          fontSize: 17,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                    station
+                  ),
+                  onTap: () {
+                    debugPrint('Ya estoy en la estación $station');
+                  },
+                ),
+            ],
+          ),
+        //Map Icon for Light Mode (Map Icon para el modo claro)
+          MapIconLight(),
+        //Settings button
+          SettingsButton(),
+        //Return Button
+          ReturnButton(),
+        ],
       ),
     );
   }
