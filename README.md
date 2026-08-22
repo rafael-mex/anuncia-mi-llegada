@@ -211,3 +211,24 @@ Cuando el usuario navega a cualquiera de las tres pantallas de selección, `Sele
    - En `main.dart` se agregó `SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])` antes de `runApp()`.
    - La aplicación ahora solo funciona en modo vertical, evitando que la pantalla rote al girar el dispositivo.
 
+#### Cuarta sesión — 21 de agosto de 2026
+
+**Prompt enviado (resumen):**
+> "Solamente haz estas tres cosas: -Mueve todo el SettingsView al centro de la pantalla, NO CAMBIES LA POSICIÓN DEL TITLE Y EL SUBTITLE -Haz visibles los SVGAssets y hazlos de tamaño 70px x 70px -Anota estos cambios, su funcionalidad, prompt y fecha en el README"
+
+**Cambios realizados:**
+
+1. **`SettingsView` centrado en pantalla (`settings_screen.dart`):**
+   - El `ListView.builder` de `_SettingsView` estaba anclado con `Positioned.fill(top: 300)`, es decir, a una posición fija bajo el engranaje.
+   - Ahora se envuelve en `Center` con `Positioned.fill` y el `ListView` usa `shrinkWrap: true` con `padding: EdgeInsets.zero`, de modo que el bloque de los tres ítems se centra vertical y horizontalmente dentro del `Stack`.
+   - No se modificó `_CustomListTitle`: las posiciones relativas de `title` y `subtitle` dentro de cada `ListTile` se mantienen intactas.
+
+2. **SVGAssets visibles y a 70x70 px (`settings_items.dart`):**
+   - Las rutas de los tres SVG estaban mal escritas (`assets/data/icons/config_icons/*.svg`), lo que lanzaba `Unable to load asset` y cerraba la app al navegar a settings; se corrigieron a `assets/icons/config_icons/*.svg`.
+   - Cada `SvgPicture.asset` ahora recibe `width: 70, height: 70`.
+
+3. **Documentación en README:** esta misma sección con los cambios, su funcionamiento, el prompt y la fecha.
+
+**Cómo funciona en la aplicación:**
+Al navegar a `/settings`, el `Stack` del `Scaffold` renderiza el engranaje y el botón de regreso en sus posiciones originales, y debajo `_SettingsView` ocupa toda la pantalla pero centra su contenido: el `ListView.builder` con `shrinkWrap` mide su altura real (tres `ListTile`) y `Center` lo coloca en el punto medio de la pantalla. Los iconos SVG de Estaciones, Mensajes y Apariencia cargan desde `assets/icons/config_icons/` (ruta registrada en `pubspec.yaml`) y se muestran con dimensiones fijas de 70x70 px como `leading` de cada elemento.
+
