@@ -39,6 +39,7 @@ dependencies:
   blur: ^4.0.2
   google_fonts: ^8.2.1
   flutter_svg: ^2.3.0
+  light_dark_theme_toggle: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
     - assets/icons/
     - assets/icons/config_icons/
     - assets/data/
+    - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -93,3 +95,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  fonts:
+    - family: METRO-DF
+      fonts:
+        - asset: assets/fonts/METRO-DF.TTF
