@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anuncia_mi_llegada/presentation/screens/selectors/transports/transports_screen.dart';
+import 'package:anuncia_mi_llegada/presentation/screens/selectors/selector_screen/selector_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

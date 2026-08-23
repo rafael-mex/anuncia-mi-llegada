@@ -15,16 +15,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const TransportsScreen(),
     ),
     GoRoute(
-      path: '/lineas',
-      name: LinesScreen.name,
-      builder: (context, state) => const LinesScreen(),
-    ),
-    GoRoute(
-      path: '/estaciones',
-      name: StationsScreen.name,
-      builder: (context, state) => const StationsScreen(),
-    ),
-    GoRoute(
       path: '/settings',
       name: SettingsScreen.name,
       builder: (context, state) => const SettingsScreen(),

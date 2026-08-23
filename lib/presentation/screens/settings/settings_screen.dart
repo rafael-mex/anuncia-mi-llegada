@@ -121,8 +121,6 @@ class _CustomListTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
     return ValueListenableBuilder<bool>(
       valueListenable: isTrueDarkMode,
       builder: (context, isDark, _) {
@@ -160,7 +158,10 @@ class _CustomListTitle extends StatelessWidget {
                   ),
                 ),
                 if (menuItem.icon is! AppearanceIcon)
-                  Icon(Icons.arrow_forward_ios_rounded, color: colors.primary),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
               ],
             ),
           ),

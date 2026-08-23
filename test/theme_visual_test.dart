@@ -113,11 +113,11 @@ void main() {
     );
   });
 
-  testWidgets('ReturnButton alterna azul claro <-> azul oscuro', (
+  testWidgets('ReturnButton alterna color claro <-> color oscuro', (
     tester,
   ) async {
-    const lightBlue = Color.fromRGBO(113, 203, 248, 100);
-    const darkBlue = Color.fromRGBO(13, 97, 255, 30);
+    const lightColor = Color.fromRGBO(255, 186, 130, 1);
+    const darkColor = Color.fromRGBO(73, 46, 25, 0.925);
 
     bool hasMaterialColor(Color color) => tester
         .widgetList<Material>(
@@ -133,15 +133,15 @@ void main() {
     await tester.tap(find.byType(ListTile).first);
     await advance(tester, const Duration(seconds: 1));
 
-    expect(hasMaterialColor(lightBlue), isTrue);
+    expect(hasMaterialColor(lightColor), isTrue);
 
     isTrueDarkMode.value = true;
     await advance(tester);
-    expect(hasMaterialColor(darkBlue), isTrue);
+    expect(hasMaterialColor(darkColor), isTrue);
 
     isTrueDarkMode.value = false;
     await advance(tester);
-    expect(hasMaterialColor(lightBlue), isTrue);
+    expect(hasMaterialColor(lightColor), isTrue);
   });
 
   testWidgets('SettingsButton alterna ícono y fondo transparente', (

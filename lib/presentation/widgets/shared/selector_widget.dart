@@ -76,7 +76,9 @@ class SelectorWidget extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Opacity(
-                  opacity: 0.87,
+                  opacity: isDark
+                  ? 0.23
+                  : 0.87,
                   child: _buildShadowContainer(
                     width: _orangeContainerWidth,
                     height: 336,
@@ -97,14 +99,15 @@ class SelectorWidget extends StatelessWidget {
                 top: 66,
                 child: Center(
                   child: Opacity(
-                    opacity: 0.38,
+                    opacity: isDark 
+                    ? 0.30
+                    : 0.38,
                     child: _buildShadowContainer(
                       width: glassContainerWidth,
                       height: glassContainerHeight,
                       borderRadius: 24,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
-                        //En modo oscuro color sólido; en claro, gradiente
                         color: isDark ? AppTheme.colorOfGlassContainerDM : null,
                         gradient: isDark
                             ? null
