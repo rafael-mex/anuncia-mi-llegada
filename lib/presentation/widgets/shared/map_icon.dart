@@ -1,0 +1,36 @@
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+
+class MapIcon extends StatelessWidget {
+  const MapIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Positioned(
+      left: 0,
+      right: 0,
+      top: 100,
+      child: Center(
+        child: ValueListenableBuilder<bool>(
+          valueListenable: isTrueDarkMode,
+          builder: (context, isDark, _) {
+            final assetPath = isDark
+                ? 'assets/icons/Map_Icon_Dark.png'
+                : 'assets/icons/Map_Icon_W.png';
+            return AnimatedSwitcher(
+
+              duration: const Duration(milliseconds: 500),
+              child: Image(
+                key: ValueKey<String>(assetPath),
+                image: AssetImage(assetPath),
+                width: 92,
+                height: 109,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

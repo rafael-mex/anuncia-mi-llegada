@@ -1,8 +1,9 @@
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/map_icon_white.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/map_icon.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/return_button.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_widget.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button_white.dart';
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,21 +14,30 @@ class StationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final line = GoRouterState.of(context).extra as LinesModel;
     final hasLineNameInMessage = line.lineNameInMessage.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-        //Stations Selector (selector de estanciones)
-          SelectorWidget(
-            selectorsTitle: 'Selecciona \n la estación:',
-            listItems: [
-              if (hasLineNameInMessage)
-                ListTile(
-                  title:
-                      const Text(
+      backgroundColor: Colors.transparent,
+      body: ValueListenableBuilder<bool>(
+        valueListenable: isTrueDarkMode,
+        builder: (context, isDark, _) => AnimatedContainer(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            color: isDark ? null : AppTheme.backgroundColorLM,
+            gradient: isDark ? AppTheme.backgroundColorDM : null,
+          ),
+          child: Stack(
+            children: [
+              //Stations Selector (selector de estanciones)
+              SelectorWidget(
+                selectorsTitle: 'Selecciona \n la estación:',
+                listItems: [
+                  if (hasLineNameInMessage)
+                    ListTile(
+                      title: const Text(
                         style: TextStyle(
                           color: Colors.white,
                           height: 1,
@@ -36,15 +46,16 @@ class StationsScreen extends StatelessWidget {
                           letterSpacing: 0,
                           fontWeight: FontWeight.w700,
                         ),
-                        'Únicamente mencionar el nombre de la línea'),
-                  onTap: () {
-                    debugPrint('Ya estoy en la ${line.lineNameInMessage}');
-                  },
-                ),
-              for (final station in line.stations)
-                ListTile(
-                  title: Text(
-                    style: TextStyle(
+                        'Únicamente mencionar el nombre de la línea',
+                      ),
+                      onTap: () {
+                        debugPrint('Ya estoy en la ${line.lineNameInMessage}');
+                      },
+                    ),
+                  for (final station in line.stations)
+                    ListTile(
+                      title: Text(
+                        style: TextStyle(
                           color: Colors.white,
                           height: 1,
                           fontFamily: 'Nunito',
@@ -52,21 +63,23 @@ class StationsScreen extends StatelessWidget {
                           letterSpacing: 0,
                           fontWeight: FontWeight.w700,
                         ),
-                    station
-                  ),
-                  onTap: () {
-                    debugPrint('Ya estoy en la estación $station');
-                  },
-                ),
+                        station,
+                      ),
+                      onTap: () {
+                        debugPrint('Ya estoy en la estación $station');
+                      },
+                    ),
+                ],
+              ),
+              //Map Icon (cambia según el modo)
+              MapIcon(),
+              //Settings button
+              SettingsButton(),
+              //Return Button
+              ReturnButton(),
             ],
           ),
-        //Map Icon for Light Mode (Map Icon para el modo claro)
-          MapIconLight(),
-        //Settings button
-          SettingsButton(),
-        //Return Button
-          ReturnButton(),
-        ],
+        ),
       ),
     );
   }
