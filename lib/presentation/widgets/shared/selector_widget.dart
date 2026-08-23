@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 
@@ -50,7 +51,9 @@ class SelectorWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
             width: width,
             height: height,
             decoration: decoration,
@@ -63,120 +66,118 @@ class SelectorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        // Orange Container
-        width: _orangeContainerWidth,
-        height: 336,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Opacity(
-                opacity: 0.87,
-                child: _buildShadowContainer(
-                  width: _orangeContainerWidth,
-                  height: 336,
-                  borderRadius: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color.fromRGBO(245, 146, 69, 88),
-                        Color.fromRGBO(246, 147, 70, 100),
-                      ],
+      child: ValueListenableBuilder<bool>(
+        valueListenable: isTrueDarkMode,
+        builder: (context, isDark, _) => SizedBox(
+          // Orange Container
+          width: _orangeContainerWidth,
+          height: 336,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.87,
+                  child: _buildShadowContainer(
+                    width: _orangeContainerWidth,
+                    height: 336,
+                    borderRadius: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40),
+                      gradient: isDark
+                          ? AppTheme.colorsOfOrangeContainerDM
+                          : AppTheme.colorsOfOrangeContianerLM,
                     ),
                   ),
                 ),
               ),
-            ),
-            //Glass Container
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 66,
-              child: Center(
-                child: Opacity(
-                  opacity: 0.38,
-                  child: _buildShadowContainer(
+              //Glass Container
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 66,
+                child: Center(
+                  child: Opacity(
+                    opacity: 0.38,
+                    child: _buildShadowContainer(
+                      width: glassContainerWidth,
+                      height: glassContainerHeight,
+                      borderRadius: 24,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        //En modo oscuro color sólido; en claro, gradiente
+                        color: isDark ? AppTheme.colorOfGlassContainerDM : null,
+                        gradient: isDark
+                            ? null
+                            : AppTheme.colorOfGlassContainerLM,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Elements List
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 66,
+                child: Center(
+                  child: SizedBox(
                     width: glassContainerWidth,
                     height: glassContainerHeight,
-                    borderRadius: 24,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color.fromRGBO(249, 217, 191, 100),
-                          Color.fromRGBO(249, 215, 173, 100),
-                        ],
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                        ),
+                        child: DefaultTextStyle(
+                          style: _itemTextStyle,
+                          child: ListView.separated(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: listContentPadding,
+                              vertical: listContentPadding,
+                            ),
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            itemCount: listItems.length,
+                            separatorBuilder: (context, index) => Divider(
+                              color: Colors.white,
+                              thickness: 1.5,
+                              height: 0.7,
+                              indent: dividerWidthModifier / 2,
+                              endIndent: dividerWidthModifier / 2,
+                            ),
+                            itemBuilder: (context, index) => listItems[index],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            // Elements List
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 66,
-              child: Center(
-                child: SizedBox(
-                  width: glassContainerWidth,
-                  height: glassContainerHeight,
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                    ),
-                    child: DefaultTextStyle(
-                      style: _itemTextStyle,
-                      child: ListView.separated(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: listContentPadding,
-                          vertical: listContentPadding,
-                        ),
-                        physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(),
-                        ),
-                        itemCount: listItems.length,
-                        separatorBuilder: (context, index) => Divider(
-                          color: Colors.white,
-                          thickness: 1.5,
-                          height: 0.7,
-                          indent: dividerWidthModifier / 2,
-                          endIndent: dividerWidthModifier / 2,
-                        ),
-                        itemBuilder: (context, index) => listItems[index],
-                      ),
+              //Selector´s Title
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 14,
+                child: Center(
+                  child: Text(
+                    selectorsTitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      height: 1,
+                      fontFamily: 'Nunito',
+                      fontSize: 20,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
               ),
-            ),
-            //Selector´s Title
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 14,
-              child: Center(
-                child: Text(
-                  selectorsTitle,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    height: 1,
-                    fontFamily: 'Nunito',
-                    fontSize: 20,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
