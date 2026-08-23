@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:anuncia_mi_llegada/presentation/screens/selectors/transports/transports_screen.dart';
 
-
-class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashScreenState extends State<SplashScreen> {
   Timer? _timer;
 
   static const _cardSize = Size(250, 121);
@@ -37,8 +37,8 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF26400),
       body: Center(
-        child: Image.asset(
-          'assets/images/Appcard.png',
+        child: SvgPicture.asset(
+          'assets/images/appcard.svg',
           width: _cardSize.width,
           height: _cardSize.height,
         ),
