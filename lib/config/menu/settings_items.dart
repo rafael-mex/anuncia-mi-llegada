@@ -1,3 +1,4 @@
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
 
@@ -77,8 +78,6 @@ final appSettingsItems = <MenuItem>[
   ),
 ];
 
-final appearanceMode = ValueNotifier<bool>(true);
-
 class AppearanceIcon extends StatelessWidget {
   const AppearanceIcon({super.key});
 
@@ -87,19 +86,19 @@ class AppearanceIcon extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-      //Imagen
+        //Imagen
         Image.asset(
           'assets/icons/config_icons/apariencia.png',
           width: 100,
           height: 100,
           fit: BoxFit.contain,
         ),
-      //Animación
+
         ValueListenableBuilder<bool>(
-          valueListenable: appearanceMode,
-          builder: (context, isLightMode, _) => LightDarkThemeToggle(
-            value: isLightMode,
-            onChanged: (value) => appearanceMode.value = value,
+          valueListenable: isTrueDarkMode,
+          builder: (context, isTrueDark, _) => LightDarkThemeToggle(
+            value: !isTrueDark,
+            onChanged: (value) => isTrueDarkMode.value = !value,
             themeIconType: ThemeIconType.expand,
             color: Colors.white,
             size: 41,
