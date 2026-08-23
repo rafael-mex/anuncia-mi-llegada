@@ -3,7 +3,7 @@ import 'package:anuncia_mi_llegada/presentation/screens/selectors/stations/stati
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/map_icon.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/return_button.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_widget.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button_white.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

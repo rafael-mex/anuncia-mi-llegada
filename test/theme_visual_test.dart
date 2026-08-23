@@ -1,6 +1,6 @@
 import 'package:anuncia_mi_llegada/config/router/app_router.dart';
 import 'package:anuncia_mi_llegada/main.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button_white.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -142,5 +142,37 @@ void main() {
     isTrueDarkMode.value = false;
     await advance(tester);
     expect(hasMaterialColor(lightBlue), isTrue);
+  });
+
+  testWidgets('SettingsButton alterna ícono y fondo transparente', (
+    tester,
+  ) async {
+    bool hasIcon(String assetPath) =>
+        tester.widgetList(find.byKey(ValueKey<String>(assetPath))).isNotEmpty;
+
+    bool hasTileBackground(Color color) => tester
+        .widgetList<AnimatedContainer>(
+          find.byWidgetPredicate(
+            (w) =>
+                w is AnimatedContainer &&
+                w.decoration is BoxDecoration &&
+                (w.decoration as BoxDecoration).color == color,
+          ),
+        )
+        .isNotEmpty;
+
+    isTrueDarkMode.value = false;
+    resetGlobalState(tester);
+
+    await reachTransportsScreen(tester);
+
+    expect(hasIcon('assets/icons/config_icons/settings_Icon.svg'), isTrue);
+    expect(hasTileBackground(Colors.white.withValues(alpha: 0.15)), isTrue);
+
+    isTrueDarkMode.value = true;
+    await advance(tester);
+
+    expect(hasIcon('assets/icons/config_icons/settings_Icon_dark.svg'), isTrue);
+    expect(hasTileBackground(Colors.transparent), isTrue);
   });
 }
