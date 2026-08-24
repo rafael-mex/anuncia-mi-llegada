@@ -1,6 +1,10 @@
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 
-final ValueNotifier<bool> isTrueDarkMode = ValueNotifier(false);
+/// Única fuente de verdad del tema: el notificador persistido de
+/// PreferencesService. Todas las pantallas y main() escuchan/escriben
+/// la misma instancia.
+final ValueNotifier<bool> isTrueDarkMode = PreferencesService.isTrueDarkMode;
 
 class AppTheme {
   //---- Selector Widget ----
