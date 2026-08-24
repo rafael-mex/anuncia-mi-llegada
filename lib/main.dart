@@ -27,7 +27,7 @@ class AnunciaMiLlegadaApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-          themeAnimationDuration: const Duration(milliseconds: 500),
+          themeAnimationDuration: const Duration(milliseconds: 500), 
           routerConfig: appRouter,
         );
       },
