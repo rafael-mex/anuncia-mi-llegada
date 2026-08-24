@@ -1,5 +1,6 @@
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
 
 class MenuItem {
@@ -11,7 +12,7 @@ class MenuItem {
 }
 
 final appSettingsItems = <MenuItem>[
-  //Option: Estaciones
+  //------ Option: Estaciones ------
   MenuItem(
     title: Text(
       "Estaciones",
@@ -28,13 +29,14 @@ final appSettingsItems = <MenuItem>[
         fontWeight: FontWeight.w700,
       ),
     ),
-    icon: Image.asset(
-      'assets/icons/config_icons/estaciones.png',
+    //Icon
+    icon: SvgPicture.asset(
+      'assets/icons/config_icons/estaciones.svg',
       fit: BoxFit.contain,
     ),
   ),
-
-  //Option: Mensajes
+  //------
+  // ------ Option: Mensajes ------
   MenuItem(
     title: Text(
       "Mensajes",
@@ -51,13 +53,15 @@ final appSettingsItems = <MenuItem>[
         fontWeight: FontWeight.w700,
       ),
     ),
-    icon: Image.asset(
-      'assets/icons/config_icons/mensajes.png',
+    //Icon
+    icon: SvgPicture.asset(
+        'assets/icons/config_icons/mensajes.svg',
       fit: BoxFit.contain,
     ),
   ),
-
-  //Option: Apariencia
+  //------
+  
+  //------ Option: Apariencia ------
   MenuItem(
     title: Text(
       "Apariencia",
@@ -86,9 +90,9 @@ class AppearanceIcon extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        //Imagen
-        Image.asset(
-          'assets/icons/config_icons/apariencia.png',
+  //Icon
+        SvgPicture.asset(
+          'assets/icons/config_icons/apariencia.svg',
           width: 100,
           height: 100,
           fit: BoxFit.contain,
@@ -108,3 +112,4 @@ class AppearanceIcon extends StatelessWidget {
     );
   }
 }
+  //------
