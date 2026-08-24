@@ -1,4 +1,4 @@
-import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
@@ -7,8 +7,14 @@ class MenuItem {
   final Widget title;
   final Widget subtitle;
   final Widget icon;
+  final Widget? showedConfigurations;
 
-  MenuItem({required this.title, required this.subtitle, required this.icon});
+  MenuItem({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    this.showedConfigurations,
+  });
 }
 
 final appSettingsItems = <MenuItem>[
@@ -55,12 +61,52 @@ final appSettingsItems = <MenuItem>[
     ),
     //Icon
     icon: SvgPicture.asset(
-        'assets/icons/config_icons/mensajes.svg',
+      'assets/icons/config_icons/mensajes.svg',
       fit: BoxFit.contain,
+    ),
+    showedConfigurations: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          children: [
+          // Reactive switch
+          ValueListenableBuilder<bool>(
+            valueListenable: PreferencesService.showTransportName,
+            builder: (context, value, _) => SwitchListTile(
+              title: const Text(
+                "Mostrar nombre del transporte",
+                style: TextStyle(fontFamily: 'Nunito', fontSize: 14),
+              ),
+              value: value,
+              onChanged: PreferencesService.willBeShowedTransportName ,
+              activeThumbColor: const Color(0xFFF26400),
+            ),
+          ),
+          // TextField Varchar
+          TextField(
+            maxLength: 60,
+            controller: TextEditingController(
+              text: PreferencesService.messageBody.value,
+            ),
+            onChanged: PreferencesService.setYourCustomMessage,
+            decoration: const InputDecoration(
+              hintText: 'Cuerpo del mensaje',
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFFF26400)),
+              ),
+            ),
+          ),
+        ],
+        ),
+      ),
     ),
   ),
   //------
-  
+
   //------ Option: Apariencia ------
   MenuItem(
     title: Text(
@@ -90,7 +136,7 @@ class AppearanceIcon extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-  //Icon
+        //Icon
         SvgPicture.asset(
           'assets/icons/config_icons/apariencia.svg',
           width: 100,
@@ -99,17 +145,17 @@ class AppearanceIcon extends StatelessWidget {
         ),
 
         ValueListenableBuilder<bool>(
-          valueListenable: isTrueDarkMode,
+          valueListenable: PreferencesService.isTrueDarkMode,
           builder: (context, isTrueDark, _) => LightDarkThemeToggle(
             value: !isTrueDark,
-            onChanged: (value) => isTrueDarkMode.value = !value,
+            onChanged: (value) => (PreferencesService.isTrueDarkMode.value = !value),
             themeIconType: ThemeIconType.expand,
             color: Colors.white,
             size: 41,
           ),
         ),
+        //------
       ],
     );
   }
 }
-  //------
