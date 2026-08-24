@@ -58,6 +58,16 @@ class TransportsScreen extends StatefulWidget {
   State<TransportsScreen> createState() => _TransportsScreenState();
 }
 
+//Estilo de texto: nunitoFamily
+final _nunitoFamily = TextStyle(
+  color: Colors.white,
+  height: 1,
+  fontFamily: 'Nunito',
+  fontSize: 17,
+  letterSpacing: 0,
+  fontWeight: FontWeight.w700,
+);
+
 class _TransportsScreenState extends State<TransportsScreen> {
   late final Future<List<TransportsModel>> _transportsFuture;
 
@@ -125,17 +135,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
             _StaggeredFadeIn(
               index: index,
               child: ListTile(
-                title: Text(
-                  transport.name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    height: 1,
-                    fontFamily: 'Nunito',
-                    fontSize: 17,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                title: Text(transport.name, style: _nunitoFamily),
                 onTap: () => _selectTransport(transport),
               ),
             ),
@@ -148,17 +148,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
             _StaggeredFadeIn(
               index: index,
               child: ListTile(
-                title: Text(
-                  line.name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    height: 1,
-                    fontFamily: 'Nunito',
-                    fontSize: 17,
-                    letterSpacing: 0.1,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                title: Text(line.name, style: _nunitoFamily),
                 onTap: () => _selectLine(line),
               ),
             ),
@@ -173,15 +163,8 @@ class _TransportsScreenState extends State<TransportsScreen> {
             _StaggeredFadeIn(
               index: 0,
               child: ListTile(
-                title: const Text(
-                  style: TextStyle(
-                    color: Colors.white,
-                    height: 1,
-                    fontFamily: 'Nunito',
-                    fontSize: 17,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w700,
-                  ),
+                title: Text(
+                  style: _nunitoFamily,
                   'Únicamente mencionar el nombre de la línea',
                 ),
                 onTap: () {
@@ -193,17 +176,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
             _StaggeredFadeIn(
               index: specialTileCount + index,
               child: ListTile(
-                title: Text(
-                  station,
-                  style: TextStyle(
-                    color: Colors.white,
-                    height: 1,
-                    fontFamily: 'Nunito',
-                    fontSize: 17,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                title: Text(station, style: _nunitoFamily),
                 onTap: () {
                   debugPrint('Ya estoy en la estación $station');
                 },

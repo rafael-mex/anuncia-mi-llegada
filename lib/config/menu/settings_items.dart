@@ -16,24 +16,23 @@ class MenuItem {
     this.showedConfigurations,
   });
 }
+//Estilos de texto
+/* Font del Metro:*/ const metroStyle = TextStyle(fontFamily: 'METRO-DF', fontSize: 24);
+/* Nunito:*/ const _nunitoFamily = TextStyle(
+    height: 1.3,
+    fontFamily: 'Nunito',
+    fontSize: 14,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w700,
+  );
 
 final appSettingsItems = <MenuItem>[
   //------ Option: Estaciones ------
   MenuItem(
-    title: Text(
-      "Estaciones",
-      style: TextStyle(fontFamily: 'METRO-DF', fontSize: 24),
-    ),
+    title: Text("Estaciones", style: metroStyle),
     subtitle: Text(
       "Configura el como aparecen las \nestaciones en la aplicación.",
-      style: TextStyle(
-        color: Color.fromRGBO(91, 79, 79, 100),
-        height: 0,
-        fontFamily: 'Nunito',
-        fontSize: 12,
-        letterSpacing: 0,
-        fontWeight: FontWeight.w700,
-      ),
+      style: _nunitoFamily
     ),
     //Icon
     icon: SvgPicture.asset(
@@ -46,18 +45,11 @@ final appSettingsItems = <MenuItem>[
   MenuItem(
     title: Text(
       "Mensajes",
-      style: TextStyle(fontFamily: 'METRO-DF', fontSize: 24),
+      style: metroStyle,
     ),
     subtitle: Text(
       "Personaliza el mensaje que \nenviarás a tus contactos.",
-      style: TextStyle(
-        color: Color.fromRGBO(91, 79, 79, 100),
-        height: 1,
-        fontFamily: 'Nunito',
-        fontSize: 12,
-        letterSpacing: 0,
-        fontWeight: FontWeight.w700,
-      ),
+      style: _nunitoFamily
     ),
     //Icon
     icon: SvgPicture.asset(
@@ -115,14 +107,7 @@ final appSettingsItems = <MenuItem>[
     ),
     subtitle: Text(
       "Cambia entre el modo claro y \nobscuro.",
-      style: TextStyle(
-        color: Color.fromRGBO(91, 79, 79, 100),
-        height: 0,
-        fontFamily: 'Nunito',
-        fontSize: 12,
-        letterSpacing: 0,
-        fontWeight: FontWeight.w700,
-      ),
+      style: _nunitoFamily,
     ),
     icon: const AppearanceIcon(),
   ),

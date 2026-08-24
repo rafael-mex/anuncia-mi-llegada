@@ -23,13 +23,21 @@ class SelectorWidget extends StatelessWidget {
     this.dividerWidthModifier = 9,
   });
 
-  static const TextStyle _itemTextStyle = TextStyle(
+  static const TextStyle _nunitoFamily = TextStyle(
     color: Colors.white,
     fontFamily: 'Nunito',
     fontSize: 17,
     letterSpacing: 0,
     fontWeight: FontWeight.w700,
   );
+  static const TextStyle _titlesNunitoFamily = TextStyle(
+    color: Colors.white,
+    fontFamily: 'Nunito',
+    fontSize: 17,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w700,
+  );
+
 
   double get _orangeContainerWidth => glassContainerWidth + (orangePadding * 2);
 
@@ -134,7 +142,7 @@ class SelectorWidget extends StatelessWidget {
                           highlightColor: Colors.transparent,
                         ),
                         child: DefaultTextStyle(
-                          style: _itemTextStyle,
+                          style: _nunitoFamily,
                           child: ListView.separated(
                             padding: EdgeInsets.symmetric(
                               horizontal: listContentPadding,
@@ -168,14 +176,7 @@ class SelectorWidget extends StatelessWidget {
                   child: Text(
                     selectorsTitle,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      height: 1,
-                      fontFamily: 'Nunito',
-                      fontSize: 20,
-                      letterSpacing: 0,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: _titlesNunitoFamily
                   ),
                 ),
               ),
