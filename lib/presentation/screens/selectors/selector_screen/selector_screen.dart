@@ -187,6 +187,11 @@ class _TransportsScreenState extends State<TransportsScreen> {
         final hasLineNameInMessage = line.lineNameInMessage.isNotEmpty;
         final specialTileCount = hasLineNameInMessage ? 1 : 0;
 
+        final transportsName = _transport?.name ?? '';
+        final youSelectedTrains =
+            transportsName.contains('Trenes') ||
+            transportsName.contains('Valle de México');
+
         return [
           if (hasLineNameInMessage)
             _StaggeredFadeIn(
@@ -198,7 +203,24 @@ class _TransportsScreenState extends State<TransportsScreen> {
                   style: _nunitoFamily,
                 ),
                 onTap: () {
-                  debugPrint('Ya estoy en la ${line.lineNameInMessage}');
+                  //Construcción del mensaje, si este habla unicamente de la línea elegida
+                  final messageBody = PreferencesService.messageBody.value;
+                  final namesInLowerCase = line.lineNameInMessage.toLowerCase();
+                  final whichLineDIdYouChoosed =
+                      (namesInLowerCase.startsWith('tren') ||
+                          namesInLowerCase.startsWith('suburbano') ||
+                          namesInLowerCase.startsWith('insurgente'))
+                      ? 'el'
+                      : 'la';
+                  if (youSelectedTrains) {
+                    debugPrint(
+                      '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}',
+                    );
+                  } else {
+                    debugPrint(
+                      '$messageBody la ${line.lineNameInMessage}',
+                    );
+                  }
                 },
               ),
             ),
@@ -208,7 +230,27 @@ class _TransportsScreenState extends State<TransportsScreen> {
               child: ListTile(
                 title: Text(station, style: _nunitoFamily),
                 onTap: () {
-                  debugPrint('Ya estoy en la estación $station');
+                  // Construcción del mensaje, si este habla de una estación
+                  final messageBody = PreferencesService.messageBody.value;
+                  final showTransportsName =
+                      PreferencesService.willBeShowedTransportName.value;
+
+                  if (showTransportsName) {
+                    if (youSelectedTrains) {
+                      final lineName = line.name
+                          .replaceAll(RegExp(r'\s*\([^)]*\)'), '')
+                          .trim();
+                      debugPrint(
+                        '$messageBody la estación del tren $lineName: $station',
+                      );
+                    } else {
+                      debugPrint(
+                        '$messageBody la estación del $transportsName: $station',
+                      );
+                    }
+                  } else {
+                    debugPrint('$messageBody $station');
+                  }
                 },
               ),
             ),
