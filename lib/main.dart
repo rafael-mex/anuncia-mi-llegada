@@ -23,7 +23,6 @@ class AnunciaMiLlegadaApp extends StatelessWidget {
       valueListenable: isTrueDarkMode,
       builder: (context, isDark, _) {
         return MaterialApp.router(
-          title: 'Anuncia Mi Llegada',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
