@@ -1,4 +1,6 @@
 import 'package:anuncia_mi_llegada/config/menu/settings_items.dart';
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/reset_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -67,10 +69,43 @@ class SettingsScreen extends StatelessWidget {
               ),
               //Options
               _SettingsView(),
+
+              //SizedBox para proteger la barra de navegación del dispositivo:
+
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ResetSettingsButton extends StatelessWidget {
+  const _ResetSettingsButton();
+
+  @override
+  Widget build(BuildContext context) {
+    //Se reconstruye cuando cualquiera de las configuraciones cambia:
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        PreferencesService.isTrueDarkMode,
+        PreferencesService.messageBody,
+        PreferencesService.willBeShowedTransportName,
+        PreferencesService.willBeShowedLineNamesInMessage,
+        PreferencesService.willBeShowedInstitutionsName,
+      ]),
+      builder: (context, _) {
+        final showButton = PreferencesService.hasModifiedSettings;
+        return IgnorePointer(
+          ignoring: !showButton,
+          child: AnimatedOpacity(
+            opacity: showButton ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: const ResetButton(),
+          ),
+        );
+      },
     );
   }
 }
@@ -80,21 +115,30 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    appSettingsItems;
-
     return Positioned(
-      left: 0, 
+      left: 0,
       right: 0,
       top: 230,
-      child: ListView.builder(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        itemCount: appSettingsItems.length,
-        itemBuilder: (BuildContext context, int index) {
-          final menuItem = appSettingsItems[index];
-      
-          return _CustomListTitle(menuItem: menuItem);
-        },
+      bottom: 0,
+      child: SafeArea(
+        top: false,
+        child: ListView.builder(
+          padding: EdgeInsets.zero,
+          //+1 para el botón de restablecer configuraciones:
+          itemCount: appSettingsItems.length + 1,
+          itemBuilder: (BuildContext context, int index) {
+            //Botón fijo debajo de la última opción (Apariencia):
+            if (index == appSettingsItems.length) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Center(child: _ResetSettingsButton()),
+              );
+            }
+
+            final menuItem = appSettingsItems[index];
+            return _CustomListTitle(menuItem: menuItem);
+          },
+        ),
       ),
     );
   }
