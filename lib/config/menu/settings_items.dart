@@ -27,20 +27,78 @@ class MenuItem {
   );
 
 final appSettingsItems = <MenuItem>[
-  //------ Option: Estaciones ------
+ // ------ Option: Estaciones ------
   MenuItem(
     title: Text("Estaciones", style: metroStyle),
     subtitle: Text(
       "Configura el como aparecen las \nestaciones en la aplicación.",
       style: _nunitoFamily
     ),
-    //Icon
     icon: SvgPicture.asset(
       'assets/icons/config_icons/estaciones.svg',
       fit: BoxFit.contain,
     ),
+    //Opciones del menú:
+    showedConfigurations: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        type: MaterialType.transparency,
+        child: Builder(
+          builder: (context) {
+            // Colores del app Theme.
+            final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
+            final dynamicStyle = _nunitoFamily.copyWith(color: dynamicColor);
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start, 
+              children: [
+                // Grupo: Movilidad Integrada y MOVIMEX
+                Text("Movilidad Integrada y Movimex", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                ValueListenableBuilder<bool>(
+                  valueListenable: PreferencesService.willBeShowedLineNamesInMessage, 
+                  builder: (context, value, _) => SwitchListTile(
+                    contentPadding: EdgeInsets.zero, 
+                    //Texto y estilo
+                    title: Text(
+                      "Mostrar sugerencia de nombrar \nsolo la línea escogida",
+                      style: dynamicStyle,
+                    ),
+
+                    value: value,
+                    onChanged: PreferencesService.showLineNamesInMessage,
+                    activeThumbColor: const Color(0xFFF26400),
+                  ),
+                ),
+                
+                /* Separación: */ const SizedBox(height: 12), 
+                
+                // Grupo: STC Metro
+                Text("STC Metro", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                ValueListenableBuilder<bool>(
+                  valueListenable: PreferencesService.willBeShowedInstitutionsName, 
+                  builder: (context, value, _) => SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    //Texto y estilo
+                    title: Text(
+                      "Mostrar instituciones\nacompañadas de nombres de estaciones",
+                      style: dynamicStyle,
+                    ),
+
+                    value: value,
+                    onChanged: PreferencesService.showInstitutionsName,
+                    activeThumbColor: const Color(0xFFF26400),
+                  ),
+                ),
+              ],
+            );
+          }
+        ),
+      ),
+    ),
   ),
-  //------
+  // ------
   // ------ Option: Mensajes ------
   MenuItem(
     title: Text(
@@ -56,43 +114,64 @@ final appSettingsItems = <MenuItem>[
       'assets/icons/config_icons/mensajes.svg',
       fit: BoxFit.contain,
     ),
+    //Opciones del menú:
     showedConfigurations: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
         type: MaterialType.transparency,
-        child: Column(
-          children: [
-          // Reactive switch
-          ValueListenableBuilder<bool>(
-            valueListenable: PreferencesService.showTransportName,
-            builder: (context, value, _) => SwitchListTile(
-              title: const Text(
-                "Mostrar nombre del transporte",
-                style: TextStyle(fontFamily: 'Nunito', fontSize: 14),
-              ),
-              value: value,
-              onChanged: PreferencesService.willBeShowedTransportName ,
-              activeThumbColor: const Color(0xFFF26400),
-            ),
-          ),
-          // TextField Varchar
-          TextField(
-            maxLength: 60,
-            controller: TextEditingController(
-              text: PreferencesService.messageBody.value,
-            ),
-            onChanged: PreferencesService.setYourCustomMessage,
-            decoration: const InputDecoration(
-              hintText: 'Cuerpo del mensaje',
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFF26400)),
-              ),
-            ),
-          ),
-        ],
+        child: Builder(
+          builder: (context) {
+            // Colores del app Theme.
+            final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
+            final dynamicStyle = _nunitoFamily.copyWith(color: dynamicColor);
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start, 
+              children: [
+                // Grupo: Movilidad Integrada y MOVIMEX
+
+                // Reactive switch
+                Text("Movilidad Integrada y Movimex", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                ValueListenableBuilder<bool>(
+                  valueListenable: PreferencesService.willBeShowedTransportName,
+                  builder: (context, value, _) => SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      "Mostrar nombre del transporte",
+                      style: dynamicStyle,
+                    ),
+                    value: value,
+                    onChanged: PreferencesService.showTransportName,
+                    activeThumbColor: const Color(0xFFF26400),
+                  ),
+                ),
+                
+                // Cuerpo del mensaje
+                // TextField Varchar
+                Text("Cuerpo del Mensaje", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                TextField(
+                  maxLength: 60,
+                  controller: TextEditingController(
+                    text: PreferencesService.messageBody.value,
+                  ),
+                  onChanged: PreferencesService.setYourCustomMessage,
+                  style: dynamicStyle,
+                  decoration: InputDecoration(
+                    hintText: 'Cuerpo del mensaje',
+                    hintStyle: dynamicStyle,
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFF26400)),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
         ),
       ),
     ),
@@ -131,9 +210,10 @@ class AppearanceIcon extends StatelessWidget {
 
         ValueListenableBuilder<bool>(
           valueListenable: PreferencesService.isTrueDarkMode,
-          builder: (context, isTrueDark, _) => LightDarkThemeToggle(
+          builder: (context, isTrueDark, _) => /* Animación del icono:*/ LightDarkThemeToggle(
             value: !isTrueDark,
-            onChanged: (value) => (PreferencesService.isTrueDarkMode.value = !value),
+            onChanged: (value) =>
+                (PreferencesService.isTrueDarkMode.value = !value),
             themeIconType: ThemeIconType.expand,
             color: Colors.white,
             size: 41,

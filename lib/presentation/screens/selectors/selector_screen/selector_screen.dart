@@ -1,3 +1,4 @@
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
 import 'package:anuncia_mi_llegada/data/repositories/mi_repository.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_screen_layout.dart';
@@ -69,7 +70,7 @@ final _nunitoFamily = TextStyle(
 );
 
 class _TransportsScreenState extends State<TransportsScreen> {
-  late final Future<List<TransportsModel>> _transportsFuture;
+  late Future<List<TransportsModel>> _transportsFuture;
 
   _SelectorStep _step = _SelectorStep.transports;
   TransportsModel? _transport;
@@ -78,10 +79,38 @@ class _TransportsScreenState extends State<TransportsScreen> {
   @override
   void initState() {
     super.initState();
-    _transportsFuture = MiRepository().loadTransports(
-      showLineNamesInMessage: true,
-      showInstitutionsName: true,
+    _loadTransports();
+    PreferencesService.willBeShowedLineNamesInMessage.addListener(
+      _loadTransports,
     );
+    PreferencesService.willBeShowedInstitutionsName.addListener(
+      _loadTransports,
+    );
+  }
+
+  void _loadTransports() {
+    setState(() {
+      _step = _SelectorStep.transports;
+      _transport = null;
+      _line = null;
+      _transportsFuture = MiRepository().loadTransports(
+        showLineNamesInMessage:
+            PreferencesService.willBeShowedLineNamesInMessage.value,
+        showInstitutionsName:
+            PreferencesService.willBeShowedInstitutionsName.value,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    PreferencesService.willBeShowedLineNamesInMessage.removeListener(
+      _loadTransports,
+    );
+    PreferencesService.willBeShowedInstitutionsName.removeListener(
+      _loadTransports,
+    );
+    super.dispose();
   }
 
   void _selectTransport(TransportsModel transport) {
@@ -123,12 +152,11 @@ class _TransportsScreenState extends State<TransportsScreen> {
 
   List<Widget> _listItems(List<TransportsModel> transports) {
     switch (_step) {
-
-      //(Lo siento 
-      //ya me cansé de traducir mentalmente 
+      //(Lo siento
+      //ya me cansé de traducir mentalmente
       //en inglés mis comentarios en el código :( )
 
-      //Paso 1: Seleccionar transportes 
+      //Paso 1: Seleccionar transportes
       case _SelectorStep.transports:
         return [
           for (final (index, transport) in transports.indexed)
@@ -153,19 +181,21 @@ class _TransportsScreenState extends State<TransportsScreen> {
               ),
             ),
         ];
-      //Paso 3: Seleccionar estaciones 
+      //Paso 3: Seleccionar estaciones
       case _SelectorStep.stations:
         final line = _line!;
         final hasLineNameInMessage = line.lineNameInMessage.isNotEmpty;
         final specialTileCount = hasLineNameInMessage ? 1 : 0;
+
         return [
           if (hasLineNameInMessage)
             _StaggeredFadeIn(
               index: 0,
               child: ListTile(
+                //Sugerencia de msostrar el nombre de la línea entre las opciones
                 title: Text(
-                  style: _nunitoFamily,
                   'Únicamente mencionar el nombre de la línea',
+                  style: _nunitoFamily,
                 ),
                 onTap: () {
                   debugPrint('Ya estoy en la ${line.lineNameInMessage}');
