@@ -10,6 +10,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: ValueListenableBuilder<bool>(
@@ -81,27 +82,37 @@ class _SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     appSettingsItems;
 
-    return Positioned.fill(
-      child: Center(
-        child: ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: appSettingsItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            final menuItem = appSettingsItems[index];
-
-            return _CustomListTitle(menuItem: menuItem);
-          },
-        ),
+    return Positioned(
+      left: 0, 
+      right: 0,
+      top: 230,
+      child: ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        itemCount: appSettingsItems.length,
+        itemBuilder: (BuildContext context, int index) {
+          final menuItem = appSettingsItems[index];
+      
+          return _CustomListTitle(menuItem: menuItem);
+        },
       ),
     );
   }
 }
 
-class _CustomListTitle extends StatelessWidget {
+class _CustomListTitle extends StatefulWidget {
   const _CustomListTitle({required this.menuItem});
 
   final MenuItem menuItem;
+
+  @override
+  State<_CustomListTitle> createState() => _CustomListTitleState();
+}
+
+class _CustomListTitleState extends State<_CustomListTitle> {
+
+  bool _areShowedThePreferences = false;
+
   Widget _withColor(Widget widget, Color color) {
     if (widget is Text && widget.data != null) {
       final baseStyle = widget.style ?? const TextStyle();
@@ -120,6 +131,9 @@ class _CustomListTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final theWidthOfYourScreen = MediaQuery.of(context).size.width;
+
     return ValueListenableBuilder<bool>(
       valueListenable: isTrueDarkMode,
       builder: (context, isDark, _) {
@@ -130,39 +144,59 @@ class _CustomListTitle extends StatelessWidget {
             ? const Color.fromRGBO(151, 145, 145, 100)
             : const Color.fromRGBO(91, 79, 79, 100);
 
-        return InkWell(
-          onTap: () {
-            if (menuItem.icon is AppearanceIcon) {
-              isTrueDarkMode.value = !isTrueDarkMode.value;
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 12.0,
-            ),
-            child: Row(
-              children: [
-                SizedBox(width: 70, height: 100, child: menuItem.icon),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _withColor(menuItem.title, titleColor),
-                      _withColor(menuItem.subtitle, subtitleColor),
-                    ],
-                  ),
+        return Column(
+          children: [
+            InkWell(
+              onTap: () {
+                if (widget.menuItem.icon is AppearanceIcon) {
+                  isTrueDarkMode.value = !isTrueDarkMode.value;
+                } else if (widget.menuItem.showedConfigurations != null) {
+                  setState(() {
+                    _areShowedThePreferences = !_areShowedThePreferences;
+                  });
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
                 ),
-                if (menuItem.icon is! AppearanceIcon)
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-              ],
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 76, height: 120, child: widget.menuItem.icon),
+                    SizedBox(width: theWidthOfYourScreen * 0.08),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _withColor(widget.menuItem.title, titleColor),
+                          _withColor(widget.menuItem.subtitle, subtitleColor),
+                        ],
+                      ),
+                    ),
+                    if (widget.menuItem.icon is! AppearanceIcon)
+                    AnimatedRotation(
+                      turns: _areShowedThePreferences ? 0.25 : 0.0, 
+                      duration: const Duration(milliseconds: 300),
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: _areShowedThePreferences && widget.menuItem.showedConfigurations != null
+            ? widget.menuItem.showedConfigurations!
+            : const SizedBox.shrink(),
+            ),
+          ],
         );
       },
     );
