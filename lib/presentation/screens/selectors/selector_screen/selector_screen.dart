@@ -113,6 +113,12 @@ class _TransportsScreenState extends State<TransportsScreen> {
 
   List<Widget> _listItems(List<TransportsModel> transports) {
     switch (_step) {
+
+      //(Lo siento 
+      //ya me cansé de traducir mentalmente 
+      //en inglés mis comentarios en el código :( )
+
+      //Paso 1: Seleccionar transportes 
       case _SelectorStep.transports:
         return [
           for (final (index, transport) in transports.indexed)
@@ -134,6 +140,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
               ),
             ),
         ];
+      //Paso 2: Seleccionar líneas
       case _SelectorStep.lines:
         final lines = _transport?.lines ?? const <LinesModel>[];
         return [
@@ -156,6 +163,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
               ),
             ),
         ];
+      //Paso 3: Seleccionar estaciones 
       case _SelectorStep.stations:
         final line = _line!;
         final hasLineNameInMessage = line.lineNameInMessage.isNotEmpty;
