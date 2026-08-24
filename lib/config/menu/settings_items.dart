@@ -141,6 +141,10 @@ final appSettingsItems = <MenuItem>[
                       "Mostrar nombre del transporte",
                       style: dynamicStyle,
                     ),
+                    subtitle: Text(
+                      "P.ej.: Ya estoy en la estación del Metro: Velódromo",
+                      style: dynamicStyle.copyWith(fontSize: 12),
+                    ),
                     value: value,
                     onChanged: PreferencesService.showTransportName,
                     activeThumbColor: const Color(0xFFF26400),
@@ -151,24 +155,7 @@ final appSettingsItems = <MenuItem>[
                 // TextField Varchar
                 Text("Cuerpo del Mensaje", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
-                TextField(
-                  maxLength: 60,
-                  controller: TextEditingController(
-                    text: PreferencesService.messageBody.value,
-                  ),
-                  onChanged: PreferencesService.setYourCustomMessage,
-                  style: dynamicStyle,
-                  decoration: InputDecoration(
-                    hintText: 'Cuerpo del mensaje',
-                    hintStyle: dynamicStyle,
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFF26400)),
-                    ),
-                  ),
-                ),
+                _MessageBodyField(style: dynamicStyle),
               ],
             );
           }
@@ -191,6 +178,111 @@ final appSettingsItems = <MenuItem>[
     icon: const AppearanceIcon(),
   ),
 ];
+
+class _MessageBodyField extends StatefulWidget {
+  const _MessageBodyField({required this.style});
+
+  final TextStyle style;
+
+  @override
+  State<_MessageBodyField> createState() => _MessageBodyFieldState();
+}
+
+class _MessageBodyFieldState extends State<_MessageBodyField> {
+  late final TextEditingController _controller = TextEditingController(
+    text: PreferencesService.messageBody.value,
+  );
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_rebuild);
+    _focusNode.addListener(_rebuild);
+    //Sincroniza el campo si la preferencia cambia desde fuera
+    //(p.e: al restablecer configuraciones):
+    PreferencesService.messageBody.addListener(_syncFromPreference);
+  }
+
+  void _syncFromPreference() {
+    final value = PreferencesService.messageBody.value;
+    if (_controller.text != value) {
+      _controller.value = TextEditingValue(
+        text: value,
+        selection: TextSelection.collapsed(offset: value.length),
+      );
+    }
+  }
+
+  void _rebuild() {
+    if (mounted) setState(() {});
+  }
+
+  //Ancho del texto actual (o de la pista si está vacío)
+  double get _lineWidth {
+    final text =
+        _controller.text.isEmpty ? 'Cuerpo del mensaje' : _controller.text;
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: widget.style),
+      textDirection: Directionality.of(context),
+    )..layout();
+    return painter.width;
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_rebuild);
+    _focusNode.removeListener(_rebuild);
+    PreferencesService.messageBody.removeListener(_syncFromPreference);
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            maxLength: 60,
+            controller: _controller,
+            focusNode: _focusNode,
+            onChanged: PreferencesService.setYourCustomMessage,
+            style: widget.style,
+            decoration: const InputDecoration(
+              hintText: 'Cuerpo del mensaje',
+              counterText: '',
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              isDense: true,
+            ),
+          ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            height: 1,
+            width: _lineWidth,
+            color:
+                _focusNode.hasFocus ? const Color(0xFFF26400) : Colors.grey,
+          ),
+          //Contador por defecto de Flutter:
+          const SizedBox(height: 2),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '${_controller.text.length}/60',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class AppearanceIcon extends StatelessWidget {
   const AppearanceIcon({super.key});
