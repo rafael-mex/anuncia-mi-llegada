@@ -10,7 +10,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: ValueListenableBuilder<bool>(
@@ -27,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
               Positioned(
                 left: 0,
                 right: 0,
-                top: 100,
+                top: 108,
                 child: Center(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
@@ -50,8 +49,8 @@ class SettingsScreen extends StatelessWidget {
               ),
               //Keyboard Return button
               Positioned(
-                left: 19,
-                top: 128,
+                left: 28,
+                top: 126,
                 child: IconButton(
                   onPressed: () {
                     context.pop();
@@ -62,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
                       Color.fromRGBO(224, 114, 45, 100),
                     ),
                   ),
-                  icon: Icon(Icons.keyboard_return_outlined),
+                  icon: Icon(Icons.keyboard_return_outlined, size: 38),
                 ),
               ),
               //Options
@@ -124,7 +123,6 @@ class _CustomListTitle extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: isTrueDarkMode,
       builder: (context, isDark, _) {
-
         final titleColor = isDark
             ? const Color.fromRGBO(204, 204, 204, 100)
             : Colors.black;
