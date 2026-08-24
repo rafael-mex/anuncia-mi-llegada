@@ -10,8 +10,8 @@ class MapIcon extends StatelessWidget {
       valueListenable: isTrueDarkMode,
       builder: (context, isDark, _) {
         final assetPath = isDark
-            ? 'assets/icons/Map_Icon_Dark.png'
-            : 'assets/icons/Map_Icon_W.png';
+            ? 'assets/icons/map_icon_dark.png'
+            : 'assets/icons/map_icon_w.png';
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
           child: Image(
