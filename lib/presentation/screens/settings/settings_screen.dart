@@ -123,7 +123,7 @@ class _SettingsView extends StatelessWidget {
       child: SafeArea(
         top: false,
         //Resguardo extra para la barra de navegación del dispositivo:
-        minimum: const EdgeInsets.only(bottom: 15),
+        minimum: const EdgeInsets.only(bottom: 25),
         child: ListView.builder(
           padding: EdgeInsets.zero,
           //+1 para el botón de restablecer configuraciones:
