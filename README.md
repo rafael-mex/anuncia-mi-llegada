@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/images/appcard.svg" alt="AppCard de Anuncia mi llegada" width="31%">
    &nbsp;&nbsp;&nbsp;
-  <img src="github_images/svg/atajos.svg" alt="AppCard de Anuncia mi llegada" width="27%">
+  <img src="github_images/svg/atajos.svg" alt="Atajo de iOS" width="27%">
 </div>
 <br>
 
