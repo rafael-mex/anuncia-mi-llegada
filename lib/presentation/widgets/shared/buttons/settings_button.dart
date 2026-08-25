@@ -2,7 +2,7 @@ import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import '../../screens/screens.dart';
+import '../../../screens/screens.dart';
 
 class SettingsButton extends StatelessWidget {
   const SettingsButton({super.key});
