@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'map_icon.dart';
-import 'return_button.dart';
-import 'settings_button.dart';
+import 'buttons/return_button.dart';
+import 'buttons/settings_button.dart';
 
 class SelectorScreenLayout extends StatelessWidget {
   final Widget selector;
