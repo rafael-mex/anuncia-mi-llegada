@@ -1,6 +1,6 @@
 import 'package:anuncia_mi_llegada/config/router/app_router.dart';
 import 'package:anuncia_mi_llegada/main.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/settings_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/settings_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
