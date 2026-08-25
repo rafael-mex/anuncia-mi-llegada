@@ -8,7 +8,7 @@
 
 # Anuncia mi llegada
 
-Para iOS un atajo, en Android una aplicación hecha en Flutter, que permite a usuarios de la red de movilidad integrada de la Ciudad de México y del Estado de México, enviar mensajes de texto de llegada a las estaciones a sus contactos, permitiéndoles personalizar totalmente su mensaje y elegir qué aplicación de mensajería usar.
+Para dispositivos Apple un atajo, en Android una aplicación hecha en Flutter, que permite a usuarios de la red de movilidad integrada de la Ciudad de México y del Estado de México, enviar mensajes de texto de llegada a las estaciones a sus contactos, permitiéndoles personalizar totalmente su mensaje y elegir qué aplicación de mensajería usar.
 
 ## ¿Cómo uso la aplicación?
 
@@ -55,7 +55,7 @@ Dispositivo perteneciente al ecosistema de Apple y sincronizado con tu cuenta de
 3. Abre el archivo descargado. Si es la primera vez que instalas una app fuera de Google Play, tu dispositivo mostrará una alerta de seguridad. Toca en **Configuración** y activa el permiso de **"Instalar aplicaciones desconocidas"** para tu navegador o gestor de archivos.
 4. Toca **Instalar**. ¡Listo! La aplicación ya estará disponible en tu cajón de aplicaciones.
 
-## ¿Cómo guardo el Atajo en iOS? 
+## ¿Cómo guardo el Atajo en mi dispositivo Apple? 
 
 1. Presiona el siguiente link: https://www.icloud.com/shortcuts/47921cbb1e584304958e39f4d7d0bcd4
 2. Das click en el botón "Obtén atajo"
