@@ -1,15 +1,18 @@
 <div align="center">
-  <img src="assets/images/appcard.svg" alt="AppCard de Anuncia mi llegada" width="70%">
+  <img src="assets/images/appcard.svg" alt="AppCard de Anuncia mi llegada" width="31%">
+   &nbsp;&nbsp;&nbsp;
+  <img src="github_images/svg/atajos.svg" alt="AppCard de Anuncia mi llegada" width="27%">
 </div>
 <br>
 
+
 # Anuncia mi llegada
 
-Una aplicación hecha en Flutter (solo disponible para Android) que permite a usuarios de la red de movilidad integrada de la Ciudad de México y del Estado de México, enviar mensajes de texto de llegada a las estaciones a sus contactos, permitiéndoles personalizar totalmente su mensaje y elegir qué aplicación de mensajería usar.
+Para iOS un atajo, en Android una aplicación hecha en Flutter, que permite a usuarios de la red de movilidad integrada de la Ciudad de México y del Estado de México, enviar mensajes de texto de llegada a las estaciones a sus contactos, permitiéndoles personalizar totalmente su mensaje y elegir qué aplicación de mensajería usar.
 
 ## ¿Cómo uso la aplicación?
 
-A través de una sola pantalla dinámica, podrás seleccionar el medio de transporte, posteriormente la línea y, por último, la estación en la que se encuentra.
+A través de una sola pantalla dinámica, podrás seleccionar el medio de transporte, posteriormente la línea y, por último, la estación en la que te encuentras
 
 <br>
 <div align="center">
@@ -27,19 +30,36 @@ Tu eliges la aplicación de mensajería predeterminada (SMS, ideal para zonas su
 
 * **Envío a un toque:** Al seleccionar la estación, la aplicación construirá tu mensaje y abrirá la plataforma de mensajería externa con el texto listo para ser enviado.
 
+<div align="left">
+  <img src="github_images/svg/nombre_de_la_línea.svg" alt="Mencionar el nombre de la línea" width="30%">
+  &nbsp;&nbsp;&nbsp;
+  <img src="github_images/svg/configuraciones.svg" alt="Configuraciones de la aplicación" width="60%">
+</div> 
+
+## ¿Cómo uso el atajo?
+
+El flujo es el mismo, primero seleccionas el medio de transporte, posteriormente la línea y, por último, la estación en la que te encuentras.
+
 ##  ¿Qué requisitos debo cumplir?
 
-* **Sistema Operativo:** Dispositivo móvil con Android.
+* **Sistema Operativo:** 
+Dispositivo móvil con Android.
+Dispositivo perteneciente al ecosistema de Apple y sincronizado con tu cuenta de iCloud.
 * **Conectividad:** Plan de datos o señal celular (para SMS).
-* **Software Third Party:** Contar con una aplicación de gestión de SMS instalada o WhatsApp.
+* **Software ajeno:** Contar con una aplicación de gestión de SMS instalada o WhatsApp.
 
-## ¿Cómo la instalo en Android? ( Versión 1.1.0 (Beta) )
+## ¿Cómo la instalo en Android? ( Versión 1.1.1 (Beta) )
 
 1. Dirígete a la sección de **Releases** en el lateral derecho de este repositorio en GitHub.
 2. Descarga el archivo `.apk` de la versión `1.1.0-beta` en tu teléfono.
 3. Abre el archivo descargado. Si es la primera vez que instalas una app fuera de Google Play, tu dispositivo mostrará una alerta de seguridad. Toca en **Configuración** y activa el permiso de **"Instalar aplicaciones desconocidas"** para tu navegador o gestor de archivos.
 4. Toca **Instalar**. ¡Listo! La aplicación ya estará disponible en tu cajón de aplicaciones.
 
+## ¿Cómo guardo el Atajo en iOS? 
+
+1. Presiona el siguiente link: https://www.icloud.com/shortcuts/47921cbb1e584304958e39f4d7d0bcd4
+2. Das click en el botón "Obtén atajo"
+3. Se te redirigirá a la aplicación de Atajos, posteriormente darás click en "Agregar atajo". ¡Listo!, ya estas listo de anunciar tu llegada
 ---
 
 > [!IMPORTANT]
