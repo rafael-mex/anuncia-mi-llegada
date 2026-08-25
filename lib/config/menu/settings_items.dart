@@ -16,26 +16,28 @@ class MenuItem {
     this.showedConfigurations,
   });
 }
+
 //Estilos de texto
-/* Font del Metro:*/ const metroStyle = TextStyle(fontFamily: 'METRO-DF', fontSize: 24);
-/* Nunito:*/ const _nunitoFamily = TextStyle(
-    height: 1.3,
-    fontFamily: 'Nunito',
-    fontSize: 14,
-    letterSpacing: 0,
-    fontWeight: FontWeight.w700,
-  );
+/* Font del Metro:*/
+const metroStyle = TextStyle(fontFamily: 'METRO-DF', fontSize: 24);
+/* Nunito:*/
+const _nunitoFamily = TextStyle(
+  height: 1.3,
+  fontFamily: 'Nunito',
+  fontSize: 14,
+  letterSpacing: 0,
+  fontWeight: FontWeight.w700,
+);
 
 final appSettingsItems = <MenuItem>[
-
   //Las configuraciones están divididas según al organismo u organismos a los que afecta, es decir, si una configuración solo afecta al metro, entonces su grupo será: STC Metro. Si la configuración afecta globalmente, es decir, afecta a todos, entonces su grupo será: Movilidad Integrada y MOVIMEX
 
- // ------ Option: Estaciones ------
+  // ------ Option: Estaciones ------
   MenuItem(
     title: Text("Estaciones", style: metroStyle),
     subtitle: Text(
       "Configura el como aparecen las \nestaciones en la aplicación.",
-      style: _nunitoFamily
+      style: _nunitoFamily,
     ),
     icon: SvgPicture.asset(
       'assets/icons/config_icons/estaciones.svg',
@@ -53,15 +55,16 @@ final appSettingsItems = <MenuItem>[
             final dynamicStyle = _nunitoFamily.copyWith(color: dynamicColor);
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start, 
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Grupo: Movilidad Integrada y MOVIMEX
                 Text("Movilidad Integrada y MOVIMEX", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
-                  valueListenable: PreferencesService.willBeShowedLineNamesInMessage, 
+                  valueListenable:
+                      PreferencesService.willBeShowedLineNamesInMessage,
                   builder: (context, value, _) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero, 
+                    contentPadding: EdgeInsets.zero,
                     //Texto y estilo
                     title: Text(
                       "Mostrar sugerencia de nombrar \nsolo la línea escogida",
@@ -73,14 +76,18 @@ final appSettingsItems = <MenuItem>[
                     activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
-                
-                /* Separación: */ const SizedBox(height: 12), 
-                
+                /* Separación: */ const SizedBox(height: 12),
+
+                //Espacio entre configuraciones
+                SizedBox(height: 20),
+
+
                 // Grupo: STC Metro
                 Text("STC Metro", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
-                  valueListenable: PreferencesService.willBeShowedInstitutionsName, 
+                  valueListenable:
+                      PreferencesService.willBeShowedInstitutionsName,
                   builder: (context, value, _) => SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     //Texto y estilo
@@ -96,7 +103,7 @@ final appSettingsItems = <MenuItem>[
                 ),
               ],
             );
-          }
+          },
         ),
       ),
     ),
@@ -104,13 +111,10 @@ final appSettingsItems = <MenuItem>[
   // ------
   // ------ Option: Mensajes ------
   MenuItem(
-    title: Text(
-      "Mensajes",
-      style: metroStyle,
-    ),
+    title: Text("Mensajes", style: metroStyle),
     subtitle: Text(
       "Personaliza el mensaje que \nenviarás a tus contactos.",
-      style: _nunitoFamily
+      style: _nunitoFamily,
     ),
     //Icon
     icon: SvgPicture.asset(
@@ -129,9 +133,8 @@ final appSettingsItems = <MenuItem>[
             final dynamicStyle = _nunitoFamily.copyWith(color: dynamicColor);
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start, 
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 // Grupo: Movilidad Integrada y MOVIMEX
                 // Reactive switch
                 Text("Movilidad Integrada y MOVIMEX", style: dynamicStyle),
@@ -153,15 +156,60 @@ final appSettingsItems = <MenuItem>[
                     activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
-                
+
+                //Espacio entre configuraciones
+                SizedBox(height: 20),
+
                 // Cuerpo del mensaje
                 // TextField Varchar
                 Text("Cuerpo del Mensaje", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 _MessageBodyField(style: dynamicStyle),
+
+                //Espacio entre configuraciones
+                SizedBox(height: 20),
+
+                //Aplicación usada para el envío del mensaje
+                Text(
+                  "Aplicación usada para el envío del mensaje",
+                  style: dynamicStyle,
+                ),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                ValueListenableBuilder<String>(
+                  valueListenable:
+                      PreferencesService.whatMessagingAppYouWillUse,
+                  builder: (context, value, _) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text('Enviar mensaje por', style: dynamicStyle),
+                    trailing: DropdownButton<String>(
+                      value: value,
+                      dropdownColor: Theme.of(context).brightness == Brightness.dark 
+                      ? const Color(0xFF1E1E1E)
+                      : Colors.white,
+                      style: dynamicStyle.copyWith(color: Color(0xFFF26400)),
+                      underline: const SizedBox(),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: dynamicColor,
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: "SMS", child: Text("SMS")),
+                        DropdownMenuItem(
+                          value: "WhatsApp",
+                          child: Text("WhatsApp"),
+                        ),
+                      ],
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          PreferencesService.setDefaultMessagingApp(newValue);
+                        }
+                      },
+                    ),
+                  ),
+                ),
               ],
             );
-          }
+          },
         ),
       ),
     ),
@@ -223,8 +271,9 @@ class _MessageBodyFieldState extends State<_MessageBodyField> {
 
   //Ancho del texto actual (o de la pista si está vacío)
   double get _lineWidth {
-    final text =
-        _controller.text.isEmpty ? 'Cuerpo del mensaje' : _controller.text;
+    final text = _controller.text.isEmpty
+        ? 'Cuerpo del mensaje'
+        : _controller.text;
     final painter = TextPainter(
       text: TextSpan(text: text, style: widget.style),
       textDirection: Directionality.of(context),
@@ -269,8 +318,7 @@ class _MessageBodyFieldState extends State<_MessageBodyField> {
             curve: Curves.easeOut,
             height: 1,
             width: _lineWidth,
-            color:
-                _focusNode.hasFocus ? const Color(0xFFF26400) : Colors.grey,
+            color: _focusNode.hasFocus ? const Color(0xFFF26400) : Colors.grey,
           ),
           //Contador por defecto de Flutter:
           const SizedBox(height: 2),
@@ -305,14 +353,15 @@ class AppearanceIcon extends StatelessWidget {
 
         ValueListenableBuilder<bool>(
           valueListenable: PreferencesService.isTrueDarkMode,
-          builder: (context, isTrueDark, _) => /* Animación del icono:*/ LightDarkThemeToggle(
-            value: !isTrueDark,
-            onChanged: (value) =>
-                (PreferencesService.isTrueDarkMode.value = !value),
-            themeIconType: ThemeIconType.expand,
-            color: Colors.white,
-            size: 41,
-          ),
+          builder: (context, isTrueDark, _) => /* Animación del icono:*/
+              LightDarkThemeToggle(
+                value: !isTrueDark,
+                onChanged: (value) =>
+                    (PreferencesService.isTrueDarkMode.value = !value),
+                themeIconType: ThemeIconType.expand,
+                color: Colors.white,
+                size: 41,
+              ),
         ),
         //------
       ],
