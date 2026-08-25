@@ -27,6 +27,9 @@ class MenuItem {
   );
 
 final appSettingsItems = <MenuItem>[
+
+  //Las configuraciones están divididas según al organismo u organismos a los que afecta, es decir, si una configuración solo afecta al metro, entonces su grupo será: STC Metro. Si la configuración afecta globalmente, es decir, afecta a todos, entonces su grupo será: Movilidad Integrada y MOVIMEX
+
  // ------ Option: Estaciones ------
   MenuItem(
     title: Text("Estaciones", style: metroStyle),
@@ -53,7 +56,7 @@ final appSettingsItems = <MenuItem>[
               crossAxisAlignment: CrossAxisAlignment.start, 
               children: [
                 // Grupo: Movilidad Integrada y MOVIMEX
-                Text("Movilidad Integrada y Movimex", style: dynamicStyle),
+                Text("Movilidad Integrada y MOVIMEX", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
                   valueListenable: PreferencesService.willBeShowedLineNamesInMessage, 
@@ -128,10 +131,10 @@ final appSettingsItems = <MenuItem>[
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start, 
               children: [
-                // Grupo: Movilidad Integrada y MOVIMEX
 
+                // Grupo: Movilidad Integrada y MOVIMEX
                 // Reactive switch
-                Text("Movilidad Integrada y Movimex", style: dynamicStyle),
+                Text("Movilidad Integrada y MOVIMEX", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
                   valueListenable: PreferencesService.willBeShowedTransportName,
@@ -200,7 +203,7 @@ class _MessageBodyFieldState extends State<_MessageBodyField> {
     _controller.addListener(_rebuild);
     _focusNode.addListener(_rebuild);
     //Sincroniza el campo si la preferencia cambia desde fuera
-    //(p.e: al restablecer configuraciones):
+    //(p.ej.: al restablecer configuraciones):
     PreferencesService.messageBody.addListener(_syncFromPreference);
   }
 
