@@ -244,7 +244,8 @@ class _TransportsScreenState extends State<TransportsScreen> {
                   final whichLineDIdYouChoosed =
                       (namesInLowerCase.startsWith('tren') ||
                           namesInLowerCase.startsWith('suburbano') ||
-                          namesInLowerCase.startsWith('insurgente'))
+                          namesInLowerCase.startsWith('insurgente') ||
+                          namesInLowerCase.startsWith('servicio'))
                       ? 'el'
                       : 'la';
                       
