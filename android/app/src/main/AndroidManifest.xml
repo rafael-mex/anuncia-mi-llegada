@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="anuncia_mi_llegada"
+        android:label="Anuncia mi llegada"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

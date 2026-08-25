@@ -12,7 +12,7 @@ Para iOS un atajo, en Android una aplicación hecha en Flutter, que permite a us
 
 ## ¿Cómo uso la aplicación?
 
-A través de una sola pantalla dinámica, podrás seleccionar el medio de transporte, posteriormente la línea y, por último, la estación en la que te encuentras
+A través de una sola pantalla dinámica, podrás seleccionar el medio de transporte, seguido de la línea y, por último, la estación en la que te encuentras
 
 <br>
 <div align="center">
@@ -24,7 +24,7 @@ A través de una sola pantalla dinámica, podrás seleccionar el medio de transp
 </div>
 <br>
 
-Tu eliges la aplicación de mensajería predeterminada (SMS, ideal para zonas subterráneas o con díficil acceso al internet o WhatsApp).
+Tu eliges la aplicación de mensajería predeterminada, ya sea: SMS (ideal para zonas subterráneas o con díficil acceso al internet) o WhatsApp.
 
 * **Ajustes y Personalización:** En el menú de configuraciones, podrás definir el cuerpo del mensaje, el modo de apariencia (Claro/Oscuro) y la visibilidad de los nombres de las instituciones.
 
@@ -38,7 +38,7 @@ Tu eliges la aplicación de mensajería predeterminada (SMS, ideal para zonas su
 
 ## ¿Cómo uso el atajo?
 
-El flujo es el mismo, primero seleccionas el medio de transporte, posteriormente la línea y, por último, la estación en la que te encuentras.
+El flujo es el mismo, seleccionas el medio de transporte, seguido de la línea y, por último, la estación en la que te encuentras
 
 ##  ¿Qué requisitos debo cumplir?
 
@@ -51,7 +51,7 @@ Dispositivo perteneciente al ecosistema de Apple y sincronizado con tu cuenta de
 ## ¿Cómo la instalo en Android? ( Versión 1.1.1 (Beta) )
 
 1. Dirígete a la sección de **Releases** en el lateral derecho de este repositorio en GitHub.
-2. Descarga el archivo `.apk` de la versión `1.1.0-beta` en tu teléfono.
+2. Descarga el archivo `.apk` de la versión `1.1.1-beta` en tu teléfono.
 3. Abre el archivo descargado. Si es la primera vez que instalas una app fuera de Google Play, tu dispositivo mostrará una alerta de seguridad. Toca en **Configuración** y activa el permiso de **"Instalar aplicaciones desconocidas"** para tu navegador o gestor de archivos.
 4. Toca **Instalar**. ¡Listo! La aplicación ya estará disponible en tu cajón de aplicaciones.
 
