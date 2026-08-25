@@ -1,140 +1,58 @@
-#### 1\. INFORMACIÓN INICIAL
+<div align="center">
+  <img src="assets/images/appcard.svg" alt="AppCard de Anuncia mi llegada" width="70%">
+</div>
+<br>
 
-- **Autor:** Mex Lozano Rafael Emilio
-- **Título del proyecto:** ¡Anuncia mi llegada!
+# Anuncia mi llegada
 
-#### 2\. RESUMEN DEL PROYECTO, METAS Y OBJETIVOS
+Una aplicación hecha en Flutter (solo disponible para Android) que permite a usuarios de la red de movilidad integrada de la Ciudad de México y del Estado de México, enviar mensajes de texto de llegada a las estaciones a sus contactos, permitiéndoles personalizar totalmente su mensaje y elegir qué aplicación de mensajería usar.
 
-- **Resumen:**  
-    ¡Anuncia mi llegada! Es una aplicación que le permite al usuario mandar un mensaje de texto a sus contactos de que a llegado a una estación de la red de movilidad integrada de la Ciudad de México o del Estado de México. 
-- **Metas:**  
-    * Crear una interfaz intuitiva que permita moverse entre la aplicación de forma fluida y eficiente.
-    * Permitirle a los usuarios de la red de movilidad integrada una comunicación instántanea al momento de realizar el ascenso o el descenso de las estaciones de este sistema.
-- **Objetivos:**
-    * Lanzar el MVP antes del 10 de Agosto del 2026.
-#### 3\. PÚBLICO OBJETIVO (UX)
-Sectores de la población que son usuarios constantes de la red de movilidad integrada de la Ciudad de México y del Estado de México. 
-#### 4\. PROPÓSITO Y ALCANCE
+## ¿Cómo uso la aplicación?
 
-- **En alcance (Entregables):**  
-    + Utilizar la aplicación como usuario receptor o remitente.
-    + Registrarse mediante un correo electrónico.
-    + Crear un usuario y contraseña para ingresar a la aplicación.
+A través de una sola pantalla dinámica, podrás seleccionar el medio de transporte, posteriormente la línea y, por último, la estación en la que se encuentra.
 
-    + Usuario remitente.
-        + Crear hasta 5 rutas de las estaciones que ocupan del Metro. 
-        + Permitir que la aplicación mande el mensaje de que ya llegada a la estación. 
-        + Decidir que estaciones serán en las que se mandará el mensaje de llegada a la estación.
-        * Personalizar el mensaje de llegada a la estación.
-        + Obtener su localización mediante el GPS.
-        + Decidir quien será el receptor de sus mensajes de llegada a la estación
-        + Iniciar el rastreo de su ruta.
+<br>
+<div align="center">
+  <img src="github_images/svg/selectores/sele_transportes.svg" alt="Selector de transportes" width="31%">
+  &nbsp;&nbsp;&nbsp;
+  <img src="github_images/svg/selectores/sele_lineas.svg" alt="Selector de líneas" width="31%">
+  &nbsp;&nbsp;&nbsp;
+  <img src="github_images/svg/selectores/sele_estaciones.svg" alt="Selector de estaciones" width="31%">
+</div>
+<br>
 
-    + Usuario receptor.
-        + Autorizar ser el receptor del usuario remitente que lo eligió.
-        + Recibir el mensaje de llegada del usuario remitente. 
-        + Revisar la ruta en tiempo real del usuario remitente.
-- **Fuera de alcance:**
-    + Utilizar la aplicación como usuario receptor o remitente al mismo tiempo.
-    + Registrarse mediante su número telefónico.
+Tu eliges la aplicación de mensajería predeterminada (SMS, ideal para zonas subterráneas o con díficil acceso al internet o WhatsApp).
 
-    + Usuario remitente.
-        + Crear hasta 5 rutas con las estaciones o paradas de los medios de transporte de todo el sistema de la Movilidad Integrada.
-        + Decidir si la aplicación mandará automáticamente el mensaje de llegada a la estación o parada.
+* **Ajustes y Personalización:** En el menú de configuraciones, podrás definir el cuerpo del mensaje, el modo de apariencia (Claro/Oscuro) y la visibilidad de los nombres de las instituciones.
 
-    + Usuario receptor.
-        + Permitir que el mensaje de llegada del remitente se mande a la aplicación de Mensajes predeterminada de su celular.
-#### 5\. ESPECIFICACIONES FUNCIONALES
+* **Envío a un toque:** Al seleccionar la estación, la aplicación construirá tu mensaje y abrirá la plataforma de mensajería externa con el texto listo para ser enviado.
 
-\\
+##  ¿Qué requisitos debo cumplir?
 
-#### 6\. REQUISITOS NO FUNCIONALES
-| Categoría | Requisito |
-| :---- | :---- |
-| **Rendimiento** | Tiempo de carga inicial rápido (LCP). |
-| **Accesibilidad** | La aplicación debe ser navegable mediante teclado y lectores de pantalla. |
-| **Universabilidad** | La aplicación podrá ser ocupada en los sistemas operativos de iOS y Android |
-| **Seguridad** | Toda la información del usuario debe estar encriptada. |
-#### 7\. ARQUITECTURA DE LA INFORMACIÓN Y UX
+* **Sistema Operativo:** Dispositivo móvil con Android.
+* **Conectividad:** Plan de datos o señal celular (para SMS).
+* **Software Third Party:** Contar con una aplicación de gestión de SMS instalada o WhatsApp.
 
-\
+## ¿Cómo la instalo en Android? ( Versión 1.1.0 (Beta) )
 
-#### 8\. ESPECIFICACIONES TÉCNICAS
+1. Dirígete a la sección de **Releases** en el lateral derecho de este repositorio en GitHub.
+2. Descarga el archivo `.apk` de la versión `1.1.0-beta` en tu teléfono.
+3. Abre el archivo descargado. Si es la primera vez que instalas una app fuera de Google Play, tu dispositivo mostrará una alerta de seguridad. Toca en **Configuración** y activa el permiso de **"Instalar aplicaciones desconocidas"** para tu navegador o gestor de archivos.
+4. Toca **Instalar**. ¡Listo! La aplicación ya estará disponible en tu cajón de aplicaciones.
 
-- **Frontend:** Flutter, framework multiplataforma que permite otorgar a la aplicación una interfaz moderna.
-- **Backend:** Dart, lenguaje de programación multiplataforma que permite crear un solo código y ejecutarlo en sistemas iOS y Android
-- **Base de Datos:** MySQL ya que su integrción con Flutter y Dart es sencila, además de proporcionar una base de datos segura y estable. 
+---
+
+> [!IMPORTANT]
+>
+> EL USO DE INTELIGENCIA ARTIFICIAL SE LIMITÓ AL CÓDIGO, NO PARTICIPÓ EN OTRO ASPECTO DEL DESARROLLO.
+>
+>A continuación se mostrará: El modelo utilizado, sesiones que hubieron, fechas, prompts, cambios que realizó y  como es que funcionan dentro de la aplicación
 
 ## Uso de Inteligencia Artificial
 
 ### Modelo utilizado
 
-Se utilizó el modelo **opencode/big-pickle** a través de la herramienta **opencode** (CLI de asistencia de desarrollo con IA) para el diseño arquitectónico y la implementación de funcionalidades de la aplicación "¡Anuncia mi llegada!".
-
-### Contexto del proyecto y arquitectura existente
-
-El proyecto es una aplicación Flutter multiplataforma (iOS y Android) que permite a usuarios de la red de movilidad integrada de la Ciudad de México y del Estado de México enviar mensajes de texto de llegada a estaciones a sus contactos. La arquitectura del proyecto sigue un patrón de capas dentro del directorio `lib/`:
-
-- **`main.dart`**: Punto de entrada de la aplicación.
-- **`config/`**: Capa de configuración, contiene el enrutador (`app_router.dart`) basado en `go_router`.
-- **`presentation/`**: Capa de presentación subdividida en:
-  - **`screens/`**: Pantallas completas organizadas por funcionalidad (`selectors/`, `settings/`, `splash_page/`).
-  - **`widgets/shared/`**: Widgets reutilizables como `SelectorWidget`, `MapIconLight` y `SettingsButton`.
-- **`assets/data/`**: Contiene los archivos JSON con datos de movilidad.
-- **`lib/data/`**: Contiene el repositorio de parseo (`repositories/mi_repository.dart`) y los modelos de datos (`models/mi_model.dart`), accesibles como código Dart importable.
-
-### Modelos de datos
-
-Se definieron dos modelos principales en `lib/data/models/mi_model.dart`:
-
-1. **`TransportsModel`**: Representa un medio de transporte (Metro, Metrobús, etc.) con un `name` (nombre del transporte) y una lista de `LinesModel` (líneas del transporte).
-2. **`LinesModel`**: Representa una línea específica con `name` (nombre de la línea), `lineNameInMessage` (nombre a incluir en el mensaje, puede estar vacío según preferencias) y `stations` (lista de estaciones de esa línea).
-
-### Repositorio de datos (`MiRepository`)
-
-El repositorio en `lib/data/repositories/mi_repository.dart` implementa la lógica de carga y parseo de archivos JSON:
-
-- **`loadTransports()`**: Método principal que recibe dos booleanos (`showLineNamesInMessage`, `showInstitutionsName`) para determinar qué archivo JSON cargar.
-- **`_stationsPreferences()`**: Método privado que selecciona el archivo JSON adecuado según las preferencias del usuario (4 combinaciones posibles: `movilidadIntegrada.JSON`, `_SIG.JSON`, `_SNL.JSON`, `_Ambos.JSON`).
-- **`_parse()`**: Método privado que decodifica el JSON y construye la lista de `TransportsModel` con sus `LinesModel` anidadas. Cuando `showLineNames` es `true`, el primer elemento del array se interpreta como `lineNameInMessage`; cuando es `false`, todos los elementos se interpretan como estaciones.
-
-### Enrutamiento con `go_router`
-
-Se configuró `go_router` en `app_router.dart` con las siguientes rutas:
-
-| Ruta | Nombre | Descripción |
-|------|--------|-------------|
-| `/splash` | `splash` | Pantalla de carga inicial |
-| `/` | `transports_screen` | Pantalla principal de selección de transporte |
-| `/lineas` | `lines_screen` | Pantalla de selección de línea (recibe `TransportsModel` via `extra`) |
-| `/estaciones` | `stations_screen` | Pantalla de selección de estación (recibe `LinesModel` via `extra`) |
-| `/settings` | `settings_screen` | Pantalla de configuración |
-
-La navegación entre pantallas se realiza mediante `context.pushNamed()` pasando objetos de modelo a través del parámetro `extra` de `go_router`, que permite transferir datos complejos entre rutas sin serialización.
-
-### Widget reutilizable `SelectorWidget`
-
-El `SelectorWidget` es el componente visual principal de las pantallas de selección. Recibe los siguientes parámetros:
-
-- **`selectorsTitle`**: Título mostrado en la parte superior del contenedor naranja.
-- **`listItems`**: Lista de widgets (`List<Widget>`) que se renderizan como elementos interactivos dentro del contenedor de vidrio. El `ListView.separated` se construye internamente.
-- **`glassContainerWidth`**: Ancho del contenedor de vidrio (por defecto 320px).
-- **`glassContainerHeight`**: Alto del contenedor de vidrio (por defecto 255px).
-- **`orangePadding`**: Espacio entre el contenedor naranja y el de vidrio en cada lado (por defecto 20px).
-- **`listContentPadding`**: Espacio interno del listado en cada lado (por defecto 5px).
-- **`dividerWidthModifier`**: Valor que se resta al ancho del divider para hacerlo más corto que el contenido (por defecto 9).
-
-### Implementación de pantallas
-
-1. **`TransportsScreen`**: Utiliza un `FutureBuilder` que invoca `MiRepository().loadTransports()` con ambos booleanos en `true`. Muestra un `CircularProgressIndicator` durante la carga, maneja errores, y renderiza la lista de transportes como `ListTile` dentro del `SelectorWidget`. Cada elemento navega a `/lineas` pasando el `TransportsModel` completo.
-
-2. **`LinesScreen`**: Recupera el `TransportsModel` desde `GoRouterState.of(context).extra`. Lista las líneas del transporte como `ListTile` dentro del `SelectorWidget`. Al seleccionar una línea, navega a `/estaciones` pasando el `LinesModel` correspondiente.
-
-3. **`StationsScreen`**: Recupera el `LinesModel` desde `GoRouterState.of(context).extra`. Evalúa condicionalmente si `lineNameInMessage` no está vacío:
-   - Si tiene texto: inyecta un `ListTile` adicional en la posición 0 con el texto "Únicamente mencionar el nombre de la línea" que imprime en consola el nombre de la línea.
-   - Para el resto de elementos: lista las estaciones reales, compensando el índice cuando la sugerencia está activada, e imprime en consola el nombre de la estación seleccionada.
-
----
+Se utilizó el modelo **opencode/big-pickle** a través de la herramienta **opencode** (CLI de asistencia de desarrollo con IA) para el diseño arquitectónico y la implementación de funcionalidades de la aplicación "Anuncia mi llegada".
 
 ### Registro de cambios y prompts
 
