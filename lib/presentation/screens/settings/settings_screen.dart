@@ -75,15 +75,16 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
-
+// ------------- Versión de la aplicación 
 class _ApplicationVersion extends StatelessWidget {
   const _ApplicationVersion();
 
   @override
   Widget build(BuildContext context) {
-    return Text('Versión 0.9.0',);
+    return Text('Versión 0.10.0',);
   }
 }
+// ------------- 
 
 class _ResetSettingsButton extends StatelessWidget {
   const _ResetSettingsButton();
@@ -98,6 +99,7 @@ class _ResetSettingsButton extends StatelessWidget {
         PreferencesService.willBeShowedTransportName,
         PreferencesService.willBeShowedLineNamesInMessage,
         PreferencesService.willBeShowedInstitutionsName,
+        PreferencesService.whatMessagingAppYouWillUse,
       ]),
       builder: (context, _) {
         final showButton = PreferencesService.hasModifiedSettings;
@@ -142,6 +144,7 @@ class _SettingsView extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 10),
                     child: Center(child: _ResetSettingsButton()),
                   ),
+            // Versión de la aplicación
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Center(child: _ApplicationVersion()),
