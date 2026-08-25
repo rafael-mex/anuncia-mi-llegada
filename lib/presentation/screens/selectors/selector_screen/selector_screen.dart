@@ -5,6 +5,7 @@ import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_screen_l
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_widget.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum _SelectorStep { transports, lines, stations }
 
@@ -103,6 +104,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
   }
 
   @override
+  //Si se cambian las opciones de mostrar el nombre de la línea o el el nombre de las instituciones, entonces el selector regresará... al inicio 
   void dispose() {
     PreferencesService.willBeShowedLineNamesInMessage.removeListener(
       _loadTransports,
@@ -112,7 +114,9 @@ class _TransportsScreenState extends State<TransportsScreen> {
     );
     super.dispose();
   }
+  // ------------------------------------------
 
+  //Selector del transporte
   void _selectTransport(TransportsModel transport) {
     setState(() {
       _transport = transport;
@@ -120,14 +124,18 @@ class _TransportsScreenState extends State<TransportsScreen> {
       _step = _SelectorStep.lines;
     });
   }
+  // ------------------------------------------
 
+  //Selector de la línea
   void _selectLine(LinesModel line) {
     setState(() {
       _line = line;
       _step = _SelectorStep.stations;
     });
   }
+  // ------------------------------------------
 
+  //Retroceder 
   void _goBack() {
     setState(() {
       switch (_step) {
@@ -138,7 +146,32 @@ class _TransportsScreenState extends State<TransportsScreen> {
       }
     });
   }
+  // ------------------------------------------
 
+  // Función de mandar el mensaje a la app elegida por el usuario
+  Future<void> _sendMessage(String mensajeFinal) async {
+    final preferredApp = PreferencesService.whatMessagingAppYouWillUse.value;
+
+    if (preferredApp == "WhatsApp") {
+      final Uri whatsappUri = Uri.parse("whatsapp://send?text=${Uri.encodeComponent(mensajeFinal)}");
+      if (await canLaunchUrl(whatsappUri)) {
+        await launchUrl(whatsappUri);
+      } else {
+        debugPrint("No se pudo abrir WhatsApp");
+      }
+    } else {
+      final Uri smsUri = Uri.parse('sms:?body=${Uri.encodeComponent(mensajeFinal)}');
+      
+      if (await canLaunchUrl(smsUri)) {
+        await launchUrl(smsUri);
+      } else {
+        debugPrint("No se pudo abrir SMS");
+      }
+    }
+  }
+  // ------------------------------------------
+
+  // Títulos de los selectores
   String get _title {
     switch (_step) {
       case _SelectorStep.transports:
@@ -149,7 +182,9 @@ class _TransportsScreenState extends State<TransportsScreen> {
         return 'Selecciona \n la estación:';
     }
   }
+  // ------------------------------------------
 
+  //Pasos de los selectores:
   List<Widget> _listItems(List<TransportsModel> transports) {
     switch (_step) {
       //(Lo siento
@@ -203,7 +238,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
                   style: _nunitoFamily,
                 ),
                 onTap: () {
-                  //Construcción del mensaje, si este habla unicamente de la línea elegida
+// -------------  Construcción del mensaje, si este habla unicamente de la línea elegida
                   final messageBody = PreferencesService.messageBody.value;
                   final namesInLowerCase = line.lineNameInMessage.toLowerCase();
                   final whichLineDIdYouChoosed =
@@ -212,15 +247,17 @@ class _TransportsScreenState extends State<TransportsScreen> {
                           namesInLowerCase.startsWith('insurgente'))
                       ? 'el'
                       : 'la';
+                      
                   if (youSelectedTrains) {
-                    debugPrint(
-                      '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}',
-                    );
+                    if (youSelectedTrains) {
+                      _sendMessage('$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}');
+                    } else {
+                      _sendMessage('$messageBody $transportsName, ${line.lineNameInMessage}');
+                    }
                   } else {
-                    debugPrint(
-                      '$messageBody la ${line.lineNameInMessage}',
-                    );
+                    _sendMessage('$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}');
                   }
+
                 },
               ),
             ),
@@ -230,7 +267,7 @@ class _TransportsScreenState extends State<TransportsScreen> {
               child: ListTile(
                 title: Text(station, style: _nunitoFamily),
                 onTap: () {
-                  // Construcción del mensaje, si este habla de una estación
+// -------------  Construcción del mensaje, si este habla de una estación
                   final messageBody = PreferencesService.messageBody.value;
                   final showTransportsName =
                       PreferencesService.willBeShowedTransportName.value;
@@ -240,23 +277,25 @@ class _TransportsScreenState extends State<TransportsScreen> {
                       final lineName = line.name
                           .replaceAll(RegExp(r'\s*\([^)]*\)'), '')
                           .trim();
-                      debugPrint(
+                      _sendMessage(
                         '$messageBody la estación del tren $lineName: $station',
                       );
                     } else {
-                      debugPrint(
+                      _sendMessage(
                         '$messageBody la estación del $transportsName: $station',
                       );
                     }
                   } else {
-                    debugPrint('$messageBody $station');
+                    _sendMessage('$messageBody $station');
                   }
+
                 },
               ),
             ),
         ];
     }
   }
+  // ------------------------------------------
 
   @override
   Widget build(BuildContext context) {
