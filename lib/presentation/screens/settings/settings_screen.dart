@@ -81,7 +81,7 @@ class _ApplicationVersion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Versión 0.10.0',);
+    return Text('Versión 1.0.0 (Beta)',);
   }
 }
 // ------------- 
