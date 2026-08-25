@@ -5,12 +5,13 @@ class PreferencesService {
   static late SharedPreferences _preferences;
   static bool _initialized = false;
 
-  //Configuraciones de fábrica:
+  //Configuraciones predeterminadas:
   static const bool defaultIsTrueDarkMode = false;
   static const String defaultMessageBody = "Ya estoy en";
   static const bool defaultWillBeShowedTransportName = true;
   static const bool defaultWillBeShowedLineNamesInMessage = true;
   static const bool defaultWillBeShowedInstitutionsName = true;
+  static const String defaultWhatMessagingAppYouWillUse = "SMS";
 
   //Variables
   static final isTrueDarkMode =
@@ -23,16 +24,21 @@ class PreferencesService {
       ValueNotifier<bool>(defaultWillBeShowedLineNamesInMessage);
   static final willBeShowedInstitutionsName =
       ValueNotifier<bool>(defaultWillBeShowedInstitutionsName);
+  static final whatMessagingAppYouWillUse = ValueNotifier<String>("SMS");
 
   ///Indica si alguna configuración difiere de su valor de fábrica.
   static bool get hasModifiedSettings =>
       isTrueDarkMode.value != defaultIsTrueDarkMode ||
+
       messageBody.value != defaultMessageBody ||
+
       willBeShowedTransportName.value != defaultWillBeShowedTransportName ||
-      willBeShowedLineNamesInMessage.value !=
-          defaultWillBeShowedLineNamesInMessage ||
-      willBeShowedInstitutionsName.value !=
-          defaultWillBeShowedInstitutionsName;
+
+      willBeShowedLineNamesInMessage.value != defaultWillBeShowedLineNamesInMessage ||
+
+      willBeShowedInstitutionsName.value != defaultWillBeShowedInstitutionsName ||
+
+      whatMessagingAppYouWillUse.value != defaultWhatMessagingAppYouWillUse;
 
   static Future<void> init() async {
     if (_initialized) return;
@@ -58,6 +64,8 @@ class PreferencesService {
     isTrueDarkMode.addListener(() {
       _preferences.setBool('isTrueDarkMode', isTrueDarkMode.value);
     });
+
+    whatMessagingAppYouWillUse.value = _preferences.getString('whatMessagingAppYouWillUse') ?? "SMS";
   }
 
   // Escritura de las preferencias
@@ -81,14 +89,25 @@ class PreferencesService {
     await _preferences.setBool('willBeShowedInstitutionsName', value);
   }
 
+  static Future<void> setDefaultMessagingApp(String value) async {
+    whatMessagingAppYouWillUse.value = value;
+    await _preferences.setString('whatMessagingAppYouWillUse', value);
+  }
+
   // Restablecimiento de todas las configuraciones a su estado original
   static Future<void> resetAll() async {
     isTrueDarkMode.value = defaultIsTrueDarkMode;
+    
     messageBody.value = defaultMessageBody;
+    
     willBeShowedTransportName.value = defaultWillBeShowedTransportName;
-    willBeShowedLineNamesInMessage.value =
-        defaultWillBeShowedLineNamesInMessage;
+    
+    willBeShowedLineNamesInMessage.value = defaultWillBeShowedLineNamesInMessage;
+    
     willBeShowedInstitutionsName.value = defaultWillBeShowedInstitutionsName;
+
+    whatMessagingAppYouWillUse.value = defaultWhatMessagingAppYouWillUse;
+
 
     await _preferences.setBool('isTrueDarkMode', defaultIsTrueDarkMode);
     await _preferences.setString('messageBody', defaultMessageBody);
@@ -104,5 +123,6 @@ class PreferencesService {
       'willBeShowedInstitutionsName',
       defaultWillBeShowedInstitutionsName,
     );
+    await _preferences.setString('whatMessagingAppYouWillUse', defaultWhatMessagingAppYouWillUse);
   }
 }
