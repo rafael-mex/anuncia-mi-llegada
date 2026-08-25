@@ -1,6 +1,6 @@
 import 'package:anuncia_mi_llegada/config/menu/settings_items.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/reset_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/reset_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +12,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: ValueListenableBuilder<bool>(
@@ -69,14 +68,20 @@ class SettingsScreen extends StatelessWidget {
               ),
               //Options
               _SettingsView(),
-
-              //SizedBox para proteger la barra de navegación del dispositivo:
-
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _ApplicationVersion extends StatelessWidget {
+  const _ApplicationVersion();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Versión 0.9.0',);
   }
 }
 
@@ -123,7 +128,7 @@ class _SettingsView extends StatelessWidget {
       child: SafeArea(
         top: false,
         //Resguardo extra para la barra de navegación del dispositivo:
-        minimum: const EdgeInsets.only(bottom: 25),
+        minimum: const EdgeInsets.only(bottom: 50),
         child: ListView.builder(
           padding: EdgeInsets.zero,
           //+1 para el botón de restablecer configuraciones:
@@ -131,9 +136,17 @@ class _SettingsView extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             //Botón fijo debajo de la última opción (Apariencia):
             if (index == appSettingsItems.length) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Center(child: _ResetSettingsButton()),
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Center(child: _ResetSettingsButton()),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Center(child: _ApplicationVersion()),
+                  ),
+                ],
               );
             }
 
@@ -156,7 +169,6 @@ class _CustomListTitle extends StatefulWidget {
 }
 
 class _CustomListTitleState extends State<_CustomListTitle> {
-
   bool _areShowedThePreferences = false;
 
   Widget _withColor(Widget widget, Color color) {
@@ -177,7 +189,6 @@ class _CustomListTitleState extends State<_CustomListTitle> {
 
   @override
   Widget build(BuildContext context) {
-
     final theWidthOfYourScreen = MediaQuery.of(context).size.width;
 
     return ValueListenableBuilder<bool>(
@@ -210,7 +221,11 @@ class _CustomListTitleState extends State<_CustomListTitle> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(width: 76, height: 120, child: widget.menuItem.icon),
+                    SizedBox(
+                      width: 76,
+                      height: 120,
+                      child: widget.menuItem.icon,
+                    ),
                     SizedBox(width: theWidthOfYourScreen * 0.08),
                     Expanded(
                       child: Column(
@@ -223,24 +238,26 @@ class _CustomListTitleState extends State<_CustomListTitle> {
                       ),
                     ),
                     if (widget.menuItem.icon is! AppearanceIcon)
-                    AnimatedRotation(
-                      turns: _areShowedThePreferences ? 0.25 : 0.0, 
-                      duration: const Duration(milliseconds: 300),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: isDark ? Colors.white : Colors.black,
+                      AnimatedRotation(
+                        turns: _areShowedThePreferences ? 0.25 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
             ),
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: _areShowedThePreferences && widget.menuItem.showedConfigurations != null
-            ? widget.menuItem.showedConfigurations!
-            : const SizedBox.shrink(),
+              curve: Curves.easeInOut,
+              child:
+                  _areShowedThePreferences &&
+                      widget.menuItem.showedConfigurations != null
+                  ? widget.menuItem.showedConfigurations!
+                  : const SizedBox.shrink(),
             ),
           ],
         );
