@@ -1,0 +1,76 @@
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
+import 'package:flutter/material.dart';
+
+/// Única fuente de verdad del tema: el notificador persistido de
+/// PreferencesService. Todas las pantallas y main() escuchan/escriben
+/// la misma instancia.
+final ValueNotifier<bool> isTrueDarkMode = PreferencesService.isTrueDarkMode;
+
+class AppTheme {
+  //---- Selector Widget ----
+
+  //Contenedor naranja (LM = Modo Claro, DM = Modo Oscuro)
+  static const LinearGradient colorsOfOrangeContianerLM = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color.fromRGBO(245, 146, 69, 88),
+      Color.fromRGBO(246, 147, 70, 100),
+    ],
+  );
+
+  static const LinearGradient colorsOfOrangeContainerDM = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color.fromRGBO(199, 113, 70, 100),
+      Color.fromRGBO(255, 111, 0, 100),
+    ],
+  );
+
+  //Contenedor de vidrio (LM = Modo Claro, DM = Modo Oscuro)
+  static const LinearGradient colorOfGlassContainerLM = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color.fromRGBO(249, 217, 191, 100),
+      Color.fromRGBO(249, 215, 173, 100),
+    ],
+  );
+
+  static const Color colorOfGlassContainerDM = Color.fromRGBO(
+    174,
+    159,
+    147,
+    19,
+  );
+  //--------
+
+  // --- Background Color ---
+  //Modo Claro
+  static const Color backgroundColorLM = Colors.white;
+
+  //Modo Oscuro
+  static const LinearGradient backgroundColorDM = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomRight,
+    colors: [Color.fromRGBO(0, 0, 0, 75), Color.fromRGBO(64, 28, 0, 75)],
+  );
+  //--------
+
+  static ThemeData get lightTheme => ThemeData(
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: backgroundColorLM,
+    textTheme: const TextTheme(
+      bodyMedium: TextStyle(color: Color.fromRGBO(91, 79, 79, 100)),
+    ),
+  );
+
+  static ThemeData get darkTheme => ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.transparent,
+    textTheme: const TextTheme(
+      bodyMedium: TextStyle(color: Color.fromRGBO(204, 204, 204, 100)),
+    ),
+  );
+}

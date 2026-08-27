@@ -1,17 +1,14 @@
+import 'package:anuncia_mi_llegada/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:anuncia_mi_llegada/main.dart';
+import 'package:flutter_svg/svg.dart';
 
 void main() {
-  testWidgets('SplashPage renders image and progress indicator', (
+  testWidgets('SplashScreen renderiza el appcard de bienvenida', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const AnunciaMiLlegadaApp());
+    await tester.pumpWidget(const MaterialApp(home: SplashScreen()));
 
-    expect(
-      find.byType(CircularProgressIndicator),
-      findsOneWidget,
-    );
+    expect(find.byType(SvgPicture), findsOneWidget);
   });
 }
