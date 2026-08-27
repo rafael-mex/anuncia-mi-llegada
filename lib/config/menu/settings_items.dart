@@ -30,9 +30,28 @@ const _nunitoFamily = TextStyle(
 );
 
 final appSettingsItems = <MenuItem>[
-  //Las configuraciones están divididas según al organismo u organismos a los que afecta, es decir, si una configuración solo afecta al metro, entonces su grupo será: STC Metro. Si la configuración afecta globalmente, es decir, afecta a todos, entonces su grupo será: Movilidad Integrada y MOVIMEX
 
-  // ------ Option: Estaciones ------
+  //Las configuraciones están divididas según al organismo u 
+  //organismos a los que afecta, es decir, si 
+  //una configuración solo afecta al metro, 
+  //entonces su grupo será: STC Metro. Si la configuración 
+  //afecta globalmente, es decir, afecta a todos, entonces 
+  //su grupo será: Movilidad Integrada y MOVIMEX
+
+  //------ Opción: Apariencia ------
+  MenuItem(
+    title: Text(
+      "Apariencia",
+      style: TextStyle(fontFamily: 'METRO-DF', fontSize: 24),
+    ),
+    subtitle: Text(
+      "Cambia entre el modo claro y \nobscuro.",
+      style: _nunitoFamily,
+    ),
+    icon: const AppearanceIcon(),
+  ),
+  //------
+  // ------ Opción: Estaciones ------
   MenuItem(
     title: Text("Estaciones", style: metroStyle),
     subtitle: Text(
@@ -109,7 +128,7 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
   // ------
-  // ------ Option: Mensajes ------
+  // ------ Opción: Mensajes ------
   MenuItem(
     title: Text("Mensajes", style: metroStyle),
     subtitle: Text(
@@ -136,7 +155,7 @@ final appSettingsItems = <MenuItem>[
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Grupo: Movilidad Integrada y MOVIMEX
-                // Reactive switch
+                // Switch Reactivo
                 Text("Movilidad Integrada y MOVIMEX", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
@@ -215,19 +234,6 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
   //------
-
-  //------ Option: Apariencia ------
-  MenuItem(
-    title: Text(
-      "Apariencia",
-      style: TextStyle(fontFamily: 'METRO-DF', fontSize: 24),
-    ),
-    subtitle: Text(
-      "Cambia entre el modo claro y \nobscuro.",
-      style: _nunitoFamily,
-    ),
-    icon: const AppearanceIcon(),
-  ),
 ];
 
 class _MessageBodyField extends StatefulWidget {

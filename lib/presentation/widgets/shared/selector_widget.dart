@@ -80,7 +80,7 @@ class SelectorWidget extends StatelessWidget {
       child: ValueListenableBuilder<bool>(
         valueListenable: isTrueDarkMode,
         builder: (context, isDark, _) => SizedBox(
-          // Contenedor naranja
+          // Contenedor naranja (Orange Container)
           width: _orangeContainerWidth,
           height: 336,
           child: Stack(
@@ -103,7 +103,7 @@ class SelectorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              //Contenedor de vidrio
+              //Contenedor de vidrio (Glass Container)
               Positioned(
                 left: 0,
                 right: 0,
@@ -128,7 +128,7 @@ class SelectorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              // Lista de elementos
+              // Lista de elementos (Element's List)
               Positioned(
                 left: 0,
                 right: 0,
@@ -170,7 +170,7 @@ class SelectorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              //Título del selector
+              //Título del selector (Selector's Title)
               Positioned(
                 left: 0,
                 right: 0,

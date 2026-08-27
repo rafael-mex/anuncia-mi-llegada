@@ -11,8 +11,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/',
-      name: TransportsScreen.name,
-      builder: (context, state) => const TransportsScreen(),
+      name: SelectorScreen.name,
+      builder: (context, state) => const SelectorScreen(),
     ),
     GoRoute(
       path: '/settings',

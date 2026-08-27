@@ -19,9 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer(const Duration(seconds: 2), () {
+    _timer = Timer(const Duration(milliseconds: 500), () {
       if (mounted) {
-        context.goNamed(TransportsScreen.name);
+        context.goNamed(SelectorScreen.name);
       }
     });
   }
