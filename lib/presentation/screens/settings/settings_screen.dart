@@ -49,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              //Keyboard Return button
+              //Botón de retorno del teclado
               Positioned(
                 left: 28,
                 top: 126,
@@ -66,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
                   icon: Icon(Icons.keyboard_return_outlined, size: 38),
                 ),
               ),
-              //Options
+              //Opciones
               _SettingsView(),
             ],
           ),

@@ -11,6 +11,7 @@ class SelectorWidget extends StatelessWidget {
   final double orangePadding;
   final double listContentPadding;
   final double dividerWidthModifier;
+  final double titleTopOffset;
 
   const SelectorWidget({
     super.key,
@@ -21,6 +22,7 @@ class SelectorWidget extends StatelessWidget {
     this.orangePadding = 20,
     this.listContentPadding = 5,
     this.dividerWidthModifier = 9,
+    this.titleTopOffset = 25,
   });
 
   static const TextStyle _nunitoFamily = TextStyle(
@@ -33,6 +35,7 @@ class SelectorWidget extends StatelessWidget {
   static const TextStyle _titlesNunitoFamily = TextStyle(
     color: Colors.white,
     fontFamily: 'Nunito',
+    height: 1,
     fontSize: 17,
     letterSpacing: 0,
     fontWeight: FontWeight.w700,
@@ -77,7 +80,7 @@ class SelectorWidget extends StatelessWidget {
       child: ValueListenableBuilder<bool>(
         valueListenable: isTrueDarkMode,
         builder: (context, isDark, _) => SizedBox(
-          // Orange Container
+          // Contenedor naranja
           width: _orangeContainerWidth,
           height: 336,
           child: Stack(
@@ -100,7 +103,7 @@ class SelectorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              //Glass Container
+              //Contenedor de vidrio
               Positioned(
                 left: 0,
                 right: 0,
@@ -125,7 +128,7 @@ class SelectorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              // Elements List
+              // Lista de elementos
               Positioned(
                 left: 0,
                 right: 0,
@@ -167,11 +170,11 @@ class SelectorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              //Selector´s Title
+              //Título del selector
               Positioned(
                 left: 0,
                 right: 0,
-                top: 14,
+                top: titleTopOffset,
                 child: Center(
                   child: Text(
                     selectorsTitle,

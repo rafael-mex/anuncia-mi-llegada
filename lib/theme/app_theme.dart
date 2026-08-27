@@ -9,7 +9,7 @@ final ValueNotifier<bool> isTrueDarkMode = PreferencesService.isTrueDarkMode;
 class AppTheme {
   //---- Selector Widget ----
 
-  //Orange Container (LM = Light Mode , DM = Dark Mode)
+  //Contenedor naranja (LM = Modo Claro, DM = Modo Oscuro)
   static const LinearGradient colorsOfOrangeContianerLM = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -28,7 +28,7 @@ class AppTheme {
     ],
   );
 
-  //Glass Container (LM = Light Mode , DM = Dark Mode)
+  //Contenedor de vidrio (LM = Modo Claro, DM = Modo Oscuro)
   static const LinearGradient colorOfGlassContainerLM = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -47,10 +47,10 @@ class AppTheme {
   //--------
 
   // --- Background Color ---
-  //Light Mode
+  //Modo Claro
   static const Color backgroundColorLM = Colors.white;
 
-  //Dark Mode
+  //Modo Oscuro
   static const LinearGradient backgroundColorDM = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomRight,
