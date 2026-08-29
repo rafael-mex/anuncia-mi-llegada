@@ -1,3 +1,4 @@
+import 'package:anuncia_mi_llegada/main.dart';
 import 'package:anuncia_mi_llegada/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,7 +18,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/settings',
       name: SettingsScreen.name,
-      builder: (context, state) => const SettingsScreen(),
+      builder: (context, state) => SettingsScreen(version: appVersion),
     ),
   ],
 );

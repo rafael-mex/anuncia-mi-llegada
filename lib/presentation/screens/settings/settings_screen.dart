@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 class SettingsScreen extends StatelessWidget {
   static const name = 'settings_screen';
 
-  const SettingsScreen({super.key});
+  final String version;
+
+  const SettingsScreen({super.key, this.version = 'Versión'});
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               //Opciones
-              _SettingsView(),
+              _SettingsView(version: version),
             ],
           ),
         ),
@@ -77,11 +79,12 @@ class SettingsScreen extends StatelessWidget {
 }
 // ------------- Versión de la aplicación 
 class _ApplicationVersion extends StatelessWidget {
-  const _ApplicationVersion();
+  final String version;
+  const _ApplicationVersion({required this.version});
 
   @override
   Widget build(BuildContext context) {
-    return Text('Versión 1.1.2',);
+    return Text(version);
   }
 }
 // ------------- 
@@ -118,7 +121,8 @@ class _ResetSettingsButton extends StatelessWidget {
 }
 
 class _SettingsView extends StatelessWidget {
-  const _SettingsView();
+  final String version;
+  const _SettingsView({required this.version});
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +151,7 @@ class _SettingsView extends StatelessWidget {
             // Versión de la aplicación
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: Center(child: _ApplicationVersion()),
+                    child: Center(child: _ApplicationVersion(version: version)),
                   ),
                 ],
               );

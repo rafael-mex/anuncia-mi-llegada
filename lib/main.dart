@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'config/router/app_router.dart';
 import 'theme/app_theme.dart';
 
+const appVersion = 'Versión 2.0.0 (Alpha)';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PreferencesService.init();
