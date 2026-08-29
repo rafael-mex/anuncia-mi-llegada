@@ -183,7 +183,7 @@ final appSettingsItems = <MenuItem>[
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 SizedBox(height: 2),
                 Text(
-                  'Se recomienda que el cuerpo de mensaje terminé con la preposición "en", ya que es la forma gramáticalmente correcta para referirse a los pronombres de los transportes, líneas y/o estaciones',
+                  "Se recomienda que el cuerpo del mensaje termine con la preposición 'en', ya que es la forma correcta de enlazarlo con los nombres de los transportes, líneas o estaciones.",
                   style: TextStyle(
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w700,
