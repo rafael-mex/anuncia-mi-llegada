@@ -17,8 +17,8 @@ class SelectorWidget extends StatelessWidget {
     super.key,
     required this.selectorsTitle,
     required this.listItems,
-    this.glassContainerWidth = 300,
-    this.glassContainerHeight = 255,
+    this.glassContainerWidth = 290,
+    this.glassContainerHeight = 245,
     this.orangePadding = 20,
     this.listContentPadding = 5,
     this.dividerWidthModifier = 9,
@@ -82,7 +82,7 @@ class SelectorWidget extends StatelessWidget {
         builder: (context, isDark, _) => SizedBox(
           // Contenedor naranja (Orange Container)
           width: _orangeContainerWidth,
-          height: 336,
+          height: 326,
           child: Stack(
             children: [
               Positioned.fill(

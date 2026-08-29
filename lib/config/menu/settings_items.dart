@@ -24,18 +24,17 @@ const metroStyle = TextStyle(fontFamily: 'METRO-DF', fontSize: 24);
 const _nunitoFamily = TextStyle(
   height: 1.3,
   fontFamily: 'Nunito',
-  fontSize: 14,
+  fontSize: 13,
   letterSpacing: 0,
   fontWeight: FontWeight.w700,
 );
 
 final appSettingsItems = <MenuItem>[
-
-  //Las configuraciones están divididas según al organismo u 
-  //organismos a los que afecta, es decir, si 
-  //una configuración solo afecta al metro, 
-  //entonces su grupo será: STC Metro. Si la configuración 
-  //afecta globalmente, es decir, afecta a todos, entonces 
+  //Las configuraciones están divididas según al organismo u
+  //organismos a los que afecta, es decir, si
+  //una configuración solo afecta al metro,
+  //entonces su grupo será: STC Metro. Si la configuración
+  //afecta globalmente, es decir, afecta a todos, entonces
   //su grupo será: Movilidad Integrada y MOVIMEX
 
   //------ Opción: Apariencia ------
@@ -99,7 +98,6 @@ final appSettingsItems = <MenuItem>[
 
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
-
 
                 // Grupo: STC Metro
                 Text("STC Metro", style: dynamicStyle),
@@ -183,6 +181,16 @@ final appSettingsItems = <MenuItem>[
                 // TextField Varchar
                 Text("Cuerpo del Mensaje", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
+                SizedBox(height: 2),
+                Text(
+                  'Se recomienda que el cuerpo de mensaje terminé con la preposición "en", ya que es la forma gramáticalmente correcta para referirse a los pronombres de los transportes, líneas y/o estaciones',
+                  style: TextStyle(
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.deepOrange, 
+                    fontSize: 12),
+                ),
+                SizedBox(height: 2),
                 _MessageBodyField(style: dynamicStyle),
 
                 //Espacio entre configuraciones
@@ -202,9 +210,10 @@ final appSettingsItems = <MenuItem>[
                     title: Text('Enviar mensaje por', style: dynamicStyle),
                     trailing: DropdownButton<String>(
                       value: value,
-                      dropdownColor: Theme.of(context).brightness == Brightness.dark 
-                      ? const Color(0xFF1E1E1E)
-                      : Colors.white,
+                      dropdownColor:
+                          Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF1E1E1E)
+                          : Colors.white,
                       style: dynamicStyle.copyWith(color: Color(0xFFF26400)),
                       underline: const SizedBox(),
                       icon: Icon(

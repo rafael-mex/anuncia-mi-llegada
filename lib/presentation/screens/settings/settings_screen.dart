@@ -225,7 +225,7 @@ class _CustomListTitleState extends State<_CustomListTitle> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 76,
+                      width: 70,
                       height: 120,
                       child: widget.menuItem.icon,
                     ),
