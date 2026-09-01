@@ -182,15 +182,6 @@ final appSettingsItems = <MenuItem>[
                 Text("Cuerpo del Mensaje", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 SizedBox(height: 2),
-                Text(
-                  "Se recomienda que el cuerpo del mensaje termine con la preposición 'en', ya que es la forma correcta de enlazarlo con los nombres de los transportes, líneas o estaciones.",
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w700,
-                    color: Colors.deepOrange, 
-                    fontSize: 12),
-                ),
-                SizedBox(height: 2),
                 _MessageBodyField(style: dynamicStyle),
 
                 //Espacio entre configuraciones
