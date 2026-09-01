@@ -48,7 +48,7 @@ Dispositivo perteneciente al ecosistema de Apple y sincronizado con tu cuenta de
 * **Conectividad:** Plan de datos o señal celular (para SMS).
 * **Software ajeno:** Contar con una aplicación de gestión de SMS instalada o WhatsApp.
 
-## ¿Cómo la instalo en Android? ( Versión 1.1.1 (Beta) )
+## ¿Cómo la instalo en Android? ( Versión 1.1.2 )
 
 1. Dirígete a la sección de **Releases** en el lateral derecho de este repositorio en GitHub.
 2. Descarga el archivo `.apk` de la versión `1.1.1-beta` en tu teléfono.
