@@ -178,17 +178,13 @@ class _CustomListTitle extends StatefulWidget {
 class _CustomListTitleState extends State<_CustomListTitle> {
   bool _areShowedThePreferences = false;
 
-  Widget _withColor(Widget widget, Color color) {
+  Widget _withColor(Widget widget, Color fallbackColor) {
     if (widget is Text && widget.data != null) {
       final baseStyle = widget.style ?? const TextStyle();
-      return TweenAnimationBuilder<Color?>(
-        tween: ColorTween(begin: color, end: color),
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-        builder: (context, animatedColor, _) => Text(
-          widget.data!,
-          style: baseStyle.copyWith(color: animatedColor ?? color),
-        ),
+      final effectiveColor = baseStyle.color ?? fallbackColor;
+      return Text(
+        widget.data!,
+        style: baseStyle.copyWith(color: effectiveColor),
       );
     }
     return widget;

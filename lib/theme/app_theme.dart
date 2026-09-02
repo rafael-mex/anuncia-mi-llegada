@@ -1,12 +1,16 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 
-/// Única fuente de verdad del tema: el notificador persistido de
-/// PreferencesService. Todas las pantallas y main() escuchan/escriben
-/// la misma instancia.
 final ValueNotifier<bool> isTrueDarkMode = PreferencesService.isTrueDarkMode;
 
 class AppTheme {
+  //------ Font del Metro ------
+  static const TextStyle metroStyle = TextStyle(
+    fontFamily: 'METRO-DF',
+    fontSize: 24,
+    color: Color(0xFFF69346),
+  );
+
   //---- Selector Widget ----
 
   //Contenedor naranja (LM = Modo Claro, DM = Modo Oscuro)
