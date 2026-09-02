@@ -6,6 +6,7 @@ import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_widget.d
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 enum _SelectorStep { transports, lines, stations }
 
@@ -161,6 +162,10 @@ class _SelectorScreenState extends State<SelectorScreen> {
       } else {
         debugPrint("No se pudo abrir WhatsApp");
       }
+    } else if (preferredApp == "Otros") {
+      await SharePlus.instance.share(
+        ShareParams(text: mensajeFinal),
+      );
     } else {
       final Uri smsUri = Uri.parse(
         'sms:?body=${Uri.encodeComponent(mensajeFinal)}',
