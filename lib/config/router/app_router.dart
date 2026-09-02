@@ -20,5 +20,10 @@ final appRouter = GoRouter(
       name: SettingsScreen.name,
       builder: (context, state) => SettingsScreen(version: appVersion),
     ),
+    GoRoute(
+      path: '/record',
+      name: RecordScreen.name,
+      builder: (context, state) => const RecordScreen(),
+    ),
   ],
 );
