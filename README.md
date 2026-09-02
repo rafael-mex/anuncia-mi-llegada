@@ -276,3 +276,71 @@ Durante la emulación en Pixel 4a se reportó una banda negra lateral que despla
 
 **Cómo funciona en la aplicación:**
 El usuario aterriza directamente en el selector de transportes. Al picar uno, el mismo selector hace un cross-fade de 350 ms hacia la lista de líneas cuyos elementos aparecen en cascada, mientras el botón "Retroceder" se desvanece suavemente sobre el engranaje de ajustes. Al elegir línea, ocurre lo mismo hacia estaciones. Cada pulsación de "Retroceder" deshace un paso regresando al selector anterior con las mismas animaciones, y el selector jamás salta de posición vertical porque su hueco inferior está reservado desde el inicio.
+
+#### Séptima sesión — 2 de septiembre de 2026
+
+**Prompts enviados (resumen):**
+> "Configura lo necesario para que todas las implementaciones en la app del font del Metro DF, tengan las mismas características del metroStyle del settingsItem, pero con el color hardcodeado: F69346. No importa si es modo claro u obscuro, quiero que cada vez que coloque la variable metroStyle, el texto tenga esas características."
+>
+> "Resuelve el porque no cambia de color en este momento que se ejecuta la app, aun cerrando la debug session y abriendola."
+>
+> "Haz que el MapIcon siempre se encuentre en la misma posición en pantalla que el gear.png de la settings screen."
+>
+> "Arregla la pantalla de los selectores, el mapIcon debe permanecer en la posición del png de gear de la settingsScreen y el selectorWidget en medio."
+>
+> "Regresa el settingsButton y el botón de retroceder a la posición en la que estaban anteriormente a que cambiarás todo esto."
+>
+> "Vale, elimina el cambio que hiciste en los botones de settings y el de return, únicamente colócalos fijamente en la posición x,y en la que se encontraban en pantalla el momento antes de que incluyeras el selector_screen_layout."
+>
+> "Okay, ahora inserta el backgroundColor que ya tengo hecho de mi app theme a mi pantalla record_screen."
+>
+> "Implementa el record_button a mi pantalla de selectorsScreen, colócalo en las mismas coordenadas del keyboard_return IconButton de mi settings Screen."
+>
+> "Arregla los nuevos SVGs agregados en la carpeta de record_icons, y además, verifica la implementación del recordButton en la pantalla de selectorsScreen, no debe encontrarse este botón en ningún otra pantalla."
+>
+> "Arregla estos errores: [Unable to load asset: 'assets/icons/record_icons/record_button_dark.svg']"
+
+**Cambios realizados:**
+
+1. **`metroStyle` del Metro DF centralizado y hardcodeado (`lib/theme/app_theme.dart` + `lib/config/menu/settings_items.dart`):**
+   - Se creó la constante `AppTheme.metroStyle` con `fontFamily: 'METRO-DF'`, `fontSize: 24` y `color: Color(0xFFF69346)` (naranja) fijo, sin depender del tema.
+   - Se eliminó la constante local duplicada en `settings_items.dart`; los tres títulos del menú ("Apariencia", "Estaciones", "Mensajes") usan ahora `AppTheme.metroStyle`.
+   - El título "Apariencia" antes se declaraba con `TextStyle(fontFamily: 'METRO-DF', fontSize: 24)` **sin color**, por lo que no tenía el naranja; ahora lo hereda de `AppTheme.metroStyle`.
+
+2. **Por qué "no cambiaba de color" y su solución (`lib/presentation/screens/settings/settings_screen.dart`):**
+   - Causa raíz: el helper `_withColor` clonaba cada `Text` con `baseStyle.copyWith(color: titleColor)` donde `titleColor` era el color del tema (negro/gris). Eso **pisaba** el naranja hardcodeado del `metroStyle` con el color del modo claro/obscuro.
+   - Solución: `_withColor` ahora calcula `effectiveColor = baseStyle.color ?? fallbackColor`. Si el estilo trae color propio (el caso de `metroStyle`), lo respeta siempre; solo en textos sin color (los subtítulos en `_nunitoFamily`) aplica el color del tema. Así el naranja `F69346` se mantiene en ambos modos.
+   - Se retiró el `TweenAnimationBuilder` que envolvía a cada texto: su `ColorTween` era constante (`begin = end`), así que no existía animación real que preservar.
+
+3. **MapIcon fijo en la posición del engranaje (`lib/presentation/widgets/shared/selector_screen_layout.dart`):**
+   - En la settings screen el engranaje vive en `Positioned(left: 0, right: 0, top: 108)` centrado. El `MapIcon` pasó a ocupar exactamente ese mismo `Positioned`, por lo que permanece siempre en la misma coordenada de pantalla y no "salta" al navegar entre la pantalla de selectores y la de ajustes.
+
+4. **Selector centrado y botones en sus posiciones fijas originales (`selector_screen_layout.dart`):**
+   - El `SelectorWidget` quedó centrado en el medio de la pantalla (`Positioned.fill` → `SafeArea` → `Center`), garantizando la misma localización en el eje Y sin importar el contenido.
+   - Los botones recuperaron las coordenadas exactas que tenían **antes** de existir el layout unificado (recuperadas del historial git, commit previo a `8431065`): `ReturnButton` en `Positioned(left: 0, right: 0, top: 690)` centrado y `SettingsButton` en `Positioned(left: 0, right: 0, top: 760)` centrado.
+   - El `ReturnButton` conserva su comportamiento de ocultarse en el primer paso mediante `IgnorePointer` + `AnimatedOpacity` (según `showReturnButton`).
+
+5. **Fondo temático en `record_screen` (`lib/presentation/screens/record_screen/record_screen.dart`):**
+   - Se sustituyó el color fijo `Color(0xFFF26400)` por el mismo patrón del resto de pantallas: `Scaffold` transparente + `ValueListenableBuilder<bool>` sobre `isTrueDarkMode` + `AnimatedContainer` cuyos `BoxDecoration` usan `AppTheme.backgroundColorLM` (blanco) en claro y `AppTheme.backgroundColorDM` (degradado oscuro) en obscuro, con transición de 500 ms.
+   - Nota: durante un hot reload el archivo quedó corrupto (`backgroundColor:` sin valor); se reescribió completo y el análisis de Dart quedó limpio.
+
+6. **RecordButton en la pantalla de selectores (`selector_screen_layout.dart` + `lib/presentation/widgets/shared/buttons/record_button.dart`):**
+   - Se agregó el `RecordButton` al `Stack` del layout de selectores con las mismas coordenadas del icono de retorno de la settings screen: `Positioned(left: 28, top: 126)` (la referencia exacta vive en `settings_screen.dart`, `Positioned(left: 28, top: 126)` del `Icon(Icons.keyboard_return_outlined)`).
+   - El botón navega a `RecordScreen.name`, es de 48×48 y conmuta su SVG según el modo.
+   - Dónde se configuran estos valores: la **fuente de verdad** de la posición es `lib/presentation/screens/settings/settings_screen.dart` (líneas del `Positioned`), y el **valor que debe copiarse** para esta pantalla es el `Positioned(left: 28, top: 126)` en `lib/presentation/widgets/shared/selector_screen_layout.dart`. Si en el futuro se mueve el botón en una pantalla, hay que replicar el cambio en la otra coordinarmente (o extraer una constante compartida).
+
+7. **Corrección de SVGs en `assets/icons/record_icons/`:**
+   - El `RecordButton` cargaba `record_icon.svg` y `record_icon_dark.svg`, dos SVGs grandes (109×109) con degradados `#F8AC72→#FEB7C4` fuera de la paleta de la app.
+   - Se renombró `record_book_dark.svg` → `record_button_dark.svg` para que la pareja sea consistente con la convención `settings_Icon` / `settings_Icon_dark`, y `record_button.dart` ahora usa los SVGs correctos de 24×24 con color plano: `record_button.svg` (#F8AC71) en claro y `record_button_dark.svg` (#FF6F00) en obscuro.
+   - Se verificó que el `RecordButton` únicamente se instancia en la pantalla de selectores (`selector_screen_layout.dart`, usado solo por `selector_screen.dart`); no existe en ninguna otra pantalla. `record_icon.svg` y `record_icon_dark.svg` quedaron sin referencias, listos para usarse (o eliminarse) en el futuro de la `RecordScreen`.
+
+8. **Error "Unable to load asset: record_button_dark.svg" (`pubspec.yaml`):**
+   - Causa raíz: la sección `flutter: assets:` del `pubspec.yaml` declaraba `assets/icons/` y `assets/icons/config_icons/` pero **no** `assets/icons/record_icons/`; como Flutter solo empaqueta directorios declarados explícitamente (no incluye subcarpetas automáticamente), los SVGs nuevos nunca llegaban al bundle.
+   - Solución: se agregó `- assets/icons/record_icons/` a la lista de assets; tras `flutter pub get` y una compilación completa (no hot reload) el asset carga correctamente.
+
+**Explicaciones solicitadas por el usuario (sin cambios de código):**
+- **fallbackColor:** es el color de respaldo que se usa **solo** cuando un `TextStyle` no define color propio; en `_withColor`, `baseStyle.color ?? fallbackColor` significa "usar el color que trae el estilo y, si no trae, usar el del tema".
+- **Descripción completa de `selector_screen_layout.dart`:** el archivo es el layout compartido de las pantallas de selección; su `build` regresa un `Stack` de capas: (1) `MapIcon` fijo en `top: 108` igual que el engranaje de settings, (2) el `SelectorWidget` centrado vía `Positioned.fill` + `SafeArea` + `Center`, y (3) los botones fijos `ReturnButton` en `top: 690` y `SettingsButton` en `top: 760`. Los parámetros `selector`, `showReturnButton` y `onReturnTap` permiten que las pantallas móviles inyecten su contenido y controlen el botón de retroceso.
+
+**Cómo funciona en la aplicación:**
+En los selectores, el icono del mapa queda clavado en la misma coordenada que el engranaje de ajustes (`top: 108`, centrado) y el selector de transportes/líneas/estaciones queda siempre al centro de la pantalla, mientras "Retroceder" y el engranaje se mantienen en `top: 690` y `top: 760` como en el diseño original. En los ajustes, los títulos del Metro DF lucen el naranja `F69346` fijo en cualquier modo porque `_withColor` respeta el color propio de `metroStyle` y solo aplica el color del tema como respaldo. La pantalla de grabar (~record screen) muestra el fondo claro/obscuro del tema con transición suave. Arriba a la izquierda de los selectores aparece el botón de grabación, en las mismas coordenadas (`left: 28, top: 126`) que el icono de retorno de los ajustes, navegando a `RecordScreen`; su icono es un SVG plano de 24×24 (`#F8AC71` claro / `#FF6F00` obscuro) declarado correctamente en `pubspec.yaml` para que cargue en el bundle.
