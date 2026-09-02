@@ -1,4 +1,5 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
@@ -19,7 +20,6 @@ class MenuItem {
 
 //Estilos de texto
 /* Font del Metro:*/
-const metroStyle = TextStyle(fontFamily: 'METRO-DF', fontSize: 24);
 /* Nunito:*/
 const _nunitoFamily = TextStyle(
   height: 1.3,
@@ -41,7 +41,7 @@ final appSettingsItems = <MenuItem>[
   MenuItem(
     title: Text(
       "Apariencia",
-      style: TextStyle(fontFamily: 'METRO-DF', fontSize: 24),
+      style: AppTheme.metroStyle,
     ),
     subtitle: Text(
       "Cambia entre el modo claro y \nobscuro.",
@@ -52,7 +52,7 @@ final appSettingsItems = <MenuItem>[
   //------
   // ------ Opción: Estaciones ------
   MenuItem(
-    title: Text("Estaciones", style: metroStyle),
+    title: Text("Estaciones", style: AppTheme.metroStyle),
     subtitle: Text(
       "Configura el como aparecen las \nestaciones en la aplicación.",
       style: _nunitoFamily,
@@ -128,7 +128,7 @@ final appSettingsItems = <MenuItem>[
   // ------
   // ------ Opción: Mensajes ------
   MenuItem(
-    title: Text("Mensajes", style: metroStyle),
+    title: Text("Mensajes", style: AppTheme.metroStyle),
     subtitle: Text(
       "Personaliza el mensaje que \nenviarás a tus contactos.",
       style: _nunitoFamily,
@@ -212,10 +212,16 @@ final appSettingsItems = <MenuItem>[
                         color: dynamicColor,
                       ),
                       items: const [
-                        DropdownMenuItem(value: "SMS", child: Text("SMS")),
+                        DropdownMenuItem(
+                          value: "SMS", 
+                          child: Text("SMS")),
                         DropdownMenuItem(
                           value: "WhatsApp",
                           child: Text("WhatsApp"),
+                        ),
+                        DropdownMenuItem(
+                          value: "Otros",
+                          child: Text("Otros"),
                         ),
                       ],
                       onChanged: (String? newValue) {
