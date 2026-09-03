@@ -1,9 +1,10 @@
 import 'package:anuncia_mi_llegada/config/menu/settings_items.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/icons/gear_icon.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/keyboard_return_button.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/reset_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const name = 'settings_screen';
@@ -15,6 +16,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //Implementación del backgroundColor
       backgroundColor: Colors.transparent,
       body: ValueListenableBuilder<bool>(
         valueListenable: isTrueDarkMode,
@@ -25,48 +27,19 @@ class SettingsScreen extends StatelessWidget {
             color: isDark ? null : AppTheme.backgroundColorLM,
             gradient: isDark ? AppTheme.backgroundColorDM : null,
           ),
+          //-------------------------------------
           child: Stack(
             children: [
               Positioned(
                 left: 0,
                 right: 0,
                 top: 108,
-                child: Center(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    child: Image(
-                      key: ValueKey<String>(
-                        isDark
-                            ? 'assets/icons/config_icons/gear_dark.png'
-                            : 'assets/icons/config_icons/gear_white.png',
-                      ),
-                      image: AssetImage(
-                        isDark
-                            ? 'assets/icons/config_icons/gear_dark.png'
-                            : 'assets/icons/config_icons/gear_white.png',
-                      ),
-                      width: 104,
-                      height: 104,
-                    ),
-                  ),
-                ),
-              ),
-              //Botón de retorno del teclado
+                child: Center(child: GearIcon())),
+              //Keyboard Return Button
               Positioned(
                 left: 28,
                 top: 126,
-                child: IconButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  style: ButtonStyle(
-                    iconSize: WidgetStatePropertyAll(24),
-                    iconColor: WidgetStatePropertyAll(
-                      Color.fromRGBO(224, 114, 45, 100),
-                    ),
-                  ),
-                  icon: Icon(Icons.keyboard_return_outlined, size: 38),
-                ),
+                child: KeyboardReturnButton(),
               ),
               //Opciones
               _SettingsView(version: version),
@@ -77,7 +50,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
-// ------------- Versión de la aplicación 
+
+// ------------- Versión de la aplicación
 class _ApplicationVersion extends StatelessWidget {
   final String version;
   const _ApplicationVersion({required this.version});
@@ -87,7 +61,7 @@ class _ApplicationVersion extends StatelessWidget {
     return Text(version);
   }
 }
-// ------------- 
+// -------------
 
 class _ResetSettingsButton extends StatelessWidget {
   const _ResetSettingsButton();
@@ -148,7 +122,7 @@ class _SettingsView extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 10),
                     child: Center(child: _ResetSettingsButton()),
                   ),
-            // Versión de la aplicación
+                  // Versión de la aplicación
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Center(child: _ApplicationVersion(version: version)),

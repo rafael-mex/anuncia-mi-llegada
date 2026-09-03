@@ -1,3 +1,4 @@
+import 'package:anuncia_mi_llegada/data/models/record_items.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,11 +21,16 @@ class PreferencesService {
 
   static final willBeShowedTransportName =
       ValueNotifier<bool>(defaultWillBeShowedTransportName);
+
   static final willBeShowedLineNamesInMessage =
       ValueNotifier<bool>(defaultWillBeShowedLineNamesInMessage);
+
   static final willBeShowedInstitutionsName =
       ValueNotifier<bool>(defaultWillBeShowedInstitutionsName);
+
   static final whatMessagingAppYouWillUse = ValueNotifier<String>("SMS");
+
+  static final recordList = ValueNotifier<List<RecordItems>>([]);
 
   ///Indica si alguna configuración difiere de su valor de fábrica.
   static bool get hasModifiedSettings =>
@@ -54,9 +60,11 @@ class PreferencesService {
     willBeShowedTransportName.value =
         _preferences.getBool('willBeShowedTransportName') ??
         defaultWillBeShowedTransportName;
+
     willBeShowedLineNamesInMessage.value =
         _preferences.getBool('willBeShowedLineNamesInMessage') ??
         defaultWillBeShowedLineNamesInMessage;
+    
     willBeShowedInstitutionsName.value =
         _preferences.getBool('willBeShowedInstitutionsName') ??
         defaultWillBeShowedInstitutionsName;
@@ -66,6 +74,11 @@ class PreferencesService {
     });
 
     whatMessagingAppYouWillUse.value = _preferences.getString('whatMessagingAppYouWillUse') ?? "SMS";
+    
+    //Lectura del historial
+    final savedRecords = _preferences.getStringList('app_records') ?? []; 
+    recordList.value = savedRecords.map((item) => RecordItems.fromJson(item)).toList();
+    //---------------------
   }
 
   // Escritura de las preferencias
@@ -92,6 +105,16 @@ class PreferencesService {
   static Future<void> setDefaultMessagingApp(String value) async {
     whatMessagingAppYouWillUse.value = value;
     await _preferences.setString('whatMessagingAppYouWillUse', value);
+  }
+
+  //Guardar los nuevos mensajes al RecordItems
+  static Future<void> saveToRecordItems(RecordItems newItem) async {
+
+    final updateList = [newItem, ...recordList.value];
+    recordList.value = updateList;
+
+    final stringList = updateList.map((item) => item.toJson()).toList();
+    await _preferences.setStringList('app_records', stringList);
   }
 
   // Restablecimiento de todas las configuraciones a su estado original

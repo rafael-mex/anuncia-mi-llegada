@@ -4,12 +4,31 @@ import 'package:flutter/material.dart';
 final ValueNotifier<bool> isTrueDarkMode = PreferencesService.isTrueDarkMode;
 
 class AppTheme {
+  
   //------ Font del Metro ------
   static const TextStyle metroStyle = TextStyle(
     fontFamily: 'METRO-DF',
     fontSize: 24,
     color: Color(0xFFF69346),
   );
+
+//------ Nunito Family  ------
+  static const TextStyle nunitoFamily = TextStyle( 
+  height: 1.3,
+  fontFamily: 'Nunito',
+  fontSize: 24,
+  letterSpacing: 0,
+  fontWeight: FontWeight.w800,
+);
+
+  //------ Nunito Family para subtítulos ------
+  static const TextStyle nunitoFamilySubtitle = TextStyle( 
+  height: 1.3,
+  fontFamily: 'Nunito',
+  fontSize: 13,
+  letterSpacing: 0,
+  fontWeight: FontWeight.w700,
+);
 
   //---- Selector Widget ----
 

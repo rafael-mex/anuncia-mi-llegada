@@ -1,8 +1,9 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
+import 'package:anuncia_mi_llegada/data/models/record_items.dart';
 import 'package:anuncia_mi_llegada/data/repositories/mi_repository.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_screen_layout.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_widget.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/selector/selector_screen_layout.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/selector/selector_widget.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -150,8 +151,9 @@ class _SelectorScreenState extends State<SelectorScreen> {
   // ------------------------------------------
 
   // Función de mandar el mensaje a la app elegida por el usuario
-  Future<void> _sendMessage(String mensajeFinal) async {
+  Future<bool> _sendMessage(String mensajeFinal) async {
     final preferredApp = PreferencesService.whatMessagingAppYouWillUse.value;
+    bool messageWasSent = false;
 
     if (preferredApp == "WhatsApp") {
       final Uri whatsappUri = Uri.parse(
@@ -159,24 +161,29 @@ class _SelectorScreenState extends State<SelectorScreen> {
       );
       if (await canLaunchUrl(whatsappUri)) {
         await launchUrl(whatsappUri);
+        messageWasSent = true;
       } else {
         debugPrint("No se pudo abrir WhatsApp");
       }
     } else if (preferredApp == "Otros") {
-      await SharePlus.instance.share(
+      final ShareResult result = await SharePlus.instance.share(
         ShareParams(text: mensajeFinal),
       );
+      if (result.status == ShareResultStatus.success) {
+        messageWasSent = true;
+      }
     } else {
       final Uri smsUri = Uri.parse(
         'sms:?body=${Uri.encodeComponent(mensajeFinal)}',
       );
-
       if (await canLaunchUrl(smsUri)) {
         await launchUrl(smsUri);
+        messageWasSent = true;
       } else {
         debugPrint("No se pudo abrir SMS");
       }
     }
+    return messageWasSent;
   }
   // ------------------------------------------
 
@@ -206,10 +213,6 @@ class _SelectorScreenState extends State<SelectorScreen> {
   //Pasos de los selectores:
   List<Widget> _listItems(List<TransportsModel> transports) {
     switch (_step) {
-      //(Lo siento
-      //ya me cansé de traducir mentalmente
-      //en inglés mis comentarios en el código :( )
-
       //Paso 1: Seleccionar transportes
       case _SelectorStep.transports:
         return [
@@ -256,7 +259,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
                   'Únicamente mencionar el nombre de la línea',
                   style: _nunitoFamily,
                 ),
-                onTap: () {
+                onTap: () async {
                   // -------------  Construcción del mensaje, si este habla unicamente de la línea elegida
                   final messageBody = PreferencesService.messageBody.value;
                   final namesInLowerCase = line.lineNameInMessage.toLowerCase();
@@ -268,20 +271,35 @@ class _SelectorScreenState extends State<SelectorScreen> {
                       ? 'el'
                       : 'la';
 
+                  final String mensajeFinal;
                   if (youSelectedTrains) {
                     if (youSelectedTrains) {
-                      _sendMessage(
-                        '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}',
-                      );
+                      mensajeFinal =
+                          '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}';
                     } else {
-                      _sendMessage(
-                        '$messageBody $transportsName, ${line.lineNameInMessage}',
-                      );
+                      mensajeFinal =
+                          '$messageBody $transportsName, ${line.lineNameInMessage}';
                     }
                   } else {
-                    _sendMessage(
-                      '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}',
+                    mensajeFinal =
+                        '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}';
+                  }
+
+                  final bool success = await _sendMessage(mensajeFinal);
+
+                  if (success) {
+                    final newHistoryItem = RecordItems(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      stationName: line.lineNameInMessage,
+                      transportAndLineName:
+                          'Transporte: ${_transport?.name ?? ''}-Línea: ${line.name}',
+                      category: (_transport?.name ?? 'OTROS')
+                          .toUpperCase()
+                          .split(' ')
+                          .first,
+                      messageTime: DateTime.now(),
                     );
+                    await PreferencesService.saveToRecordItems(newHistoryItem);
                   }
                 },
               ),
@@ -291,27 +309,45 @@ class _SelectorScreenState extends State<SelectorScreen> {
               index: specialTileCount + index,
               child: ListTile(
                 title: Text(station, style: _nunitoFamily),
-                onTap: () {
+                onTap: () async {
                   // -------------  Construcción del mensaje, si este habla de una estación
                   final messageBody = PreferencesService.messageBody.value;
                   final showTransportsName =
                       PreferencesService.willBeShowedTransportName.value;
 
+                  final String mensajeFinal;
                   if (showTransportsName) {
                     if (youSelectedTrains) {
                       final lineName = line.name
                           .replaceAll(RegExp(r'\s*\([^)]*\)'), '')
                           .trim();
-                      _sendMessage(
-                        '$messageBody la estación del tren $lineName: $station',
-                      );
+                      mensajeFinal =
+                          '$messageBody la estación del tren $lineName: $station';
                     } else {
-                      _sendMessage(
-                        '$messageBody la estación del $transportsName: $station',
-                      );
+                      mensajeFinal =
+                          '$messageBody la estación del $transportsName: $station';
                     }
                   } else {
-                    _sendMessage('$messageBody $station');
+                    mensajeFinal = '$messageBody $station';
+                  }
+
+                  final bool success = await _sendMessage(mensajeFinal);
+
+                  if (success) {
+                    final newHistoryItem = RecordItems(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      stationName: hasLineNameInMessage && index == 0
+                          ? line.lineNameInMessage
+                          : station,
+                      transportAndLineName:
+                          'Transporte: ${_transport?.name ?? ''}-Línea: ${line.name}',
+                      category: (_transport?.name ?? 'OTROS')
+                          .toUpperCase()
+                          .split(' ')
+                          .first,
+                      messageTime: DateTime.now(),
+                    );
+                    await PreferencesService.saveToRecordItems(newHistoryItem);
                   }
                 },
               ),
@@ -321,9 +357,11 @@ class _SelectorScreenState extends State<SelectorScreen> {
   }
   // ------------------------------------------
 
+  //Construcción de la pantalla
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //Implementación del backgroundColor
       backgroundColor: Colors.transparent,
       body: ValueListenableBuilder<bool>(
         valueListenable: isTrueDarkMode,
@@ -334,12 +372,16 @@ class _SelectorScreenState extends State<SelectorScreen> {
             color: isDark ? null : AppTheme.backgroundColorLM,
             gradient: isDark ? AppTheme.backgroundColorDM : null,
           ),
+          //-------------------------------------
           child: SelectorScreenLayout(
-            showReturnButton: _step != _SelectorStep.transports,
+            /* Return Button: */ showReturnButton:
+                _step != _SelectorStep.transports,
             onReturnTap: _goBack,
+            //------------------
             selector: FutureBuilder<List<TransportsModel>>(
               future: _transportsFuture,
               builder: (context, snapshot) {
+                //Indicador de progreso de carga del selector
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const SizedBox(
                     width: 340,
@@ -347,6 +389,9 @@ class _SelectorScreenState extends State<SelectorScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
+                //---------------------------------------------
+
+                //Captura de errores
                 if (snapshot.hasError) {
                   return Center(
                     child: Text(
@@ -354,6 +399,9 @@ class _SelectorScreenState extends State<SelectorScreen> {
                     ),
                   );
                 }
+                //-------------------
+
+                //Animación de transición del modo claro <-> modo obscuro
                 final transports = snapshot.data ?? [];
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 350),
@@ -369,12 +417,16 @@ class _SelectorScreenState extends State<SelectorScreen> {
                       child: child,
                     ),
                   ),
+                  //--------------------------------------------------------
+
+                  //SelectorWidget
                   child: SelectorWidget(
                     key: ValueKey<_SelectorStep>(_step),
                     selectorsTitle: _title,
                     titleTopOffset: _titleTopOffset,
                     listItems: _listItems(transports),
                   ),
+                  //----------------
                 );
               },
             ),

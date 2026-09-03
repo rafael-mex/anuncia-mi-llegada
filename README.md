@@ -344,3 +344,21 @@ El usuario aterriza directamente en el selector de transportes. Al picar uno, el
 
 **Cómo funciona en la aplicación:**
 En los selectores, el icono del mapa queda clavado en la misma coordenada que el engranaje de ajustes (`top: 108`, centrado) y el selector de transportes/líneas/estaciones queda siempre al centro de la pantalla, mientras "Retroceder" y el engranaje se mantienen en `top: 690` y `top: 760` como en el diseño original. En los ajustes, los títulos del Metro DF lucen el naranja `F69346` fijo en cualquier modo porque `_withColor` respeta el color propio de `metroStyle` y solo aplica el color del tema como respaldo. La pantalla de grabar (~record screen) muestra el fondo claro/obscuro del tema con transición suave. Arriba a la izquierda de los selectores aparece el botón de grabación, en las mismas coordenadas (`left: 28, top: 126`) que el icono de retorno de los ajustes, navegando a `RecordScreen`; su icono es un SVG plano de 24×24 (`#F8AC71` claro / `#FF6F00` obscuro) declarado correctamente en `pubspec.yaml` para que cargue en el bundle.
+
+#### Octava sesión — 3 de septiembre de 2026
+
+**Prompt enviado (resumen):**
+> "Haz que si se presiona un elemento del historial (record), te rediriga a la app que este como predeterminada, para mandar de nuevo el mensaje. Y haz que esos cambios esten en el dispositivo."
+
+**Cambios realizados:**
+
+1. **Reenvío del mensaje al tocar un registro del historial (`lib/presentation/screens/record_screen/record_screen.dart`):**
+   - Se importaron `url_launcher` y `share_plus` para reutilizar el mismo mecanismo de envío que la pantalla de selectores.
+   - Nueva función `_resendMessage(RecordItems record)`: reconstruye la cadena final con el cuerpo del mensaje de preferencias y el nombre de la estación o línea guardado (`'$messageBody ${record.stationName}'`) y abre la aplicación de mensajería predeterminada configurada.
+     - Si la app predeterminada es **WhatsApp**: lanza `whatsapp://send?text=...` con el texto codificado.
+     - Si es **Otros**: usa el `SharePlus` (recuadro del sistema).
+     - Si es **SMS** (predeterminado de fábrica): lanza `sms:?body=...`.
+   - Cada elemento del historial se envolvió en un `Material` transparente + `InkWell` (con `borderRadius: 12`) cuyo `onTap` invoca `_resendMessage(record)`, agregando además el efecto de onda al presionar.
+
+**Cómo funciona en la aplicación:**
+En la pantalla de historial, al tocar cualquiera de los registros la aplicación reutiliza el cuerpo de mensaje guardado en ajustes junto con la estación o línea de ese registro y abre la aplicación de mensajería que el usuario dejó como predeterminada (SMS, WhatsApp o el recuadro de compartir), con el texto ya redactado listo para reenviar el mismo anuncio sin volver a recorrer los selectores.

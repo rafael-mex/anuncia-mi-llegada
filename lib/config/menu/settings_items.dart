@@ -18,16 +18,6 @@ class MenuItem {
   });
 }
 
-//Estilos de texto
-/* Font del Metro:*/
-/* Nunito:*/
-const _nunitoFamily = TextStyle(
-  height: 1.3,
-  fontFamily: 'Nunito',
-  fontSize: 13,
-  letterSpacing: 0,
-  fontWeight: FontWeight.w700,
-);
 
 final appSettingsItems = <MenuItem>[
   //Las configuraciones están divididas según al organismo u
@@ -45,7 +35,7 @@ final appSettingsItems = <MenuItem>[
     ),
     subtitle: Text(
       "Cambia entre el modo claro y \nobscuro.",
-      style: _nunitoFamily,
+      style: AppTheme.nunitoFamilySubtitle,
     ),
     icon: const AppearanceIcon(),
   ),
@@ -55,7 +45,7 @@ final appSettingsItems = <MenuItem>[
     title: Text("Estaciones", style: AppTheme.metroStyle),
     subtitle: Text(
       "Configura el como aparecen las \nestaciones en la aplicación.",
-      style: _nunitoFamily,
+      style: AppTheme.nunitoFamilySubtitle,
     ),
     icon: SvgPicture.asset(
       'assets/icons/config_icons/estaciones.svg',
@@ -70,7 +60,7 @@ final appSettingsItems = <MenuItem>[
           builder: (context) {
             // Colores del app Theme.
             final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
-            final dynamicStyle = _nunitoFamily.copyWith(color: dynamicColor);
+            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(color: dynamicColor);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +121,7 @@ final appSettingsItems = <MenuItem>[
     title: Text("Mensajes", style: AppTheme.metroStyle),
     subtitle: Text(
       "Personaliza el mensaje que \nenviarás a tus contactos.",
-      style: _nunitoFamily,
+      style: AppTheme.nunitoFamilySubtitle,
     ),
     //Icon
     icon: SvgPicture.asset(
@@ -147,7 +137,7 @@ final appSettingsItems = <MenuItem>[
           builder: (context) {
             // Colores del app Theme.
             final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
-            final dynamicStyle = _nunitoFamily.copyWith(color: dynamicColor);
+            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(color: dynamicColor);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

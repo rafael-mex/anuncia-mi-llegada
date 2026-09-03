@@ -1,5 +1,5 @@
+import 'package:anuncia_mi_llegada/presentation/widgets/icons/map_icon.dart';
 import 'package:flutter/material.dart';
-import 'map_icon.dart';
 import 'buttons/return_button.dart';
 import 'buttons/record_button.dart';
 import 'buttons/settings_button.dart';
