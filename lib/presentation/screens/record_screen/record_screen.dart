@@ -173,7 +173,7 @@ class _RecordScreenState extends State<RecordScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children:[
                                               Text(
-                                                record.stationName,
+                                                record.stationName[0].toUpperCase() + record.stationName.substring(1),
                                                 style: AppTheme.nunitoFamily
                                               ),
                                               const SizedBox(height: 2),

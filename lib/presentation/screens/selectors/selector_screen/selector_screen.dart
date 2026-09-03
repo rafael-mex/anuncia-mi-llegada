@@ -2,7 +2,8 @@ import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
 import 'package:anuncia_mi_llegada/data/models/record_items.dart';
 import 'package:anuncia_mi_llegada/data/repositories/mi_repository.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/selector/selector_screen_layout.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_screen_layout.dart';
+
 import 'package:anuncia_mi_llegada/presentation/widgets/selector/selector_widget.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -292,11 +293,8 @@ class _SelectorScreenState extends State<SelectorScreen> {
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       stationName: line.lineNameInMessage,
                       transportAndLineName:
-                          'Transporte: ${_transport?.name ?? ''}-Línea: ${line.name}',
-                      category: (_transport?.name ?? 'OTROS')
-                          .toUpperCase()
-                          .split(' ')
-                          .first,
+                          'Transporte: ${_transport?.name ?? ''}- Línea: ${line.name}',
+                      category: 'LÍNEAS',
                       messageTime: DateTime.now(),
                     );
                     await PreferencesService.saveToRecordItems(newHistoryItem);
@@ -340,7 +338,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
                           ? line.lineNameInMessage
                           : station,
                       transportAndLineName:
-                          'Transporte: ${_transport?.name ?? ''}-Línea: ${line.name}',
+                          'Transporte: ${_transport?.name ?? ''} - ${line.name}',
                       category: (_transport?.name ?? 'OTROS')
                           .toUpperCase()
                           .split(' ')
