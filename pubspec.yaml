@@ -66,7 +66,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/config_icons/
-    - assets/icons/record_icons/
+    - assets/icons/history_icons/
     - assets/data/
     - assets/fonts/
 
