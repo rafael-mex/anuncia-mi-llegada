@@ -1,6 +1,6 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
-import 'package:anuncia_mi_llegada/data/models/record_items.dart';
+import 'package:anuncia_mi_llegada/data/models/history_items.dart';
 import 'package:anuncia_mi_llegada/data/repositories/mi_repository.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_screen_layout.dart';
 
@@ -53,6 +53,23 @@ class _StaggeredFadeInState extends State<_StaggeredFadeIn>
     return FadeTransition(opacity: _opacity, child: widget.child);
   }
 }
+
+//Mapea el nombre del transporte a su categoría exacta, tal y como
+//aparece en la barra de categorías de la pantalla de historial.
+String _transportCategory(String transportName) {
+  const categories = <String, String>{
+    'Metro': 'METRO',
+    'Metrobús': 'METROBÚS',
+    'Trolebús': 'TROLEBÚS',
+    'Cablebús': 'CABLEBÚS',
+    'Mexibús': 'MEXÍBUS',
+    'Mexicable': 'MEXICABLE',
+    'Tren Ligero': 'TREN LIGERO',
+    'Trenes del Valle de México': 'TRENES V.M',
+  };
+  return categories[transportName] ?? 'UBI.PERSONALIZADA';
+}
+//------------
 
 class SelectorScreen extends StatefulWidget {
   const SelectorScreen({super.key});
@@ -289,15 +306,15 @@ class _SelectorScreenState extends State<SelectorScreen> {
                   final bool success = await _sendMessage(mensajeFinal);
 
                   if (success) {
-                    final newHistoryItem = RecordItems(
+                    final newHistoryItem = HistoryItems(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       stationName: line.lineNameInMessage,
                       transportAndLineName:
-                          'Transporte: ${_transport?.name ?? ''}- Línea: ${line.name}',
+                          'Transporte: ${_transport?.name ?? ''} - ${line.name}',
                       category: 'LÍNEAS',
                       messageTime: DateTime.now(),
                     );
-                    await PreferencesService.saveToRecordItems(newHistoryItem);
+                    await PreferencesService.saveToHistoryItems(newHistoryItem);
                   }
                 },
               ),
@@ -332,20 +349,15 @@ class _SelectorScreenState extends State<SelectorScreen> {
                   final bool success = await _sendMessage(mensajeFinal);
 
                   if (success) {
-                    final newHistoryItem = RecordItems(
+                    final newHistoryItem = HistoryItems(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      stationName: hasLineNameInMessage && index == 0
-                          ? line.lineNameInMessage
-                          : station,
+                      stationName: station,
                       transportAndLineName:
                           'Transporte: ${_transport?.name ?? ''} - ${line.name}',
-                      category: (_transport?.name ?? 'OTROS')
-                          .toUpperCase()
-                          .split(' ')
-                          .first,
+                      category: _transportCategory(_transport?.name ?? ''),
                       messageTime: DateTime.now(),
                     );
-                    await PreferencesService.saveToRecordItems(newHistoryItem);
+                    await PreferencesService.saveToHistoryItems(newHistoryItem);
                   }
                 },
               ),

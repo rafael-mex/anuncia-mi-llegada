@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../icons/map_icon.dart';
-import 'buttons/record_button.dart';
+import 'buttons/history_button.dart';
 import 'buttons/return_button.dart';
 import 'buttons/settings_button.dart';
 
@@ -25,11 +25,7 @@ class SelectorScreenLayout extends StatelessWidget {
           Stack(
             children: [
               const Center(child: MapIcon()),
-              const Positioned(
-                right: 38,
-                top: 13,
-                child: RecordButton(),
-              ),
+              const Positioned(right: 38, top: 13, child: HistoryButton()),
             ],
           ),
           const Spacer(),
