@@ -1,4 +1,4 @@
-import 'package:anuncia_mi_llegada/data/models/record_items.dart';
+import 'package:anuncia_mi_llegada/data/models/history_items.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,35 +15,34 @@ class PreferencesService {
   static const String defaultWhatMessagingAppYouWillUse = "SMS";
 
   //Variables
-  static final isTrueDarkMode =
-      ValueNotifier<bool>(defaultIsTrueDarkMode);
+  static final isTrueDarkMode = ValueNotifier<bool>(defaultIsTrueDarkMode);
   static final messageBody = ValueNotifier<String>(defaultMessageBody);
 
-  static final willBeShowedTransportName =
-      ValueNotifier<bool>(defaultWillBeShowedTransportName);
+  static final willBeShowedTransportName = ValueNotifier<bool>(
+    defaultWillBeShowedTransportName,
+  );
 
-  static final willBeShowedLineNamesInMessage =
-      ValueNotifier<bool>(defaultWillBeShowedLineNamesInMessage);
+  static final willBeShowedLineNamesInMessage = ValueNotifier<bool>(
+    defaultWillBeShowedLineNamesInMessage,
+  );
 
-  static final willBeShowedInstitutionsName =
-      ValueNotifier<bool>(defaultWillBeShowedInstitutionsName);
+  static final willBeShowedInstitutionsName = ValueNotifier<bool>(
+    defaultWillBeShowedInstitutionsName,
+  );
 
   static final whatMessagingAppYouWillUse = ValueNotifier<String>("SMS");
 
-  static final recordList = ValueNotifier<List<RecordItems>>([]);
+  static final historyList = ValueNotifier<List<HistoryItems>>([]);
 
   ///Indica si alguna configuración difiere de su valor de fábrica.
   static bool get hasModifiedSettings =>
       isTrueDarkMode.value != defaultIsTrueDarkMode ||
-
       messageBody.value != defaultMessageBody ||
-
       willBeShowedTransportName.value != defaultWillBeShowedTransportName ||
-
-      willBeShowedLineNamesInMessage.value != defaultWillBeShowedLineNamesInMessage ||
-
-      willBeShowedInstitutionsName.value != defaultWillBeShowedInstitutionsName ||
-
+      willBeShowedLineNamesInMessage.value !=
+          defaultWillBeShowedLineNamesInMessage ||
+      willBeShowedInstitutionsName.value !=
+          defaultWillBeShowedInstitutionsName ||
       whatMessagingAppYouWillUse.value != defaultWhatMessagingAppYouWillUse;
 
   static Future<void> init() async {
@@ -64,7 +63,7 @@ class PreferencesService {
     willBeShowedLineNamesInMessage.value =
         _preferences.getBool('willBeShowedLineNamesInMessage') ??
         defaultWillBeShowedLineNamesInMessage;
-    
+
     willBeShowedInstitutionsName.value =
         _preferences.getBool('willBeShowedInstitutionsName') ??
         defaultWillBeShowedInstitutionsName;
@@ -73,12 +72,20 @@ class PreferencesService {
       _preferences.setBool('isTrueDarkMode', isTrueDarkMode.value);
     });
 
-    whatMessagingAppYouWillUse.value = _preferences.getString('whatMessagingAppYouWillUse') ?? "SMS";
-    
-    //Lectura del historial
-    final savedRecords = _preferences.getStringList('app_records') ?? []; 
-    recordList.value = savedRecords.map((item) => RecordItems.fromJson(item)).toList();
-    //---------------------
+    whatMessagingAppYouWillUse.value =
+        _preferences.getString('whatMessagingAppYouWillUse') ?? "SMS";
+
+    //Lectura del historial (misma key con la que se guarda y se borra)
+    //Limpieza: la key antigua 'app_records' (de una versión previa del modelo)
+    //ya no se usa; se elimina para que no vuelva a restaurar un historial obsoleto.
+    final savedRecords = _preferences.getStringList('app_history') ?? [];
+    historyList.value = savedRecords
+        .map((item) => HistoryItems.fromJson(item))
+        .toList();
+    if (_preferences.containsKey('app_records')) {
+      await _preferences.remove('app_records');
+    }
+    //------------
   }
 
   // Escritura de las preferencias
@@ -108,29 +115,34 @@ class PreferencesService {
   }
 
   //Guardar los nuevos mensajes al RecordItems
-  static Future<void> saveToRecordItems(RecordItems newItem) async {
-
-    final updateList = [newItem, ...recordList.value];
-    recordList.value = updateList;
+  static Future<void> saveToHistoryItems(HistoryItems newItem) async {
+    final updateList = [newItem, ...historyList.value];
+    historyList.value = updateList;
 
     final stringList = updateList.map((item) => item.toJson()).toList();
-    await _preferences.setStringList('app_records', stringList);
+    await _preferences.setStringList('app_history', stringList);
+  }
+
+  //Borrar el historial
+  static Future<void> deleteHistory() async {
+    historyList.value = [];
+    await _preferences.remove('app_history');
   }
 
   // Restablecimiento de todas las configuraciones a su estado original
   static Future<void> resetAll() async {
     isTrueDarkMode.value = defaultIsTrueDarkMode;
-    
+
     messageBody.value = defaultMessageBody;
-    
+
     willBeShowedTransportName.value = defaultWillBeShowedTransportName;
-    
-    willBeShowedLineNamesInMessage.value = defaultWillBeShowedLineNamesInMessage;
-    
+
+    willBeShowedLineNamesInMessage.value =
+        defaultWillBeShowedLineNamesInMessage;
+
     willBeShowedInstitutionsName.value = defaultWillBeShowedInstitutionsName;
 
     whatMessagingAppYouWillUse.value = defaultWhatMessagingAppYouWillUse;
-
 
     await _preferences.setBool('isTrueDarkMode', defaultIsTrueDarkMode);
     await _preferences.setString('messageBody', defaultMessageBody);
@@ -146,6 +158,9 @@ class PreferencesService {
       'willBeShowedInstitutionsName',
       defaultWillBeShowedInstitutionsName,
     );
-    await _preferences.setString('whatMessagingAppYouWillUse', defaultWhatMessagingAppYouWillUse);
+    await _preferences.setString(
+      'whatMessagingAppYouWillUse',
+      defaultWhatMessagingAppYouWillUse,
+    );
   }
 }
