@@ -21,9 +21,9 @@ final appRouter = GoRouter(
       builder: (context, state) => SettingsScreen(version: appVersion),
     ),
     GoRoute(
-      path: '/record',
-      name: RecordScreen.name,
-      builder: (context, state) => const RecordScreen(),
+      path: '/history',
+      name: HistoryScreen.name,
+      builder: (context, state) => const HistoryScreen(),
     ),
   ],
 );
