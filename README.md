@@ -362,3 +362,37 @@ En los selectores, el icono del mapa queda clavado en la misma coordenada que el
 
 **Cómo funciona en la aplicación:**
 En la pantalla de historial, al tocar cualquiera de los registros la aplicación reutiliza el cuerpo de mensaje guardado en ajustes junto con la estación o línea de ese registro y abre la aplicación de mensajería que el usuario dejó como predeterminada (SMS, WhatsApp o el recuadro de compartir), con el texto ya redactado listo para reenviar el mismo anuncio sin volver a recorrer los selectores.
+
+#### Novena sesión — 4 de septiembre de 2026
+
+**Prompts enviados (resumen):**
+> "Arregla todos los errores, incluyendo el de Metrobús. Haz todo lo posible, pero haz que en la barra de categorías: la categoría METROBÚS siga existiendo y muestre las estaciones del metrobús que eligio el usuario, y el mismo caso con TRENES V.M, debe de mostrar las estaciones de los Trenes del Valle de México, y en la barra de categorías debe de mostrarse como TRENES V.M"
+>
+> "Implementa el que en la barra de categorías, a lado de TODOS debe de haber un paréntesis que contenga el número de todos los elementos del historial. Debe de verse así: 'TODOS (n)... | ... '"
+
+**Cambios realizados:**
+
+1. **Arreglo del bug de categorías en el historial (`lib/presentation/screens/selectors/selector_screen/selector_screen.dart`):**
+   - Se reemplazó el cálculo de categoría de la estación `(_transport?.name ?? 'OTROS').toUpperCase().split(' ').first`, que generaba categorías incorrectas, por una función explícita `_transportCategory()` que mapea cada transporte a su categoría exacta tal y como aparece en la barra de categorías de la pantalla de historial:
+     - `Metro` → `METRO`
+     - `Metrobús` → `METROBÚS`
+     - `Trolebús` → `TROLEBÚS`
+     - `Cablebús` → `CABLEBÚS`
+     - `Mexibús` → `MEXÍBUS` (con tilde en la Í, igual que el filtro)
+     - `Mexicable` → `MEXICABLE`
+     - `Tren Ligero` → `TREN LIGERO`
+     - `Trenes del Valle de México` → `TRENES V.M`
+   - Esto corrige tres transportes que antes no aparecían en su categoría: **Tren Ligero** (guardaba `TREN`), **Mexibús** (guardaba `MEXIBÚS` sin tilde en la Í) y **Trenes del Valle de México** (guardaba `TRENES`).
+
+2. **Comparación exacta en el filtro del historial (`lib/presentation/screens/history_screen/history_screen.dart`):**
+   - El filtro de la lista de registros cambió de `item.category.contains(selectCategory)` a `item.category == selectCategory`.
+   - Esto elimina el efecto colateral por el cual **Metrobús** también se mostraba bajo la categoría **METRO** (porque "METROBÚS" contiene "METRO"). Ahora cada categoría muestra únicamente los registros que le pertenecen exactamente.
+   - La categoría `METROBÚS` sigue existiendo y muestra las estaciones de metrobús elegidas por el usuario, y la categoría `TRENES V.M` sigue existiendo y muestra las estaciones de los Trenes del Valle de México.
+   - La opción "Únicamente mencionar el nombre de la línea" se mantiene intacta: guarda `category: 'LÍNEAS'` y muestra el nombre de la línea en el historial.
+
+3. **Contador en la categoría TODOS (`lib/presentation/screens/history_screen/history_screen.dart`):**
+   - La barra de categorías se envolvió en un `ValueListenableBuilder<List<HistoryItems>>` que escucha `PreferencesService.historyList`, de modo que el conteo se actualiza en tiempo real al agregar o borrar registros.
+   - El ítem "TODOS" ahora muestra el número total de elementos del historial entre paréntesis: `TODOS (n)`.
+
+**Cómo funciona en la aplicación:**
+En los selectores, al elegir una estación el registro del historial se guarda con la categoría exacta del transporte al que pertenece (METRO, METROBÚS, TROLEBÚS, CABLEBÚS, MEXÍBUS, MEXICABLE, TREN LIGERO o TRENES V.M). En la pantalla de historial, la barra de categorías filtra cada una de forma exacta: al tocar "METROBÚS" solo se ven estaciones de metrobús (ya no se colan en "METRO") y al tocar "TRENES V.M" solo se ven estaciones de los Trenes del Valle de México. La opción "Únicamente mencionar el nombre de la línea" sigue quedando en la categoría "LÍNEAS". Además, junto a la categoría "TODOS" aparece un paréntesis con el número total de registros guardados (p. ej. "TODOS (7)"), que se actualiza automáticamente cada vez que el usuario envía un nuevo mensaje o borra el historial.
