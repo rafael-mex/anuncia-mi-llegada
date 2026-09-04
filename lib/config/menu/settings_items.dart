@@ -18,7 +18,6 @@ class MenuItem {
   });
 }
 
-
 final appSettingsItems = <MenuItem>[
   //Las configuraciones están divididas según al organismo u
   //organismos a los que afecta, es decir, si
@@ -29,10 +28,7 @@ final appSettingsItems = <MenuItem>[
 
   //------ Opción: Apariencia ------
   MenuItem(
-    title: Text(
-      "Apariencia",
-      style: AppTheme.metroStyle,
-    ),
+    title: Text("Apariencia", style: AppTheme.metroStyle),
     subtitle: Text(
       "Cambia entre el modo claro y \nobscuro.",
       style: AppTheme.nunitoFamilySubtitle,
@@ -60,7 +56,9 @@ final appSettingsItems = <MenuItem>[
           builder: (context) {
             // Colores del app Theme.
             final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
-            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(color: dynamicColor);
+            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
+              color: dynamicColor,
+            );
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +135,9 @@ final appSettingsItems = <MenuItem>[
           builder: (context) {
             // Colores del app Theme.
             final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
-            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(color: dynamicColor);
+            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
+              color: dynamicColor,
+            );
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +167,7 @@ final appSettingsItems = <MenuItem>[
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
 
-                // Cuerpo del mensaje
+                // Grupo: Cuerpo del mensaje
                 // TextField Varchar
                 Text("Cuerpo del Mensaje", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
@@ -177,7 +177,7 @@ final appSettingsItems = <MenuItem>[
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
 
-                //Aplicación usada para el envío del mensaje
+                //Grupo: Aplicación usada para el envío del mensaje
                 Text(
                   "Aplicación usada para el envío del mensaje",
                   style: dynamicStyle,
@@ -202,17 +202,12 @@ final appSettingsItems = <MenuItem>[
                         color: dynamicColor,
                       ),
                       items: const [
-                        DropdownMenuItem(
-                          value: "SMS", 
-                          child: Text("SMS")),
+                        DropdownMenuItem(value: "SMS", child: Text("SMS")),
                         DropdownMenuItem(
                           value: "WhatsApp",
                           child: Text("WhatsApp"),
                         ),
-                        DropdownMenuItem(
-                          value: "Otros",
-                          child: Text("Otros"),
-                        ),
+                        DropdownMenuItem(value: "Otros", child: Text("Otros")),
                       ],
                       onChanged: (String? newValue) {
                         if (newValue != null) {
@@ -222,6 +217,54 @@ final appSettingsItems = <MenuItem>[
                     ),
                   ),
                 ),
+
+                //Espacio entre configuraciones
+                SizedBox(height: 20),
+
+
+                // Grupo: Historial
+                Text('Historial', style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text("Borrar el historial", style: dynamicStyle),
+                  leading: Icon(Icons.delete_outline, color:  dynamicColor),
+                  onTap: () {
+                    if (PreferencesService.historyList.value.isEmpty){
+                      showDialog(
+                        context: context, 
+                        builder: (dialogContext) => AlertDialog(
+                          title: const Text("No puedes borrar el historial"),
+                          content: const Text("Aún no has anunciado tu llegada"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(dialogContext), 
+                              child: const Text("Aceptar"),
+                            ),
+                          ],
+                        ),
+                      );
+                      return;
+                    }
+                    showDialog(
+                      context: context, 
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text("Borrar el historial"),
+                        content: const Text("¿Estás seguro de borrar tu historial?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogContext), 
+                            child: const Text("Rechazar")),
+                          TextButton(
+                            onPressed: () {
+                              PreferencesService.deleteHistory();
+                              Navigator.pop(dialogContext);
+                            }, 
+                            child: const Text("Continuar"))
+                        ],
+                      ));
+                  }
+                )
               ],
             );
           },
