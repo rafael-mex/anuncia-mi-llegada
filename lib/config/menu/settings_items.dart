@@ -28,7 +28,7 @@ final appSettingsItems = <MenuItem>[
 
   //------ Opción: Apariencia ------
   MenuItem(
-    title: Text("Apariencia", style: AppTheme.metroStyle),
+    title: Text("APARIENCIA", style: AppTheme.metroStyle),
     subtitle: Text(
       "Cambia entre el modo claro y \nobscuro.",
       style: AppTheme.nunitoFamilySubtitle,
@@ -38,7 +38,7 @@ final appSettingsItems = <MenuItem>[
   //------
   // ------ Opción: Estaciones ------
   MenuItem(
-    title: Text("Estaciones", style: AppTheme.metroStyle),
+    title: Text("ESTACIONES", style: AppTheme.metroStyle),
     subtitle: Text(
       "Configura el como aparecen las \nestaciones en la aplicación.",
       style: AppTheme.nunitoFamilySubtitle,
@@ -116,7 +116,7 @@ final appSettingsItems = <MenuItem>[
   // ------
   // ------ Opción: Mensajes ------
   MenuItem(
-    title: Text("Mensajes", style: AppTheme.metroStyle),
+    title: Text("MENSAJES", style: AppTheme.metroStyle),
     subtitle: Text(
       "Personaliza el mensaje que \nenviarás a tus contactos.",
       style: AppTheme.nunitoFamilySubtitle,
