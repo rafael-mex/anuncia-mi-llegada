@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../icons/map_icon.dart';
-import 'buttons/history_button.dart';
-import 'buttons/return_button.dart';
-import 'buttons/settings_button.dart';
+import '../shared/buttons/history_button.dart';
+import '../shared/buttons/return_button.dart';
+import '../shared/buttons/settings_button.dart';
 
 class SelectorScreenLayout extends StatelessWidget {
   final Widget selector;
@@ -24,16 +24,32 @@ class SelectorScreenLayout extends StatelessWidget {
           const Spacer(),
           Stack(
             children: [
+              //MapIcon
               const Center(child: MapIcon()),
-              const Positioned(right: 38, top: 13, child: HistoryButton()),
+              //-------
+
+              //History Button
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 38),
+                  child: HistoryButton()
+                ),
+              ),
+              //--------------
             ],
           ),
           const Spacer(),
+
+          //Selector Widget
           selector,
+          //--------------
+
           const Spacer(),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              //Return Button
               IgnorePointer(
                 ignoring: !showReturnButton,
                 child: AnimatedOpacity(
@@ -43,8 +59,12 @@ class SelectorScreenLayout extends StatelessWidget {
                   child: ReturnButton(onTap: onReturnTap),
                 ),
               ),
+              //--------------
               const SizedBox(height: 20),
+
+              //Settings Button
               const SettingsButton(),
+              //---------------
             ],
           ),
           const Spacer(),
