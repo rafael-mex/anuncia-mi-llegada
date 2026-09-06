@@ -25,5 +25,10 @@ final appRouter = GoRouter(
       name: HistoryScreen.name,
       builder: (context, state) => const HistoryScreen(),
     ),
+    GoRoute(
+      path: '/custom_location',
+      name: CustomLocationScreen.name,
+      builder: (context, state) => const CustomLocationScreen(),
+    ),
   ],
 );
