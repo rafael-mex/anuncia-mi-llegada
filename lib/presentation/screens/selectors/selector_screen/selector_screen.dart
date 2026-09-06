@@ -2,13 +2,13 @@ import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/mi_model.dart';
 import 'package:anuncia_mi_llegada/data/models/history_items.dart';
 import 'package:anuncia_mi_llegada/data/repositories/mi_repository.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/selector_screen_layout.dart';
-
+import 'package:anuncia_mi_llegada/presentation/screens/screens.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/layouts/selector_screen_layout.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/selector/selector_widget.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:anuncia_mi_llegada/utils/send_message_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:go_router/go_router.dart';
 
 enum _SelectorStep { transports, lines, stations }
 
@@ -54,8 +54,7 @@ class _StaggeredFadeInState extends State<_StaggeredFadeIn>
   }
 }
 
-//Mapea el nombre del transporte a su categoría exacta, tal y como
-//aparece en la barra de categorías de la pantalla de historial.
+//Mapea del nombre del transporte con su categoría exacta
 String _transportCategory(String transportName) {
   const categories = <String, String>{
     'Metro': 'METRO',
@@ -124,7 +123,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
   }
 
   @override
-  //Si se cambian las opciones de mostrar el nombre de la línea o el el nombre de las instituciones, entonces el selector regresará... al inicio
+  //Si se cambian las opciones de mostrar el nombre de la línea o el el nombre de las instituciones, entonces el selector regresará al inicio
   void dispose() {
     PreferencesService.willBeShowedLineNamesInMessage.removeListener(
       _loadTransports,
@@ -169,7 +168,11 @@ class _SelectorScreenState extends State<SelectorScreen> {
   // ------------------------------------------
 
   // Función de mandar el mensaje a la app elegida por el usuario
-  Future<bool> _sendMessage(String mensajeFinal) async {
+  Future<bool> sendMessage(String mensajeFinal) async {
+    return await SendMessageHelper.sendMessage(mensajeFinal);
+  }
+
+  /* Future<bool> _sendMessage(String mensajeFinal) async {
     final preferredApp = PreferencesService.whatMessagingAppYouWillUse.value;
     bool messageWasSent = false;
 
@@ -202,7 +205,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
       }
     }
     return messageWasSent;
-  }
+  } */
   // ------------------------------------------
 
   // Títulos de los selectores
@@ -242,6 +245,22 @@ class _SelectorScreenState extends State<SelectorScreen> {
                 onTap: () => _selectTransport(transport),
               ),
             ),
+          //Opción de usar la ubicación personalizada
+          _StaggeredFadeIn(
+            index: transports.length,
+            child: ListTile(
+              title: Text('Usar ubicación personalizada', style: _nunitoFamily),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Colors.white,
+              ),
+              onTap: () {
+                context.pushNamed(CustomLocationScreen.name);
+              },
+            ),
+          ),
+
+          //------------------------------------------
         ];
       //Paso 2: Seleccionar líneas
       case _SelectorStep.lines:
@@ -303,7 +322,9 @@ class _SelectorScreenState extends State<SelectorScreen> {
                         '$messageBody $whichLineDIdYouChoosed ${line.lineNameInMessage}';
                   }
 
-                  final bool success = await _sendMessage(mensajeFinal);
+                  final bool success = await SendMessageHelper.sendMessage(
+                    mensajeFinal,
+                  );
 
                   if (success) {
                     final newHistoryItem = HistoryItems(
@@ -346,7 +367,9 @@ class _SelectorScreenState extends State<SelectorScreen> {
                     mensajeFinal = '$messageBody $station';
                   }
 
-                  final bool success = await _sendMessage(mensajeFinal);
+                  final bool success = await SendMessageHelper.sendMessage(
+                    mensajeFinal,
+                  );
 
                   if (success) {
                     final newHistoryItem = HistoryItems(
