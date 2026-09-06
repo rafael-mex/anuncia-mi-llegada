@@ -33,6 +33,8 @@
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>La aplicación necesita tu ubicación para anunciar tu llegada.</string>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 		<key>UISceneConfigurations</key>
