@@ -1,8 +1,6 @@
-import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
-import 'package:anuncia_mi_llegada/data/models/history_items.dart';
+import 'package:anuncia_mi_llegada/config/menu/custom_location_items.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/layouts/custom_location_screen_layout.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
-import 'package:anuncia_mi_llegada/utils/send_message_helper.dart';
 import 'package:flutter/material.dart';
 
 class CustomLocationScreen extends StatelessWidget {
@@ -27,7 +25,7 @@ class CustomLocationScreen extends StatelessWidget {
 
           //-------------------------------------
           child: CustomLocationScreenLayout(
-            customLocationOptions: CustomLocationOptions(),
+            customLocationOptions: const _CustomLocationItemsView(),
           ),
         ),
       ),
@@ -35,145 +33,58 @@ class CustomLocationScreen extends StatelessWidget {
   }
 }
 
-class CustomLocationOptions extends StatefulWidget {
-  const CustomLocationOptions({super.key});
-
-  @override
-  State<CustomLocationOptions> createState() => _CustomLocationOptionsState();
-}
-
-class _CustomLocationOptionsState extends State<CustomLocationOptions> {
-  final TextEditingController _manualUbicationController =
-      TextEditingController();
-
-  static const TextStyle _nunitoFamily = TextStyle(
-    color: Color(0xFFF69346),
-    fontFamily: 'Nunito',
-    fontSize: 20,
-    letterSpacing: 0,
-    fontWeight: FontWeight.w800,
-  );
-
-  @override
-  void dispose() {
-    _manualUbicationController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _categorizingLocation(String locationText, String type) async {
-    if (locationText.trim().isEmpty) return;
-
-    final messageBody = PreferencesService.messageBody.value;
-    final sendedMessage = "$messageBody ${locationText.trim()}";
-    final succes = await SendMessageHelper.sendMessage(sendedMessage);
-
-    if (succes) {
-      final newHistoryItem = HistoryItems(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        category: "UBI.PERSONALIZADA",
-        stationName: "${locationText.trim()}",
-        transportAndLineName: 'Tipo: $type',
-        messageTime: DateTime.now(),
-      );
-      await PreferencesService.saveToHistoryItems(newHistoryItem);
-    }
-  }
+class _CustomLocationItemsView extends StatelessWidget {
+  const _CustomLocationItemsView();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 360,
-      height: 386,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          //Manual
-          const SizedBox(height: 25),
-          Text(
-            'Escribir la ubicación manualmente',
-            style: _nunitoFamily,
-            textAlign: TextAlign.left,
-          ),
-          Divider(
-            color: Color(0xFFF69346),
-            thickness: 1,
-            height: 8,
-            indent: 2,
-            endIndent: 2,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: ValueListenableBuilder<String>(
-              valueListenable: PreferencesService.messageBody,
-              builder: (context, messageBody, _) {
-                return TextField(
-                  controller: _manualUbicationController,
-                  style: AppTheme.nunitoFamilySubtitle,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (value) =>
-                      _categorizingLocation(value, 'Ubicación manual'),
-                  decoration: InputDecoration(
-                    prefixText: '$messageBody ',
-                    prefixStyle: const TextStyle(
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                    hintStyle: const TextStyle(color: Colors.white30),
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFF69346)),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFB6A3A3),
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(
-                        Icons.send_rounded,
-                        color: Color(0xFFB6A3A3),
-                      ),
-                      onPressed: () => _categorizingLocation(
-                        _manualUbicationController.text,
-                        'Ubicación manual',
-                      ),
-                    ),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: appCustomLocationItems.length,
+      itemBuilder: (BuildContext context, int index) {
+        final menuItem = appCustomLocationItems[index];
+
+        return _CustomListTitle(menuItem: menuItem);
+      },
+    );
+  }
+}
+
+class _CustomListTitle extends StatelessWidget {
+  const _CustomListTitle({required this.menuItem});
+
+  final MenuItem menuItem;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: menuItem.onTap == null ? null : () => menuItem.onTap!(context),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14.0,
+              vertical: 12.0,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(width: 70, height: 120, child: menuItem.icon),
+                SizedBox(width: MediaQuery.sizeOf(context).width * 0.06),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [menuItem.title],
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
-
-          //-----------
-          SizedBox(height: 40),
-          Text(
-            'Buscar en el mapa',
-            style: _nunitoFamily,
-            textAlign: TextAlign.left,
-          ),
-          Divider(
-            color: Color(0xFFF69346),
-            thickness: 1,
-            height: 8,
-            indent: 2,
-            endIndent: 2,
-          ),
-          SizedBox(height: 40),
-          Text(
-            'Usar ubicación actual',
-            style: _nunitoFamily,
-            textAlign: TextAlign.left,
-          ),
-          Divider(
-            color: Color(0xFFF69346),
-            thickness: 1,
-            height: 8,
-            indent: 2,
-            endIndent: 2,
-          ),
-        ],
-      ),
+        ),
+        if (menuItem.manualUbication != null) menuItem.manualUbication!,
+      ],
     );
   }
 }

@@ -9,6 +9,7 @@ class AppTheme {
   static const TextStyle metroStyle = TextStyle(
     fontFamily: 'METRO-DF',
     fontSize: 24,
+    height: 1.4,
     color: Color(0xFFF69346),
   );
 

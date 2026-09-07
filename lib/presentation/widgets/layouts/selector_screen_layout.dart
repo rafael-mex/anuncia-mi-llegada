@@ -32,8 +32,8 @@ class SelectorScreenLayout extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 38),
-                  child: HistoryButton()
+                  padding: const EdgeInsets.only(right: 38, top: 30),
+                  child: HistoryButton(),
                 ),
               ),
               //--------------

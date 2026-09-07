@@ -1,5 +1,6 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
@@ -230,39 +231,35 @@ final appSettingsItems = <MenuItem>[
                   title: Text("Borrar el historial", style: dynamicStyle),
                   leading: Icon(Icons.delete_outline, color:  dynamicColor),
                   onTap: () {
-                    if (PreferencesService.historyList.value.isEmpty){
-                      showDialog(
-                        context: context, 
-                        builder: (dialogContext) => AlertDialog(
-                          title: const Text("No puedes borrar el historial"),
-                          content: const Text("Aún no has anunciado tu llegada"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(dialogContext), 
-                              child: const Text("Aceptar"),
-                            ),
-                          ],
-                        ),
+                    if (PreferencesService.historyList.value.isEmpty) {
+                      showPlatformDialog(
+                        context: context,
+                        title: 'No puedes borrar el historial',
+                        content: 'Aún no has anunciado tu llegada',
+                        actions: [
+                          PlatformDialogAction(
+                            text: 'Aceptar',
+                          ),
+                        ],
                       );
                       return;
                     }
-                    showDialog(
-                      context: context, 
-                      builder: (dialogContext) => AlertDialog(
-                        title: const Text("Borrar el historial"),
-                        content: const Text("¿Estás seguro de borrar tu historial?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(dialogContext), 
-                            child: const Text("Rechazar")),
-                          TextButton(
-                            onPressed: () {
-                              PreferencesService.deleteHistory();
-                              Navigator.pop(dialogContext);
-                            }, 
-                            child: const Text("Continuar"))
-                        ],
-                      ));
+                    showPlatformDialog(
+                      context: context,
+                      title: 'Borrar el historial',
+                      content: '¿Estás seguro de borrar tu historial?',
+                      actions: [
+                        PlatformDialogAction(
+                          text: 'Rechazar',
+                        ),
+                        PlatformDialogAction(
+                          text: 'Continuar',
+                          onPressed: () {
+                            PreferencesService.deleteHistory();
+                          },
+                        ),
+                      ],
+                    );
                   }
                 )
               ],
@@ -403,7 +400,7 @@ class AppearanceIcon extends StatelessWidget {
                 value: !isTrueDark,
                 onChanged: (value) =>
                     (PreferencesService.isTrueDarkMode.value = !value),
-                themeIconType: ThemeIconType.expand,
+                themeIconType: ThemeIconType.classic,
                 color: Colors.white,
                 size: 41,
               ),

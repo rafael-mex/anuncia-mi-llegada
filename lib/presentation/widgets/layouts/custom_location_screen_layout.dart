@@ -34,8 +34,8 @@ class CustomLocationScreenLayout extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 28),
-                        child: KeyboardReturnButton()
+                        padding: const EdgeInsets.only(left: 28, top: 30),
+                        child: KeyboardReturnButton(),
                       ),
                     ),
                     //-----------------------
@@ -44,26 +44,31 @@ class CustomLocationScreenLayout extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 38),
-                        child: HistoryButton()
+                        padding: const EdgeInsets.only(right: 38, top: 30),
+                        child: HistoryButton(),
                       ),
                     ),
+
                     //--------------
-                    
-                  ]
+                  ],
                 ),
-          //---------------------------------------
+                //---------------------------------------
 
                 const Spacer(),
-                
-                customLocationOptions,
+
+                Flexible(
+                  flex: 14,
+                  child: SizedBox(
+                    width: 540,
+                    height: 520,
+                    child: customLocationOptions,
+                  ),
+                ),
 
                 const Spacer(),
                 Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SettingsButton(),
-                  ],
+                  children: [const SettingsButton()],
                 ),
                 const Spacer(),
               ],

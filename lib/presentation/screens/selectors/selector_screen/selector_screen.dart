@@ -171,41 +171,6 @@ class _SelectorScreenState extends State<SelectorScreen> {
   Future<bool> sendMessage(String mensajeFinal) async {
     return await SendMessageHelper.sendMessage(mensajeFinal);
   }
-
-  /* Future<bool> _sendMessage(String mensajeFinal) async {
-    final preferredApp = PreferencesService.whatMessagingAppYouWillUse.value;
-    bool messageWasSent = false;
-
-    if (preferredApp == "WhatsApp") {
-      final Uri whatsappUri = Uri.parse(
-        "whatsapp://send?text=${Uri.encodeComponent(mensajeFinal)}",
-      );
-      if (await canLaunchUrl(whatsappUri)) {
-        await launchUrl(whatsappUri);
-        messageWasSent = true;
-      } else {
-        debugPrint("No se pudo abrir WhatsApp");
-      }
-    } else if (preferredApp == "Otros") {
-      final ShareResult result = await SharePlus.instance.share(
-        ShareParams(text: mensajeFinal),
-      );
-      if (result.status == ShareResultStatus.success) {
-        messageWasSent = true;
-      }
-    } else {
-      final Uri smsUri = Uri.parse(
-        'sms:?body=${Uri.encodeComponent(mensajeFinal)}',
-      );
-      if (await canLaunchUrl(smsUri)) {
-        await launchUrl(smsUri);
-        messageWasSent = true;
-      } else {
-        debugPrint("No se pudo abrir SMS");
-      }
-    }
-    return messageWasSent;
-  } */
   // ------------------------------------------
 
   // Títulos de los selectores
@@ -434,7 +399,6 @@ class _SelectorScreenState extends State<SelectorScreen> {
                 }
                 //-------------------
 
-                //Animación de transición del modo claro <-> modo obscuro
                 final transports = snapshot.data ?? [];
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 350),
