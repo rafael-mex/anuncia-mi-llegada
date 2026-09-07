@@ -1,4 +1,4 @@
-package com.example.anuncia_mi_llegada
+package com.rmdeveloper.anunciaMiLlegada
 
 import io.flutter.embedding.android.FlutterActivity
 

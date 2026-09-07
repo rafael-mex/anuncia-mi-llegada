@@ -105,42 +105,75 @@ Future<void> _openMapAndSend(BuildContext context) async {
 }
 
 Future<void> _getCurrentLocationAndSend(BuildContext context) async {
-  final isServiceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!isServiceEnabled) {
+  try {
+    final isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isServiceEnabled) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('El servicio de ubicación está desactivado'),
+          ),
+        );
+      }
+      return;
+    }
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) return;
+
+    final position = await Geolocator.getCurrentPosition(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 15),
+      ),
+    );
+
+    String locationText =
+        '${position.latitude.toStringAsFixed(6)}, '
+        '${position.longitude.toStringAsFixed(6)}';
+
+    try {
+      final geocoder = Geocoding();
+      final placemarks = await geocoder.placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        final street = place.street ?? place.thoroughfare ?? place.subThoroughfare ?? '';
+        final neighborhood = place.subLocality ?? place.locality ?? '';
+
+        final formattedAddress = '$street, $neighborhood'
+            .trim()
+            .replaceAll(RegExp(r'^,\s*|,\s*$'), '');
+
+        if (formattedAddress.isNotEmpty) {
+          locationText = formattedAddress;
+        }
+      }
+    } catch (e) {
+      debugPrint("Parece que hubo un error al obtener tu dirección :( : $e");
+    }
+
+    await _sendLocation(locationText, 'Ubicación actual');
+  } catch (e) {
+    debugPrint("Parece que hubo un error con tu ubicación actual :( : $e");
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('El servicio de ubicación está desactivado'),
+          content: Text('No se pudo obtener tu ubicación actual'),
         ),
       );
     }
-    return;
   }
-
-  var permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) return;
-  }
-  if (permission == LocationPermission.deniedForever) return;
-
-  final position = await Geolocator.getCurrentPosition(
-    locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-  );
-
-  final geocoder = Geocoding();
-  final placemarks = await geocoder.placemarkFromCoordinates(
-    position.latitude,
-    position.longitude,
-  );
-
-  final firstPlacemark = placemarks.isNotEmpty ? placemarks.first : null;
-  final locationText =
-      firstPlacemark?.name ??
-      firstPlacemark?.street ??
-      '${position.latitude}, ${position.longitude}';
-
-  await _sendLocation(locationText, 'Ubicación actual');
 }
 
 class ManualLocationText extends StatefulWidget {

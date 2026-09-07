@@ -63,7 +63,6 @@ class _MapScreenState extends State<MapScreen> {
       body: Stack(
         children: [
           FlutterMap(
-            key: ValueKey(_currentLocation),
             mapController: _mapController,
             options: MapOptions(
               initialCenter: _currentLocation ?? _fallbackCenter,
