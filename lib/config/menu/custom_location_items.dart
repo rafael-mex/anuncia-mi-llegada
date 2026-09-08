@@ -19,14 +19,14 @@ class MenuItem {
     required this.title,
     required this.icon,
     this.manualUbication,
-    this.onTap,
+    this.onTap, 
   });
 }
 
 final appCustomLocationItems = <MenuItem>[
   //------ Ubicación manual ------
   MenuItem(
-    title: Text("UBICACIÓN MANUAL", style: AppTheme.metroStyle),
+    title: Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle),
     icon: SvgPicture.asset(
       'assets/icons/custom_location_icons/ubicacion_manual.svg',
     ),
@@ -34,7 +34,7 @@ final appCustomLocationItems = <MenuItem>[
   ),
 
   MenuItem(
-    title: Text("USAR EL MAPA", style: AppTheme.metroStyle),
+    title: Text("UBICAR EN EL \nMAPA", style: AppTheme.metroStyle),
     icon: SvgPicture.asset(
       'assets/icons/custom_location_icons/uso_del_mapa.svg',
     ),
