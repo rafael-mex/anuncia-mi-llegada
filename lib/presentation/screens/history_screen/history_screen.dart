@@ -97,7 +97,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     ValueListenableBuilder<List<HistoryItems>>(
                       valueListenable: PreferencesService.historyList,
                       builder: (context, historyItems, _) => SizedBox(
-                        height: 40,
+                        height: 30,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -131,7 +131,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
                     Divider(color: Color(0xFFF69346), thickness: 1, height: 8, indent: 20, endIndent: 20,),
                     const SizedBox(height: 10),
                     //Historial
