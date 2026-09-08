@@ -64,14 +64,14 @@ class _CustomListTitle extends StatelessWidget {
           onTap: menuItem.onTap == null ? null : () => menuItem.onTap!(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 14.0,
+              horizontal: 16.0,
               vertical: 12.0,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(width: 70, height: 120, child: menuItem.icon),
-                SizedBox(width: MediaQuery.sizeOf(context).width * 0.06),
+                SizedBox(width: 70, height: 110, child: menuItem.icon),
+                SizedBox(width: MediaQuery.sizeOf(context).width * 0.08),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,6 +84,7 @@ class _CustomListTitle extends StatelessWidget {
           ),
         ),
         if (menuItem.manualUbication != null) menuItem.manualUbication!,
+
       ],
     );
   }
