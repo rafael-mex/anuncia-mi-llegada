@@ -8,8 +8,9 @@ class AppTheme {
   //------ Font del Metro ------
   static const TextStyle metroStyle = TextStyle(
     fontFamily: 'METRO-DF',
-    fontSize: 24,
+    fontSize: 20,
     height: 1.4,
+    letterSpacing: 1,
     color: Color(0xFFF69346),
   );
 
