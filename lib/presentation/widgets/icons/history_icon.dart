@@ -1,6 +1,5 @@
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class HistoryIcon extends StatelessWidget {
   const HistoryIcon({super.key});
@@ -11,15 +10,15 @@ class HistoryIcon extends StatelessWidget {
       valueListenable: isTrueDarkMode,
       builder: (context, isDark, _) {
         final assetPath = isDark
-            ? 'assets/icons/history_icons/history_icon_dark.svg'
-            : 'assets/icons/history_icons/history_icon.svg';
+            ? 'assets/icons/history_icons/history_icon_dark.png'
+            : 'assets/icons/history_icons/history_icon.png';
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
-          child: SvgPicture.asset(
-            assetPath,
+          child: Image(
             key: ValueKey<String>(assetPath),
-            width: 104,
-            height: 104,
+            image: AssetImage(assetPath),
+            width: 100,
+            height: 100,
           ),
         );
       },
