@@ -8,7 +8,7 @@ class AppTheme {
   //------ Font del Metro ------
   static const TextStyle metroStyle = TextStyle(
     fontFamily: 'METRO-DF',
-    fontSize: 20,
+    fontSize: 23,
     height: 1.4,
     letterSpacing: 1,
     color: Color(0xFFF69346),
@@ -18,7 +18,7 @@ class AppTheme {
   static const TextStyle nunitoFamily = TextStyle( 
   height: 1.3,
   fontFamily: 'Nunito',
-  fontSize: 24,
+  fontSize: 20,
   letterSpacing: 0,
   fontWeight: FontWeight.w800,
 );
@@ -31,6 +31,14 @@ class AppTheme {
   letterSpacing: 0,
   fontWeight: FontWeight.w700,
 );
+
+  static const TextStyle nunitoFamilyCustomButton = TextStyle(
+    color: Color.fromRGBO(255, 255, 255, 83),
+    height: 1.3,
+    fontFamily: 'Nunito',
+    letterSpacing: 0,
+    fontWeight: FontWeight.w700,
+  );
 
   //---- Selector Widget ----
 

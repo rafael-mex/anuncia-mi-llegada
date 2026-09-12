@@ -12,25 +12,30 @@ import 'package:latlong2/latlong.dart';
 class MenuItem {
   final Widget title;
   final Widget icon;
-  final Widget? manualUbication;
+  final Widget widget;
   final Future<void> Function(BuildContext context)? onTap;
 
   MenuItem({
     required this.title,
     required this.icon,
-    this.manualUbication,
-    this.onTap, 
+    required this.widget,
+    this.onTap,
   });
 }
 
 final appCustomLocationItems = <MenuItem>[
   //------ Ubicación manual ------
   MenuItem(
-    title: Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle),
+    title: Column(
+      children: [
+        const SizedBox(height: 40),
+        Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle),
+      ],
+    ),
     icon: SvgPicture.asset(
       'assets/icons/custom_location_icons/ubicacion_manual.svg',
     ),
-    manualUbication: ManualLocationText(),
+    widget: ManualLocationText(),
   ),
 
   MenuItem(
@@ -39,6 +44,7 @@ final appCustomLocationItems = <MenuItem>[
       'assets/icons/custom_location_icons/uso_del_mapa.svg',
     ),
     onTap: _openMapAndSend,
+    widget: SizedBox(height: 0),
   ),
 
   MenuItem(
@@ -47,6 +53,7 @@ final appCustomLocationItems = <MenuItem>[
       'assets/icons/custom_location_icons/ubicacion_actual.svg',
     ),
     onTap: _getCurrentLocationAndSend,
+    widget: SizedBox(height: 0),
   ),
 ];
 
@@ -89,16 +96,19 @@ Future<void> _openMapAndSend(BuildContext context) async {
       final street = place.street ?? place.thoroughfare ?? '';
       final neighborhood = place.subLocality ?? place.locality ?? '';
 
-      final formattedAddress = '$street, $neighborhood'
-          .trim()
-          .replaceAll(RegExp(r'^,\s*|,\s*$'), '');
+      final formattedAddress = '$street, $neighborhood'.trim().replaceAll(
+        RegExp(r'^,\s*|,\s*$'),
+        '',
+      );
 
       if (formattedAddress.isNotEmpty) {
         locationText = formattedAddress;
       }
     }
   } catch (e) {
-    debugPrint("Parece que hubo un error al sacar tu ubicación en el mapa ;( : $e");
+    debugPrint(
+      "Parece que hubo un error al sacar tu ubicación en el mapa ;( : $e",
+    );
   }
 
   await _sendLocation(locationText, 'Buscada en el mapa');
@@ -148,12 +158,14 @@ Future<void> _getCurrentLocationAndSend(BuildContext context) async {
 
       if (placemarks.isNotEmpty) {
         final place = placemarks.first;
-        final street = place.street ?? place.thoroughfare ?? place.subThoroughfare ?? '';
+        final street =
+            place.street ?? place.thoroughfare ?? place.subThoroughfare ?? '';
         final neighborhood = place.subLocality ?? place.locality ?? '';
 
-        final formattedAddress = '$street, $neighborhood'
-            .trim()
-            .replaceAll(RegExp(r'^,\s*|,\s*$'), '');
+        final formattedAddress = '$street, $neighborhood'.trim().replaceAll(
+          RegExp(r'^,\s*|,\s*$'),
+          '',
+        );
 
         if (formattedAddress.isNotEmpty) {
           locationText = formattedAddress;
@@ -168,9 +180,7 @@ Future<void> _getCurrentLocationAndSend(BuildContext context) async {
     debugPrint("Parece que hubo un error con tu ubicación actual :( : $e");
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No se pudo obtener tu ubicación actual'),
-        ),
+        const SnackBar(content: Text('No se pudo obtener tu ubicación actual')),
       );
     }
   }
@@ -200,48 +210,53 @@ class _ManualLocationTextState extends State<ManualLocationText> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ValueListenableBuilder<String>(
-        valueListenable: PreferencesService.messageBody,
-        builder: (context, messageBody, _) {
-          return SizedBox(
-            height: 45,
-            child: TextField(
-              controller: _manualUbicationController,
-              style: AppTheme.nunitoFamilySubtitle,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (value) =>
-                  _categorizingLocation(value, 'Ubicación manual'),
-              decoration: InputDecoration(
-                prefixText: '$messageBody ',
-                prefixStyle: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-                hintStyle: const TextStyle(color: Colors.white30),
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFF69346)),
-                ),
-                focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFB6A3A3), width: 2),
-                ),
-                suffixIcon: IconButton(
-                  icon: const Icon(
-                    Icons.send_rounded,
-                    color: Color(0xFFB6A3A3),
+    return Column(
+      children: [
+        const SizedBox(height: 5),
+        ValueListenableBuilder<String>(
+          valueListenable: PreferencesService.messageBody,
+          builder: (context, messageBody, _) {
+            return SizedBox(
+              height: 45,
+              child: TextField(
+                controller: _manualUbicationController,
+                style: AppTheme.nunitoFamilySubtitle,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (value) =>
+                    _categorizingLocation(value, 'Ubicación manual'),
+                decoration: InputDecoration(
+                  prefixText: '$messageBody ',
+                  prefixStyle: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
                   ),
-                  onPressed: () => _categorizingLocation(
-                    _manualUbicationController.text,
-                    'Ubicación manual',
+                  hintStyle: const TextStyle(color: Colors.white30),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFFF69346)),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFB6A3A3),
+                      width: 2,
+                    ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: const Icon(
+                      Icons.send_rounded,
+                      color: Color(0xFFB6A3A3),
+                    ),
+                    onPressed: () => _categorizingLocation(
+                      _manualUbicationController.text,
+                      'Ubicación manual',
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

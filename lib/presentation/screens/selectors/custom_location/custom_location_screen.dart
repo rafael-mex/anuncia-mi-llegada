@@ -25,7 +25,7 @@ class CustomLocationScreen extends StatelessWidget {
 
           //-------------------------------------
           child: CustomLocationScreenLayout(
-            customLocationOptions: const _CustomLocationItemsView(),
+            customLocationOptions: Center(child: const _CustomLocationItemsView()),
           ),
         ),
       ),
@@ -61,6 +61,7 @@ class _CustomListTitle extends StatelessWidget {
     return Column(
       children: [
         InkWell(
+          
           onTap: menuItem.onTap == null ? null : () => menuItem.onTap!(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -70,21 +71,19 @@ class _CustomListTitle extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(width: 70, height: 110, child: menuItem.icon),
+                SizedBox(width: 70, height: 90, child: menuItem.icon),
                 SizedBox(width: MediaQuery.sizeOf(context).width * 0.08),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
-                    children: [menuItem.title],
+                    children: [menuItem.title, menuItem.widget],
                   ),
                 ),
               ],
             ),
           ),
         ),
-        if (menuItem.manualUbication != null) menuItem.manualUbication!,
-
       ],
     );
   }

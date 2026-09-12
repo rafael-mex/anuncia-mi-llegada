@@ -1,8 +1,8 @@
 import 'package:anuncia_mi_llegada/config/menu/settings_items.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/buttons/reset_button.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/icons/gear_icon.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/keyboard_return_button.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/reset_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/keyboard_return_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -103,7 +103,7 @@ class _SettingsView extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      top: 230,
+      top: 220,
       bottom: 0,
       child: SafeArea(
         top: false,
@@ -119,7 +119,7 @@ class _SettingsView extends StatelessWidget {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 30),
                     child: Center(child: _ResetSettingsButton()),
                   ),
                   // Versión de la aplicación
@@ -192,7 +192,7 @@ class _CustomListTitleState extends State<_CustomListTitle> {
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
+                  horizontal: 19.0,
                   vertical: 12.0,
                 ),
                 child: Row(
@@ -200,7 +200,7 @@ class _CustomListTitleState extends State<_CustomListTitle> {
                   children: [
                     SizedBox(
                       width: 70,
-                      height: 120,
+                      height: 90,
                       child: widget.menuItem.icon,
                     ),
                     SizedBox(width: theWidthOfYourScreen * 0.08),
