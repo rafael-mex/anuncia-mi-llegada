@@ -1,12 +1,19 @@
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
-import 'package:go_router/go_router.dart';
 
-class ReturnButton extends StatelessWidget {
-  const ReturnButton({super.key, this.onTap});
+class CustomButton extends StatelessWidget {
 
-  final VoidCallback? onTap;
+  final Widget textOfButton;
+  final VoidCallback buttonAction;
+  final Color? forcedColor;
+
+  const CustomButton({
+    super.key,
+    required this.buttonAction,
+    required this.textOfButton,
+    this.forcedColor,
+  });
 
   static const _lightColor = Color.fromRGBO(255, 186, 130, 1);
   static const _darkColor = Color.fromRGBO(73, 46, 25, 0.925);
@@ -19,10 +26,11 @@ class ReturnButton extends StatelessWidget {
       child: ValueListenableBuilder<bool>(
         valueListenable: isTrueDarkMode,
         builder: (context, isDark, _) {
+          final Color effectiveColor = forcedColor ?? (isDark ? _darkColor : _lightColor);
           return TweenAnimationBuilder<Color?>(
             tween: ColorTween(
-              begin: isDark ? _darkColor : _lightColor,
-              end: isDark ? _darkColor : _lightColor,
+              begin: effectiveColor,
+              end: effectiveColor,
             ),
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
@@ -41,7 +49,7 @@ class ReturnButton extends StatelessWidget {
                   child: InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
-                    onTap: onTap ?? context.pop,
+                    onTap: buttonAction,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -55,17 +63,7 @@ class ReturnButton extends StatelessWidget {
                             offset: Offset(1, 1),
                           ),
                         ],
-                        child: const Text(
-                          'Retroceder',
-                          style: TextStyle(
-                            color: Color.fromRGBO(255, 255, 255, 83),
-                            height: 1.3,
-                            fontFamily: 'Nunito',
-                            fontSize: 17,
-                            letterSpacing: 0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        child: textOfButton
                       ),
                     ),
                   ),

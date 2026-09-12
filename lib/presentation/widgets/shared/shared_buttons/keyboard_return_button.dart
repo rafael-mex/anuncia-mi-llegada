@@ -18,7 +18,7 @@ class KeyboardReturnButton extends StatelessWidget {
           Color.fromRGBO(224, 114, 45, 100),
         ),
       ),
-      icon: Icon(Icons.keyboard_return_outlined, size: 38),
+      icon: Icon(Icons.arrow_back_ios_new_outlined, size: 38),
     );
   }
 }

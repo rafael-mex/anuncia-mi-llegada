@@ -1,8 +1,8 @@
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/history_button.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/keyboard_return_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/history_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/keyboard_return_button.dart';
 import 'package:flutter/material.dart';
 import '../icons/map_icon.dart';
-import '../shared/buttons/settings_button.dart';
+import '../shared/shared_buttons/settings_button.dart';
 
 class CustomLocationScreenLayout extends StatelessWidget {
   final Widget keyboardReturnButton;
@@ -53,8 +53,6 @@ class CustomLocationScreenLayout extends StatelessWidget {
                   ],
                 ),
                 //---------------------------------------
-
-                const Spacer(),
 
                 Flexible(
                   flex: 14,

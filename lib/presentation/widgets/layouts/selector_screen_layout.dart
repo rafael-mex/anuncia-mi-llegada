@@ -1,8 +1,9 @@
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/custom_button.dart';
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../icons/map_icon.dart';
-import '../shared/buttons/history_button.dart';
-import '../shared/buttons/return_button.dart';
-import '../shared/buttons/settings_button.dart';
+import '../shared/shared_buttons/history_button.dart';
+import '../shared/shared_buttons/settings_button.dart';
 
 class SelectorScreenLayout extends StatelessWidget {
   final Widget selector;
@@ -56,7 +57,19 @@ class SelectorScreenLayout extends StatelessWidget {
                   opacity: showReturnButton ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
-                  child: ReturnButton(onTap: onReturnTap),
+                  child: CustomButton(
+                    buttonAction: () {
+                      if (onReturnTap != null) {
+                        onReturnTap!();
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    }, 
+                    textOfButton: Text(
+                    'Retroceder', style: 
+                    AppTheme.nunitoFamilyCustomButton.copyWith(fontSize: 17)
+                    ),
+                  ),
                 ),
               ),
               //--------------

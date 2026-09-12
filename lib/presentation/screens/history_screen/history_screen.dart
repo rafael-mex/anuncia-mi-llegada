@@ -1,7 +1,7 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/history_items.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/icons/history_icon.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/keyboard_return_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/keyboard_return_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';

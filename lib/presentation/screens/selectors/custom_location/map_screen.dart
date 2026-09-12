@@ -1,4 +1,5 @@
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/buttons/confirm_ubication_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/custom_button.dart';
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -85,11 +86,10 @@ class _MapScreenState extends State<MapScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 680.0),
             child: Center(
-              child: ConfirmUbicationButton(
-                onTap: () {
-                  final center = _mapController.camera.center;
+              child: CustomButton(forcedColor: Color(0xFFF69346), textOfButton: Text('Confirmar ubicación', style: AppTheme.nunitoFamilyCustomButton.copyWith(fontSize: 17),), buttonAction: () { 
+                final center = _mapController.camera.center;
                   Navigator.pop(context, center);
-                },
+                }, 
               ),
             ),
           ),
