@@ -1,9 +1,11 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MenuItem {
   final Widget title;
@@ -222,36 +224,29 @@ final appSettingsItems = <MenuItem>[
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
 
-
                 // Grupo: Historial
                 Text('Historial', style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text("Borrar el historial", style: dynamicStyle),
-                  leading: Icon(Icons.delete_outline, color:  dynamicColor),
-                  onTap: () {
+                  leading: Icon(Icons.delete_outline, color: dynamicColor),
+                  onTap: () async {
                     if (PreferencesService.historyList.value.isEmpty) {
                       showPlatformDialog(
                         context: context,
                         title: 'No puedes borrar el historial',
                         content: 'Aún no has anunciado tu llegada',
-                        actions: [
-                          PlatformDialogAction(
-                            text: 'Aceptar',
-                          ),
-                        ],
+                        actions: [PlatformDialogAction(text: 'Aceptar')],
                       );
                       return;
                     }
                     showPlatformDialog(
                       context: context,
-                      title: 'Borrar el historial',
-                      content: '¿Estás seguro de borrar tu historial?',
+                      title: '¿Borrarás el historial de tus mensajes?',
+                      content: 'Si lo haces no podrás recuperarlos',
                       actions: [
-                        PlatformDialogAction(
-                          text: 'Rechazar',
-                        ),
+                        PlatformDialogAction(text: 'Rechazar'),
                         PlatformDialogAction(
                           text: 'Continuar',
                           onPressed: () {
@@ -260,8 +255,8 @@ final appSettingsItems = <MenuItem>[
                         ),
                       ],
                     );
-                  }
-                )
+                  },
+                ),
               ],
             );
           },
@@ -270,6 +265,109 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
   //------
+  // ------ Opción: Contacto y código ------
+  MenuItem(
+    title: Text('CONTACTO', style: AppTheme.metroStyle),
+    subtitle: Text(
+      'Manda sugerencias y reporta \nerrores, o conoce el código \nde la aplicación',
+      style: AppTheme.nunitoFamilySubtitle,
+    ),
+    icon: SvgPicture.asset(
+      'assets/icons/config_icons/contacto.svg',
+      fit: BoxFit.contain,
+    ),
+    showedConfigurations: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        type: MaterialType.transparency,
+        child: Builder(
+          builder: (context) {
+            // Colores del app Theme.
+            final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
+            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
+              color: dynamicColor,
+            );
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Grupo: Aplicación
+                Text("Aplicación", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+
+                //Mandar correo
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    "Contactar por correo para sugerir o reportar errores",
+                    style: dynamicStyle,
+                  ),
+                  leading: Icon(
+                    Icons.mail_outline_rounded,
+                    color: dynamicColor,
+                  ),
+                  onTap: () async {
+                    final Uri emailLaunchUri = Uri(
+                      scheme: 'mailto',
+                      path: 'rmdeveloper08@gmail.com',
+                      query:
+                          'subject=${Uri.encodeComponent('Sugerencia/Reporte - Anuncia Mi Llegada')}',
+                    );
+
+                    if (await canLaunchUrl(emailLaunchUri)) {
+                      await launchUrl(emailLaunchUri);
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'No se encontró una aplicación de correo instalada.',
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+                //---------------------
+
+                //Mandar a la página de github
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    "Ir al Github de la app",
+                    style: dynamicStyle,
+                  ),
+                  leading: Icon(Icons.code_outlined, color: dynamicColor),
+                  onTap: () async {
+                    final Uri webUri = Uri.parse(
+                      'https://github.com/rafael-mex/anuncia-mi-llegada',
+                    );
+
+                    if (await canLaunchUrl(webUri)) {
+                      await launchUrl(
+                        webUri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No se pudo abrir el enlace.'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+                //------------------------------
+              ],
+            );
+          },
+        ),
+      ),
+    ),
+  ),
 ];
 
 class _MessageBodyField extends StatefulWidget {
