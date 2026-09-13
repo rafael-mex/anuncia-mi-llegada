@@ -1,6 +1,8 @@
+import 'package:anuncia_mi_llegada/config/mapbox_config.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'config/router/app_router.dart';
 import 'theme/app_theme.dart';
 
@@ -8,6 +10,9 @@ const appVersion = 'Versión 1.2.0 (Alpha)';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (mapboxAccessToken.isNotEmpty) {
+    MapboxOptions.setAccessToken(mapboxAccessToken);
+  }
   await PreferencesService.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

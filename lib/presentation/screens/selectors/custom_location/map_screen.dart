@@ -1,9 +1,9 @@
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/custom_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -13,7 +13,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final MapController _mapController = MapController();
+  mapbox.MapboxMap? _mapboxMap;
   late Future<LatLng> _locationFuture;
 
   static const LatLng _fallbackCenter = LatLng(19.4326, -99.1332);
@@ -53,6 +53,20 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  void _onMapCreated(mapbox.MapboxMap mapboxMap) {
+    _mapboxMap = mapboxMap;
+  }
+
+  Future<void> _confirmSelection() async {
+    final currentCamera = await _mapboxMap?.getCameraState();
+    final center = currentCamera?.center;
+    final lat = (center?.coordinates.lat ?? _fallbackCenter.latitude).toDouble();
+    final lng =
+        (center?.coordinates.lng ?? _fallbackCenter.longitude).toDouble();
+    if (!mounted) return;
+    Navigator.pop(context, LatLng(lat, lng));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,19 +78,25 @@ class _MapScreenState extends State<MapScreen> {
               if (snapshot.connectionState != ConnectionState.done) {
                 return const Center(child: CircularProgressIndicator());
               }
-              return FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: snapshot.data ?? _fallbackCenter,
-                  initialZoom: 16.0,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.rmdeveloper.anunciaMiLlegada',
+              final center = snapshot.data ?? _fallbackCenter;
+              return mapbox.MapWidget(
+                viewport: mapbox.CameraViewportState(
+                  center: mapbox.Point(
+                    coordinates: mapbox.Position(
+                      center.longitude,
+                      center.latitude,
+                    ),
                   ),
-                ],
+                  zoom: 16.0,
+                ),
+                styleUri: mapbox.MapboxStyles.STANDARD,
+                onMapCreated: _onMapCreated,
+                onMapLoadErrorListener: (error) {
+                  debugPrint(
+                    'Error cargando el mapa de Mapbox '
+                    '(tipo: ${error.type}, mensaje: ${error.message})',
+                  );
+                },
               );
             },
           ),
@@ -86,20 +106,26 @@ class _MapScreenState extends State<MapScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 680.0),
             child: Center(
-              child: CustomButton(forcedColor: Color(0xFFF69346), textOfButton: Text('Confirmar ubicación', style: AppTheme.nunitoFamilyCustomButton.copyWith(fontSize: 17),), buttonAction: () { 
-                final center = _mapController.camera.center;
-                  Navigator.pop(context, center);
-                }, 
+              child: CustomButton(
+                forcedColor: const Color(0xFFF69346),
+                textOfButton: Text(
+                  'Confirmar ubicación',
+                  style: AppTheme.nunitoFamilyCustomButton.copyWith(
+                    fontSize: 17,
+                  ),
+                ),
+                buttonAction: _confirmSelection,
               ),
             ),
           ),
           Positioned(
-            top: 50,
+            top: 100,
             left: 20,
             child: CircleAvatar(
+              radius: 26,
               backgroundColor: Colors.black54,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30),
                 onPressed: () => Navigator.pop(context),
               ),
             ),
