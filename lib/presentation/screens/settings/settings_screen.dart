@@ -58,7 +58,7 @@ class _ApplicationVersion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(version);
+    return Text(version, textAlign: TextAlign.center);
   }
 }
 // -------------

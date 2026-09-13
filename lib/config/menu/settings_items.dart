@@ -361,6 +361,14 @@ final appSettingsItems = <MenuItem>[
                   },
                 ),
                 //------------------------------
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Creador de la aplicación: \nMex Lozano Rafael Emilio, con ayuda de OpenCode',
+                    style: dynamicStyle,
+                  ),
+                  leading: Icon(Icons.person),
+                )
               ],
             );
           },
