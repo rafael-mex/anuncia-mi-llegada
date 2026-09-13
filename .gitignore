@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Xcode Swift Package Manager workspace caches
+**/xcshareddata/swiftpm/
+
+# Mapbox: token de acceso (nunca se sube al repo)
+mapbox.env
+ios/Flutter/mapbox_token.xcconfig

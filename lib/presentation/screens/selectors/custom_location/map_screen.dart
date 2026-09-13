@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:anuncia_mi_llegada/config/mapbox_config.dart';
+import 'package:anuncia_mi_llegada/config/mapbox_geocoding.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/custom_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +21,23 @@ class _MapScreenState extends State<MapScreen> {
 
   static const LatLng _fallbackCenter = LatLng(19.4326, -99.1332);
 
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+  List<MapboxPlace> _searchResults = const [];
+  bool _isSearching = false;
+  bool _searchFailed = false;
+
   @override
   void initState() {
     super.initState();
     _locationFuture = _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<LatLng> _getCurrentLocation() async {
@@ -60,11 +76,64 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _confirmSelection() async {
     final currentCamera = await _mapboxMap?.getCameraState();
     final center = currentCamera?.center;
-    final lat = (center?.coordinates.lat ?? _fallbackCenter.latitude).toDouble();
-    final lng =
-        (center?.coordinates.lng ?? _fallbackCenter.longitude).toDouble();
+    final lat = (center?.coordinates.lat ?? _fallbackCenter.latitude)
+        .toDouble();
+    final lng = (center?.coordinates.lng ?? _fallbackCenter.longitude)
+        .toDouble();
     if (!mounted) return;
     Navigator.pop(context, LatLng(lat, lng));
+  }
+
+  void _onSearchChanged(String query) {
+    _debounce?.cancel();
+    if (query.trim().isEmpty) {
+      setState(() {
+        _searchResults = const [];
+        _isSearching = false;
+        _searchFailed = false;
+      });
+      return;
+    }
+
+    if (mapboxAccessToken.isEmpty) {
+      setState(() {
+        _searchResults = const [];
+        _isSearching = false;
+        _searchFailed = true;
+      });
+      return;
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      setState(() {
+        _isSearching = true;
+        _searchFailed = false;
+      });
+      final results = await forwardGeocode(query, proximity: _fallbackCenter);
+      if (!mounted) return;
+      setState(() {
+        _searchResults = results;
+        _isSearching = false;
+        _searchFailed = results.isEmpty;
+      });
+    });
+  }
+
+  Future<void> _moveToPlace(MapboxPlace place) async {
+    _searchController.clear();
+    _debounce?.cancel();
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _searchResults = const []);
+
+    await _mapboxMap?.flyTo(
+      mapbox.CameraOptions(
+        center: mapbox.Point(
+          coordinates: mapbox.Position(place.longitude, place.latitude),
+        ),
+        zoom: 16.0,
+      ),
+      null,
+    );
   }
 
   @override
@@ -103,6 +172,151 @@ class _MapScreenState extends State<MapScreen> {
           const Center(
             child: Icon(Icons.location_on, color: Color(0xFFF69346), size: 50),
           ),
+          Positioned(
+            top: 100,
+            left: 20,
+            right: 20,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 26,
+                  backgroundColor: Colors.black54,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 90, 88, 88),
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: _onSearchChanged,
+                      style: AppTheme.nunitoFamilySubtitle.copyWith(
+                        color: Colors.white,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Buscar dirección o lugar',
+                        hintStyle: AppTheme.nunitoFamilySubtitle.copyWith(
+                          color: const Color.fromARGB(255, 253, 252, 252),
+                        ),
+                        prefixIcon: _isSearching
+                            ? const Padding(
+                                padding: EdgeInsets.all(14),
+                                child: SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : const Icon(
+                                Icons.search,
+                                color: Color(0xFFF69346),
+                              ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_searchResults.isNotEmpty)
+            Positioned(
+              top: 168,
+              left: 78,
+              right: 20,
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.black54,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 260),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    itemCount: _searchResults.length,
+                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final place = _searchResults[index];
+                      return ListTile(
+                        dense: true,
+                        leading: const Icon(
+                          Icons.place,
+                          color: Color(0xFFF69346),
+                        ),
+                        title: Text(
+                          place.name,
+                          style: AppTheme.nunitoFamilySubtitle.copyWith(
+                            color: const Color.fromARGB(255, 246, 245, 245),
+                            fontSize: 12,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () => _moveToPlace(place),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          if (_searchFailed)
+            Positioned(
+              top: 168,
+              left: 78,
+              right: 20,
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(
+                    children: [
+                      Icon(
+                        mapboxAccessToken.isEmpty
+                            ? Icons.error_outline
+                            : Icons.search_off,
+                        color: const Color(0xFFF69346),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          mapboxAccessToken.isEmpty
+                              ? 'Falta configurar el token de Mapbox '
+                                    '(mapbox.env)'
+                              : 'No se encontraron resultados',
+                          style: AppTheme.nunitoFamilySubtitle.copyWith(
+                            color: const Color(0xFF4A4A4A),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(top: 680.0),
             child: Center(
@@ -115,18 +329,6 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
                 buttonAction: _confirmSelection,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 100,
-            left: 20,
-            child: CircleAvatar(
-              radius: 26,
-              backgroundColor: Colors.black54,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
               ),
             ),
           ),

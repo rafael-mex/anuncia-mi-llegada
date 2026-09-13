@@ -10,6 +10,7 @@ const appVersion = 'Versión 1.2.0 (Alpha)';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ensureMapboxAccessToken();
   if (mapboxAccessToken.isNotEmpty) {
     MapboxOptions.setAccessToken(mapboxAccessToken);
   }

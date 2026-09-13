@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:anuncia_mi_llegada/config/mapbox_config.dart';
+import 'package:anuncia_mi_llegada/config/mapbox_geocoding.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/history_items.dart';
 import 'package:anuncia_mi_llegada/presentation/screens/selectors/custom_location/map_screen.dart';
@@ -9,7 +7,6 @@ import 'package:anuncia_mi_llegada/utils/send_message_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
 class MenuItem {
@@ -79,60 +76,6 @@ Future<void> _sendLocation(String locationText, String type) async {
   }
 }
 
-String _formatMapboxPlace(Map<String, dynamic> feature) {
-  final text = feature['text'] as String? ?? '';
-  final context = feature['context'] as List? ?? const [];
-
-  String? neighborhood;
-  for (final entry in context) {
-    if (entry is! Map<String, dynamic>) continue;
-    final id = (entry['id'] as String?) ?? '';
-    if (id.startsWith('neighborhood') || id.startsWith('locality')) {
-      neighborhood = entry['text'] as String?;
-      break;
-    }
-  }
-
-  final parts = [text, neighborhood]
-      .where((p) => p != null && p.toString().trim().isNotEmpty)
-      .toList();
-  return parts.join(', ');
-}
-
-Future<String> _reverseGeocode(double latitude, double longitude) async {
-  if (mapboxAccessToken.isEmpty) return '';
-
-  final uri = Uri.parse(
-    '$mapboxReverseGeocodingBaseUrl/$longitude,$latitude.json'
-    '?access_token=$mapboxAccessToken&language=es&limit=1',
-  );
-
-  try {
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      debugPrint(
-        'Mapbox geocoding devolvió ${response.statusCode}: ${response.body}',
-      );
-      return '';
-    }
-
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-    final features = json['features'] as List? ?? const [];
-    if (features.isEmpty) return '';
-
-    final feature = features.first as Map<String, dynamic>;
-    final formatted = _formatMapboxPlace(feature);
-    if (formatted.isNotEmpty) return formatted;
-
-    return (feature['place_name'] as String?) ?? '';
-  } catch (e) {
-    debugPrint(
-      "Parece que hubo un error al obtener tu dirección ;( : $e",
-    );
-    return '';
-  }
-}
-
 Future<void> _openMapAndSend(BuildContext context) async {
   final selectedPoint = await Navigator.of(
     context,
@@ -141,7 +84,7 @@ Future<void> _openMapAndSend(BuildContext context) async {
 
   String locationText = '${selectedPoint.latitude}, ${selectedPoint.longitude}';
 
-  final address = await _reverseGeocode(
+  final address = await reverseGeocode(
     selectedPoint.latitude,
     selectedPoint.longitude,
   );
@@ -187,7 +130,7 @@ Future<void> _getCurrentLocationAndSend(BuildContext context) async {
         '${position.latitude.toStringAsFixed(6)}, '
         '${position.longitude.toStringAsFixed(6)}';
 
-    final address = await _reverseGeocode(
+    final address = await reverseGeocode(
       position.latitude,
       position.longitude,
     );

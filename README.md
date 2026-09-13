@@ -363,6 +363,60 @@ En los selectores, el icono del mapa queda clavado en la misma coordenada que el
 **Cómo funciona en la aplicación:**
 En la pantalla de historial, al tocar cualquiera de los registros la aplicación reutiliza el cuerpo de mensaje guardado en ajustes junto con la estación o línea de ese registro y abre la aplicación de mensajería que el usuario dejó como predeterminada (SMS, WhatsApp o el recuadro de compartir), con el texto ya redactado listo para reenviar el mismo anuncio sin volver a recorrer los selectores.
 
+#### Décima sesión — 13 de septiembre de 2026
+
+**Prompts enviados (resumen):**
+> "Guíame para crear un token de Mapbox, cómo protegerlo en un repositorio público, mover los cambios de la rama experimental a develop y eliminar experimental; implementa el mapa de Mapbox con mi token, protégelo a nivel de código y reporta todos los cambios por archivo contra develop; después implementa la barra de búsqueda"
+>
+> "La barra de búsqueda no muestra sugerencias al escribir una dirección; haz que las nuevas implementaciones funcionen perfectamente en Android (APK futuro y emulador)"
+>
+> "Al ejecutar la app desde main.dart, al ir al mapa crashea con PlatformException (MapboxConfigurationException)"
+>
+> "En el buscador aparece 'Falta configurar el token de Mapbox (mapbox.env)'"
+>
+> "Haz que todo esté listo para ambas plataformas"
+
+**Cambios realizados:**
+
+1. **Migración del mapa de OpenStreetMap a Mapbox (`lib/presentation/screens/selectors/custom_location/map_screen.dart`):**
+   - Se sustituyó el widget de mapa anterior por `MapWidget` de `mapbox_maps_flutter` con el estilo `MapboxStyles.STANDARD`.
+   - El mapa se centra en la ubicación actual del usuario (con geolocalización) o, si no se puede obtener, en un punto por defecto de la Ciudad de México.
+   - Se conserva el ícono central de tipo "marcador" y el botón "Confirmar ubicación", que devuelve la latitud/longitud del centro del mapa a la pantalla anterior.
+
+2. **Módulo de geocoding con Mapbox (`lib/config/mapbox_geocoding.dart`, nuevo):**
+   - `forwardGeocode(query)`: busca direcciones/lugares por texto (hasta 5 resultados, con `language=es` y opción de `proximity`) y los devuelve como `MapboxPlace` (nombre + latitud/longitud).
+   - `reverseGeocode(lat, lng)`: convierte coordenadas en una dirección legible (barrio + asentamiento), usada para mostrar un texto comprensible en el mensaje.
+
+3. **Barra de búsqueda de lugares (`map_screen.dart`):**
+   - Campo de texto flotante sobre el mapa con debounce de 500 ms (no hace llamadas por cada tecla).
+   - Muestra el spinner mientras busca y una lista de hasta 5 sugerencias; al tocar una sugerencia, el mapa vuela (`flyTo`) al lugar.
+   - Si no hay resultado o el token no está configurado, muestra avisos amigables en lugar de crashear: "Falta configurar el token de Mapbox (mapbox.env)" o "No se encontraron resultados".
+
+4. **Dirección legible en la ubicación personalizada (`lib/config/menu/custom_location_items.dart`):**
+   - "UBICAR EN EL MAPA" y "USAR UBICACIÓN ACTUAL" ahora usan el `reverseGeocode` compartido: si se resuelve la dirección, el mensaje enviado incluye el nombre del lugar en vez de coordenadas crudas.
+
+5. **Ramas:**
+   - Los cambios se movieron de la rama experimental a develop (merge fast-forward) y la rama experimental se eliminó.
+
+6. **Inyección del token en compilación (`lib/config/mapbox_config.dart`, `lib/main.dart`):**
+   - El token se lee con `String.fromEnvironment` y se inyecta en compilación con `--dart-define-from-file`, desde un archivo de entorno local incluido en `.gitignore` (con su plantilla `.example` versionada, sin valor).
+   - Se añadió `build_apk.sh` (genera el APK release con el token inyectado) y configuraciones de ejecución en `.vscode/launch.json` y `.vscode/settings.json` (`dart.flutterRunAdditionalArgs`) para que las ejecuciones desde `main.dart` lleven el token automáticamente.
+   - `main.dart` resuelve el token (del define o del canal nativo) antes de llamar a `MapboxOptions.setAccessToken`.
+
+7. **Compatibilidad de build con Android (`android/gradle.properties`, `android/app/build.gradle.kts`, `MainActivity.kt`):**
+   - Se activó `android.builtInKotlin=true` porque el plugin `mapbox_maps_flutter 2.30.1` requiere Built-in Kotlin con AGP 9 ("Could not find method kotlin()").
+   - El token de acceso público se expone al SDK nativo de Android a través de un recurso local (`mapbox_access_token`) que vive en un archivo en `.gitignore`.
+   - `MainActivity.kt` registra un canal nativo (`rmdeveloper/mapbox_access_token`) que devuelve el token a Dart, de modo que la app funciona también al ejecutarse desde `main.dart` sin `--dart-define` (Android Studio, terminal o Android con ejecutables predeterminados).
+
+8. **Compatibilidad de build con iOS (`ios/Flutter/Debug.xcconfig`, `ios/Flutter/Release.xcconfig`, `ios/Runner/Info.plist`, `ios/Runner/AppDelegate.swift`):**
+   - Se añadió un archivo de configuración local (en `.gitignore`) con el token y se enlazó de forma opcional desde los `.xcconfig` de Flutter.
+   - La clave `MGLMapboxAccessToken` de `Info.plist` se sustituye con ese valor, por lo que el SDK nativo de Mapbox tiene el token aun sin `--dart-define`.
+   - `AppDelegate.swift` registra el mismo canal nativo para que Dart obtenga el token y el buscador funcione igual en iOS.
+   - Se verificó `flutter build ios --debug --simulator` y el arranque de la app en el simulador de iPhone con el SDK de Mapbox inicializado.
+
+**Cómo funciona en la aplicación:**
+Al elegir "Usar ubicación personalizada" → "UBICAR EN EL MAPA" se abre el mapa de Mapbox centrado en la ubicación del usuario (o en la Ciudad de México si no hay permiso). Al escribir en el buscador, la app sugiere hasta 5 lugares reales de Mapbox; al tocar uno, el mapa se desplaza hasta ese punto. Con "Confirmar ubicación" el centro del mapa se convierte en una dirección legible (reversa) que se envía junto con el cuerpo del mensaje de ajustes. La opción "Usar ubicación actual" hace lo mismo con las coordenadas del GPS. Todo esto funciona en Android e iOS tanto al ejecutarse desde `main.dart` (VS Code, Android Studio o terminal) como en el APK compilado, porque el token público se inyecta de forma segura en cada plataforma y nunca se sube al repositorio.
+
 #### Novena sesión — 4 de septiembre de 2026
 
 **Prompts enviados (resumen):**

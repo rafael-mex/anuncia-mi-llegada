@@ -1,1 +1,4 @@
 #include "Generated.xcconfig"
+
+// Token de Mapbox (include opcional; el archivo esta en .gitignore)
+#include? "mapbox_token.xcconfig"
