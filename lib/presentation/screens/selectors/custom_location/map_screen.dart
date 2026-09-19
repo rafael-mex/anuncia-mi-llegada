@@ -37,6 +37,7 @@ class _MapScreenState extends State<MapScreen> {
   void dispose() {
     _debounce?.cancel();
     _searchController.dispose();
+    isTrueDarkMode.removeListener(_applyMapTheme);
     super.dispose();
   }
 
@@ -71,6 +72,23 @@ class _MapScreenState extends State<MapScreen> {
 
   void _onMapCreated(mapbox.MapboxMap mapboxMap) {
     _mapboxMap = mapboxMap;
+    _applyMapTheme();
+    isTrueDarkMode.addListener(_applyMapTheme);
+  }
+
+  String get _styleForTheme =>
+      isTrueDarkMode.value ? mapboxStyleDarkUri : mapboxStyleLightUri;
+
+  Future<void> _applyMapTheme() async {
+    final map = _mapboxMap;
+    if (map == null) return;
+    final uri = _styleForTheme;
+    try {
+      if (await map.style.getStyleURI() == uri) return;
+    } catch (_) {
+      // Estilo aún cargando; se aplica directamente.
+    }
+    await map.style.setStyleURI(uri).catchError((_) {});
   }
 
   Future<void> _confirmSelection() async {
@@ -158,7 +176,9 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   zoom: 16.0,
                 ),
-                styleUri: mapbox.MapboxStyles.STANDARD,
+                styleUri: isTrueDarkMode.value
+                    ? mapboxStyleDarkUri
+                    : mapboxStyleLightUri,
                 onMapCreated: _onMapCreated,
                 onMapLoadErrorListener: (error) {
                   debugPrint(
@@ -194,11 +214,13 @@ class _MapScreenState extends State<MapScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 90, 88, 88),
+                      color: isTrueDarkMode.value
+                          ? Color.fromARGB(255, 27, 26, 27)
+                          : Colors.white,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.black26,
+                          color: Color.fromARGB(66, 1, 1, 1),
                           blurRadius: 6,
                           offset: Offset(0, 2),
                         ),
@@ -208,12 +230,14 @@ class _MapScreenState extends State<MapScreen> {
                       controller: _searchController,
                       onChanged: _onSearchChanged,
                       style: AppTheme.nunitoFamilySubtitle.copyWith(
-                        color: Colors.white,
+                        color: isTrueDarkMode.value
+                            ? Color(0xFFF69346)
+                            : Color.fromRGBO(91, 79, 79, 100),
                       ),
                       decoration: InputDecoration(
                         hintText: 'Buscar dirección o lugar',
                         hintStyle: AppTheme.nunitoFamilySubtitle.copyWith(
-                          color: const Color.fromARGB(255, 253, 252, 252),
+                          color: const Color(0xFFF69346),
                         ),
                         prefixIcon: _isSearching
                             ? const Padding(
@@ -249,7 +273,9 @@ class _MapScreenState extends State<MapScreen> {
               child: Material(
                 elevation: 4,
                 borderRadius: BorderRadius.circular(16),
-                color: Colors.black54,
+                color: isTrueDarkMode.value 
+                ? Color.fromARGB(255, 27, 26, 27)
+                : Colors.white,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 260),
                   child: ListView.separated(
@@ -268,7 +294,9 @@ class _MapScreenState extends State<MapScreen> {
                         title: Text(
                           place.name,
                           style: AppTheme.nunitoFamilySubtitle.copyWith(
-                            color: const Color.fromARGB(255, 246, 245, 245),
+                            color: isTrueDarkMode.value
+                                ? Color.fromARGB(255, 246, 245, 245)
+                                : Color.fromRGBO(91, 79, 79, 100),
                             fontSize: 12,
                           ),
                           maxLines: 2,
@@ -321,7 +349,9 @@ class _MapScreenState extends State<MapScreen> {
             padding: const EdgeInsets.only(top: 680.0),
             child: Center(
               child: CustomButton(
-                forcedColor: const Color(0xFFF69346),
+                forcedColor: isTrueDarkMode.value 
+                ? const Color.fromARGB(255, 33, 16, 3)
+                : Color(0xFFF69346),
                 textOfButton: Text(
                   'Confirmar ubicación',
                   style: AppTheme.nunitoFamilyCustomButton.copyWith(
