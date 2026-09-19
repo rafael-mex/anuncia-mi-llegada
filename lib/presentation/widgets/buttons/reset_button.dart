@@ -8,7 +8,7 @@ class ResetButton extends StatelessWidget {
 
   final VoidCallback? onTap;
 
-  static const _lightColor = Color.fromRGBO(255, 186, 130, 1);
+  static const _lightColor = Color(0xFFF69346);
   static const _darkColor = Color.fromRGBO(73, 46, 25, 0.925);
 
   @override
