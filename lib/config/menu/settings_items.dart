@@ -265,7 +265,7 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
   //------
-  // ------ Opción: Contacto y código ------
+  // ------ Opción: Contacto ------
   MenuItem(
     title: Text('CONTACTO', style: AppTheme.metroStyle),
     subtitle: Text(
@@ -364,10 +364,13 @@ final appSettingsItems = <MenuItem>[
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
-                    'Creador de la aplicación: \nMex Lozano Rafael Emilio, con ayuda de OpenCode',
-                    style: dynamicStyle,
+                    'Creador de la aplicación: \nMex Lozano Rafael Emilio',
+                    style: dynamicStyle.copyWith(color: Color(0xFFF69346)),
                   ),
-                  leading: Icon(Icons.person),
+                  leading: SvgPicture.asset(
+                    'assets/icons/config_icons/mi_pfp.svg',
+                    width: 40,
+                    ),
                 )
               ],
             );
