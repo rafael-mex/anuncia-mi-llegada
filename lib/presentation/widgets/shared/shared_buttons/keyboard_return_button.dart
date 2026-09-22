@@ -1,9 +1,9 @@
+import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class KeyboardReturnButton extends StatelessWidget {
-  const KeyboardReturnButton({
-    super.key,
+  const KeyboardReturnButton({super.key, 
   });
 
   @override
@@ -15,7 +15,9 @@ class KeyboardReturnButton extends StatelessWidget {
       style: ButtonStyle(
         iconSize: WidgetStatePropertyAll(24),
         iconColor: WidgetStatePropertyAll(
-          Color.fromRGBO(224, 114, 45, 100),
+          isTrueDarkMode.value
+          ?Color(0xFFBD7E52)
+          : Color(0xFFF8AC72),
         ),
       ),
       icon: Icon(Icons.arrow_back_ios_new_outlined, size: 38),
