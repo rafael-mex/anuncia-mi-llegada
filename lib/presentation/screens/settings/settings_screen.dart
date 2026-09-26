@@ -1,8 +1,7 @@
 import 'package:anuncia_mi_llegada/config/menu/settings_items.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/buttons/reset_button.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/icons/gear_icon.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/keyboard_return_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/layouts/settings_screen_layout.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -28,22 +27,9 @@ class SettingsScreen extends StatelessWidget {
             gradient: isDark ? AppTheme.backgroundColorDM : null,
           ),
           //-------------------------------------
-          child: Stack(
-            children: [
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 108,
-                child: Center(child: GearIcon())),
-              //Keyboard Return Button
-              Positioned(
-                left: 28,
-                top: 126,
-                child: KeyboardReturnButton(),
-              ),
-              //Opciones
-              _SettingsView(version: version),
-            ],
+          child: SettingsScreenLayout(
+            settingsView: _SettingsView(version: version),
+            version: '',
           ),
         ),
       ),
@@ -100,15 +86,10 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      top: 220,
-      bottom: 0,
-      child: SafeArea(
+    return SafeArea(
         top: false,
         //Resguardo extra para la barra de navegación del dispositivo:
-        minimum: const EdgeInsets.only(bottom: 50),
+      minimum: const EdgeInsets.only(bottom: 10),
         child: ListView.builder(
           padding: EdgeInsets.zero,
           //+1 para el botón de restablecer configuraciones:
@@ -134,7 +115,6 @@ class _SettingsView extends StatelessWidget {
             final menuItem = appSettingsItems[index];
             return _CustomListTitle(menuItem: menuItem);
           },
-        ),
       ),
     );
   }

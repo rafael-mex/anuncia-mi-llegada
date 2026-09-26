@@ -22,7 +22,7 @@ class SelectorScreenLayout extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
-          const Spacer(),
+          const SizedBox(height: 40),
           Stack(
             children: [
               //MapIcon

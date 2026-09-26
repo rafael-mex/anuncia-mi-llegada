@@ -43,8 +43,8 @@ class SettingsButton extends StatelessWidget {
                   child: SvgPicture.asset(
                     assetPath,
                     key: ValueKey<String>(assetPath),
-                    width: 24,
-                    height: 24,
+                    width: 25,
+                    height: 25,
                   ),
                 ),
               ),

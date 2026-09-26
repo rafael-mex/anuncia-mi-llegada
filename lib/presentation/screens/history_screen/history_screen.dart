@@ -1,7 +1,6 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/history_items.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/icons/history_icon.dart';
-import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/keyboard_return_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/layouts/history_screen_layout.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,27 +71,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             gradient: isDark ? AppTheme.backgroundColorDM : null,
           ),
           //-------------------------------------
-          child: Stack(
-            children: [
-              //RecordIcon
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 108,
-                child: Center(child: HistoryIcon()),
-              ),
-              //------------
-              //KeyoboardReturnButton
-              Positioned(left: 28, top: 126, child: KeyboardReturnButton()),
-              //---------------------
-
-              //Barra de categorías
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 240,
-                bottom: 0,
-                child: Column(
+          child: HistoryScreenLayout(
+            historyWidget: Column(
                   children: [
                     ValueListenableBuilder<List<HistoryItems>>(
                       valueListenable: PreferencesService.historyList,
@@ -132,7 +112,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Divider(color: Color(0xFFF69346), thickness: 1, height: 8, indent: 20, endIndent: 20,),
+                Divider(
+                  color: Color(0xFFF69346),
+                  thickness: 1,
+                  height: 8,
+                  indent: 20,
+                  endIndent: 20,
+                ),
                     const SizedBox(height: 10),
                     //Historial
                     Expanded(
@@ -143,8 +129,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               ? historyItems
                               : historyItems
                                     .where(
-                                      (item) =>
-                                          item.category == selectCategory,
+                                  (item) => item.category == selectCategory,
                                     )
                                     .toList();
 
@@ -173,13 +158,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                     borderRadius: BorderRadius.circular(12),
                                     onTap: () => _resendMessage(history),
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Icon(
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 12.0),
+                                      child: const Icon(
                                           Icons.chat_bubble_outline_rounded,
                                           color: Color(0xFFF69346),
                                           size: 26,
+                                      ),
                                         ),
                                         const SizedBox(width: 15),
                                         Expanded(
@@ -190,15 +177,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                               Text(
                                                 history.stationName[0]
                                                         .toUpperCase() +
-                                                    history.stationName
-                                                        .substring(1),
+                                                history.stationName.substring(
+                                                  1,
+                                                ),
                                                 style: AppTheme.nunitoFamily,
                                               ),
                                               const SizedBox(height: 2),
                                               Text(
                                                 history.transportAndLineName,
-                                                style: AppTheme
-                                                    .nunitoFamilySubtitle,
+                                            style:
+                                                AppTheme.nunitoFamilySubtitle,
                                               ),
                                             ],
                                           ),
@@ -216,8 +204,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ],
                 ),
               ),
-            ],
-          ),
         ),
       ),
     );
