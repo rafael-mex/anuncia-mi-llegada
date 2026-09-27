@@ -450,3 +450,51 @@ Al elegir "Usar ubicación personalizada" → "UBICAR EN EL MAPA" se abre el map
 
 **Cómo funciona en la aplicación:**
 En los selectores, al elegir una estación el registro del historial se guarda con la categoría exacta del transporte al que pertenece (METRO, METROBÚS, TROLEBÚS, CABLEBÚS, MEXÍBUS, MEXICABLE, TREN LIGERO o TRENES V.M). En la pantalla de historial, la barra de categorías filtra cada una de forma exacta: al tocar "METROBÚS" solo se ven estaciones de metrobús (ya no se colan en "METRO") y al tocar "TRENES V.M" solo se ven estaciones de los Trenes del Valle de México. La opción "Únicamente mencionar el nombre de la línea" sigue quedando en la categoría "LÍNEAS". Además, junto a la categoría "TODOS" aparece un paréntesis con el número total de registros guardados (p. ej. "TODOS (7)"), que se actualiza automáticamente cada vez que el usuario envía un nuevo mensaje o borra el historial.
+
+#### Decimoprimera sesión — 27 de septiembre de 2026
+
+**Prompts enviados:**
+> "He cambiado en mi aplicación el nombre de una de las opciones de la defaultMessagingApp , pasó de "Otros" a "Cualquier app de mensajería", al hacerlo, mis simuladores al correr se rompián ya que intentaban buscar el valor de "Otros" , esto se solucionaba picando el resetButton, pero quiero pensar en mis usuarios. Haz lo posible para que la app sobrescriba el valor antiguo de "Otros" a "Cualquier app d emensajería"."
+>
+> "Okay, ahora pasemos a los settings_items, segun tengo entendido los widgets de Cupertino no son como tal excluivos de iOS, tambien se dibujan en Android. Tengo ahorita en mi aplicación el MessageAppSelector, que es un MenuANchor, antes era un DropDownButton, pero a mi parecer ambos no tienen un estilo moderno y sofisticado, por lo que quiero implementar el CupertinoMenuAnchor, por favor haz esta modificación, unicamemtne te pido que todo el código del Menu Anchor actual y del anterior DrpoDownButton lo comentes, no lo borrés por favor."
+>
+> "Quita esa pildora naranja y su shadow, el selector antes de abrirse debe de verse como un texto normal, con el mismo color del metroStyle, no debe de resaltar tanto."
+>
+> "Añade un sombreado al pulsar el selector, tal como cpasa con los Inkwell."
+>
+> "Okay, ahora unicamente añade esta sesión e implementación en el README; en el apartado de "Uso de la IA" , ya sabes, pon fecha, prompts exactos, qué cambios hiciste y cómo es que estos funcionan en la app, luego de que hayas hecho esto, haz commit UNICAMENTE al README, el commit que pondrás será "docs(readme): se agregó una sesión al apartado "Uso de la IA"", aun no harás git push vale."
+
+**Cambios realizados:**
+
+1. **Migración del valor renombrado de la app de mensajería (`lib/config/preferences/preferences_service.dart`):**
+   - El valor guardado en `SharedPreferences` **es** el texto visible de la opción (la app no tiene un identificador aparte del label), por eso un renombrado dejaba inservible la preferencia de quien ya había elegido "Otros". Con el texto viejo almacenado, la comparación `preferredApp == "Cualquier app de mensajería"` no coincidía y todos esos usuarios caían en la rama de SMS.
+   - Se declararon los valores canónicos en un solo lugar: `messagingAppSms`, `messagingAppWhatsApp` y `messagingAppAny` (`preferences_service.dart:12`), más la lista `messagingAppOptions` (`:17`) que es la única declaración de qué opciones existen.
+   - Se agregó el mapa `_legacyMessagingAppValues` (`:25`), que traduce valores de versiones anteriores a su equivalente vigente: `"Otros" → "Cualquier app de mensajería"`. Un próximo renombrado se resuelve agregando una sola línea aquí.
+   - Nueva función `resolveMessagingApp(String? value)` (`:74`): aplica la traducción y, si el resultado no está entre las `messagingAppOptions`, cae al valor predeterminado. Esto además protege al `DropdownButton`/`CupertinoMenuAnchor` de fallar si llegara un valor desconocido.
+   - `init()` (`:109`) ahora lee la preferencia, la normaliza y **vuelve a escribirla solo si cambió**. Es idempotente: la corrección ocurre una única vez por instalación y el usuario conserva su elección (no se ve obligado a picar el botón de restablecer, que además lo devolvía a SMS).
+   - `setDefaultMessagingApp()` (`:155`) también valida antes de guardar, de modo que un error en la UI no pueda persistir un valor basura.
+   - Se corrigió además una referencia que se había quedado con el nombre viejo: `history_screen.dart:47` seguía comparando contra `"Otros"`, por lo que el reenvío desde el historial nunca llegaba a la rama de compartir y terminaba en SMS.
+
+2. **Reemplazo del `MenuAnchor` por `CupertinoMenuAnchor` (`lib/config/menu/settings_items.dart`):**
+   - `_MessagingAppSelectorState` (`:644`) ahora construye un `CupertinoMenuAnchor` (`:674`) con un `CupertinoMenuItem` por opción: icono a la izquierda, un check naranja (`Icons.check_rounded`) en la opción activa, padding vertical de 12 y el mismo `Nunito` del resto de la sección. El menú se cierra solo al elegir, ya que `requestCloseOnActivate` viene activo por defecto.
+   - Se creó la clase privada `_MessagingAppOption` para emparejar cada valor persistido con su icono (`chat_bubble_outline`, `phone`, `ios_share`) y se recorrió esa lista, de modo que el selector no puede desincronizarse de las opciones reales ni del envío del mensaje.
+   - **El código anterior se conservó comentado**, tal como se pidió: el `MenuAnchor` (Material) completo y el `DropdownButton` más antiguo siguen en el archivo dentro de bloques de comentario como referencia.
+
+3. **`CupertinoTheme` a nivel de app (`lib/main.dart:43`):**
+   - El panel de `CupertinoMenuAnchor` se dibuja en el `Overlay`, que cuelga del `Navigator` y por lo tanto está **fuera** del `Theme` de Material; solo hereda el `MediaQuery`. Sin un `CupertinoTheme` sobre el árbol, el panel se pintaba siempre con los colores del modo claro (fondo traslúcido claro y texto oscuro) aunque la app estuviera en modo oscuro.
+   - Se añadió un `builder` en el `MaterialApp.router` que inyecta `CupertinoTheme` con el `brightness` vigente, por lo que el menú (y cualquier otro widget de Cupertino en el futuro) respeta el modo claro/oscuro.
+
+4. **Ancla del selector como texto normal (`settings_items.dart:703`):**
+   - Se eliminaron la píldora naranja, su degradado, la sombra, el `Material` de fondo y el `padding` interior: el valor se ve ahora como texto corriente, con el mismo `TextStyle` que el resto de la fila y únicamente el color naranja de `AppTheme.metroStyle` (`0xFFF69346`) leído desde esa constante para no duplicarlo. Se quitó también el `fontWeight: w800` para que no destacara frente al texto vecino.
+   - Se conservó el chevron que rota 180° mientras el menú está abierto, que es lo único que indica que el texto es pulsable.
+
+5. **Sombreado al pulsar (`settings_items.dart:706`):**
+   - El `GestureDetector` se sustituyó por `Material(type: transparency)` + `InkWell`, con `splashColor` y `highlightColor` derivados del mismo naranja `metroStyle` (12% y 8% respectivamente) y `borderRadius: 12` para que la elipse y el ripple salgan redondeados.
+   - El `Material` propio es indispensable: el ancla vive dentro del `InkWell` que el propio `MenuAnchor`/`CupertinoMenuAnchor` usa para abrir el menú, así que sin él la tinta se dibujaría sobre el `Material` transparente de toda la sección de ajustes y el splash aparecería recortado.
+
+6. **Pruebas (`test/preferences_messaging_app_migration_test.dart` y `test/messaging_app_selector_test.dart`, nuevos):**
+   - La primera verifica la traducción de "Otros", que los valores vigentes se conservan, y que un valor desconocido o ausente cae al predeterminado.
+   - La segunda monta la sección de ajustes real, abre el menú en modo claro y oscuro comprobando que no haya excepciones, y confirma que elegir una opción guarda la preferencia y cierra el menú.
+
+**Cómo funciona en la aplicación:**
+El usuario que ya había elegido "Otros" antes del renombrado ya no necesita hacer nada: al abrir la app, `PreferencesService.init()` detecta el valor antiguo, lo traduce a "Cualquier app de mensajería" y lo guarda, de modo que su elección sigue vigente y el envío del mensaje sigue yendo a la app que él había escogido. A partir de ese momento la opción se elige desde un `CupertinoMenuAnchor`: se ve como un texto naranja junto al chevron, al pulsarlo aparece un ripple suave y encima un menú con las tres opciones (SMS, WhatsApp y cualquier app de mensajería) donde la activa tiene un check; al tocar una, el menú se cierra con la animación nativa y la preferencia queda guardada, tanto para enviar desde los selectores como para reenviar un registro del historial. El menú se dibuja sobre un panel translúcido con desenfoque cuyo color se adapta al modo claro u oscuro de la app, porque el `CupertinoTheme` se inyecta en el `MaterialApp` y alcanza también al `Overlay` donde se pinta el panel.
