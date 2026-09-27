@@ -37,14 +37,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final mensajeFinal = '$messageBody ${record.stationName}';
     final preferredApp = PreferencesService.whatMessagingAppYouWillUse.value;
 
-    if (preferredApp == "WhatsApp") {
+    if (preferredApp == PreferencesService.messagingAppWhatsApp) {
       final Uri whatsappUri = Uri.parse(
         "whatsapp://send?text=${Uri.encodeComponent(mensajeFinal)}",
       );
       if (await canLaunchUrl(whatsappUri)) {
         await launchUrl(whatsappUri);
       }
-    } else if (preferredApp == "Otros") {
+    } else if (preferredApp == PreferencesService.messagingAppAny) {
       await SharePlus.instance.share(ShareParams(text: mensajeFinal));
     } else {
       final Uri smsUri = Uri.parse(

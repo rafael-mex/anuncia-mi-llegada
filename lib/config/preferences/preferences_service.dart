@@ -6,13 +6,33 @@ class PreferencesService {
   static late SharedPreferences _preferences;
   static bool _initialized = false;
 
+  //Valores canónicos de la app de mensajería usada para enviar el mensaje.
+  //Son el identificador que se persiste, por lo que un cambio en el texto
+  //visible obliga a registrar el valor anterior en _legacyMessagingAppValues.
+  static const String messagingAppSms = "SMS";
+  static const String messagingAppWhatsApp = "WhatsApp";
+  static const String messagingAppAny = "Cualquier app de mensajería";
+
+  //Único lugar donde se declara qué opciones existen.
+  static const List<String> messagingAppOptions = [
+    messagingAppSms,
+    messagingAppWhatsApp,
+    messagingAppAny,
+  ];
+
+  //Traducción de valores guardados por versiones anteriores de la app a su
+  //valor canónico actual. "Otros" se renombró a "Cualquier app de mensajería".
+  static const Map<String, String> _legacyMessagingAppValues = {
+    "Otros": messagingAppAny,
+  };
+
   //Configuraciones predeterminadas:
   static const bool defaultIsTrueDarkMode = false;
   static const String defaultMessageBody = "Ya estoy en";
   static const bool defaultWillBeShowedTransportName = true;
   static const bool defaultWillBeShowedLineNamesInMessage = true;
   static const bool defaultWillBeShowedInstitutionsName = true;
-  static const String defaultWhatMessagingAppYouWillUse = "SMS";
+  static const String defaultWhatMessagingAppYouWillUse = messagingAppSms;
 
   //Variables
   static final isTrueDarkMode = ValueNotifier<bool>(defaultIsTrueDarkMode);
@@ -30,7 +50,9 @@ class PreferencesService {
     defaultWillBeShowedInstitutionsName,
   );
 
-  static final whatMessagingAppYouWillUse = ValueNotifier<String>("SMS");
+  static final whatMessagingAppYouWillUse = ValueNotifier<String>(
+    defaultWhatMessagingAppYouWillUse,
+  );
 
   static final historyList = ValueNotifier<List<HistoryItems>>([]);
 
@@ -44,6 +66,18 @@ class PreferencesService {
       willBeShowedInstitutionsName.value !=
           defaultWillBeShowedInstitutionsName ||
       whatMessagingAppYouWillUse.value != defaultWhatMessagingAppYouWillUse;
+
+  ///Normaliza un valor de app de mensajería guardado o seleccionado.
+  ///Aplica la traducción de valores antiguos y, si el resultado no está
+  ///entre las [messagingAppOptions] vigentes, cae al valor predeterminado
+  ///para que la app nunca quede con una preferencia desconocida.
+  static String resolveMessagingApp(String? value) {
+    if (value == null) return defaultWhatMessagingAppYouWillUse;
+    final migrated = _legacyMessagingAppValues[value] ?? value;
+    return messagingAppOptions.contains(migrated)
+        ? migrated
+        : defaultWhatMessagingAppYouWillUse;
+  }
 
   static Future<void> init() async {
     if (_initialized) return;
@@ -72,8 +106,17 @@ class PreferencesService {
       _preferences.setBool('isTrueDarkMode', isTrueDarkMode.value);
     });
 
-    whatMessagingAppYouWillUse.value =
-        _preferences.getString('whatMessagingAppYouWillUse') ?? "SMS";
+    //Migración: el valor guardado puede venir de una versión anterior de la
+    //app (p. ej. "Otros", renombrado a "Cualquier app de mensajería"). Se
+    //normaliza al valor vigente y se persiste, de modo que la corrección se
+    //escribe una sola vez y el usuario conserva su preferencia.
+    final storedMessagingApp =
+        _preferences.getString('whatMessagingAppYouWillUse');
+    final messagingApp = resolveMessagingApp(storedMessagingApp);
+    whatMessagingAppYouWillUse.value = messagingApp;
+    if (messagingApp != storedMessagingApp) {
+      await _preferences.setString('whatMessagingAppYouWillUse', messagingApp);
+    }
 
     //Lectura del historial (misma key con la que se guarda y se borra)
     //Limpieza: la key antigua 'app_records' (de una versión previa del modelo)
@@ -110,8 +153,9 @@ class PreferencesService {
   }
 
   static Future<void> setDefaultMessagingApp(String value) async {
-    whatMessagingAppYouWillUse.value = value;
-    await _preferences.setString('whatMessagingAppYouWillUse', value);
+    final resolved = resolveMessagingApp(value);
+    whatMessagingAppYouWillUse.value = resolved;
+    await _preferences.setString('whatMessagingAppYouWillUse', resolved);
   }
 
   //Guardar los nuevos mensajes al RecordItems
