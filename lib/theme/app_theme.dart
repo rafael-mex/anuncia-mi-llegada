@@ -94,6 +94,7 @@ class AppTheme {
   static ThemeData get lightTheme => ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: backgroundColorLM,
+    colorSchemeSeed: Color(0xFFF26400),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Color.fromRGBO(91, 79, 79, 100)),
     ),
@@ -102,6 +103,7 @@ class AppTheme {
   static ThemeData get darkTheme => ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.transparent,
+    colorSchemeSeed: Color(0xFFF26400),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Color.fromRGBO(204, 204, 204, 100)),
     ),
