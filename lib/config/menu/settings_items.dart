@@ -261,7 +261,7 @@ final appSettingsItems = <MenuItem>[
   ),
   //------
 
-  // ------ Sección: Contacto ------
+  // ------ Sección: Información y Contacto ------
   MenuItem(
     title: Text('INFORMACIÓN Y CONTACTO', style: AppTheme.metroStyle.copyWith(fontSize: 19)),
     subtitle: Text(
