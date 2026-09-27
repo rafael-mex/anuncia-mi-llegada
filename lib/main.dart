@@ -1,5 +1,6 @@
 import 'package:anuncia_mi_llegada/config/mapbox_config.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
@@ -36,6 +37,15 @@ class AnunciaMiLlegadaApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
           themeAnimationDuration: const Duration(milliseconds: 700),
+          //Los menús de Cupertino (p. ej. CupertinoMenuAnchor) se dibujan en
+          //el Overlay, fuera del Theme de Material: sin este CupertinoTheme
+          //el panel se pintaría siempre con los colores del modo claro.
+          builder: (context, child) => CupertinoTheme(
+            data: CupertinoThemeData(
+              brightness: isDark ? Brightness.dark : Brightness.light,
+            ),
+            child: child!,
+          ),
           routerConfig: appRouter,
         );
       },

@@ -22,14 +22,19 @@ class MenuItem {
 }
 
 final appSettingsItems = <MenuItem>[
-  //Las configuraciones están divididas según al organismo u
-  //organismos a los que afecta, es decir, si
-  //una configuración solo afecta al metro,
-  //entonces su grupo será: STC Metro. Si la configuración
-  //afecta globalmente, es decir, afecta a todos, entonces
-  //su grupo será: Movilidad Integrada y MOVIMEX
+  /*
+    Las configuraciones están divididas según al organismo u
+    organismos a los que afecta, es decir, si
+    una configuración solo afecta al metro,
+    entonces su grupo será: STC Metro. Si la configuración
+    afecta globalmente (afecta a todos), entonces
+    su grupo será: Movilidad Integrada y MOVIMEX
 
-  //------ Opción: Apariencia ------
+    En el caso de afectar a un elemento de la aplicación, el 
+    nombre que recibirá su grupo va a ser el del elemento al que afecta.
+  */
+
+  //------ Sección: Apariencia ------
   MenuItem(
     title: Text("APARIENCIA", style: AppTheme.metroStyle),
     subtitle: Text(
@@ -39,7 +44,8 @@ final appSettingsItems = <MenuItem>[
     icon: const AppearanceIcon(),
   ),
   //------
-  // ------ Opción: Estaciones ------
+
+  // ------ Sección: Estaciones ------
   MenuItem(
     title: Text("ESTACIONES", style: AppTheme.metroStyle),
     subtitle: Text(
@@ -50,7 +56,8 @@ final appSettingsItems = <MenuItem>[
       'assets/icons/config_icons/estaciones.svg',
       fit: BoxFit.contain,
     ),
-    //Opciones del menú:
+    //Configuraciones de la sección:
+
     showedConfigurations: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
@@ -62,6 +69,7 @@ final appSettingsItems = <MenuItem>[
             final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
               color: dynamicColor,
             );
+            //------------------------------
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +82,6 @@ final appSettingsItems = <MenuItem>[
                       PreferencesService.willBeShowedLineNamesInMessage,
                   builder: (context, value, _) => SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    //Texto y estilo
                     title: Text(
                       "Mostrar sugerencia de nombrar \nsolo la línea escogida",
                       style: dynamicStyle,
@@ -86,6 +93,7 @@ final appSettingsItems = <MenuItem>[
                   ),
                 ),
                 /* Separación: */ const SizedBox(height: 12),
+                //------------------------------
 
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
@@ -109,6 +117,8 @@ final appSettingsItems = <MenuItem>[
                     activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
+
+                //------------------------------
               ],
             );
           },
@@ -117,19 +127,23 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
   // ------
-  // ------ Opción: Mensajes ------
+
+  // ------ Sección: Mensajes ------
   MenuItem(
     title: Text("MENSAJES", style: AppTheme.metroStyle),
     subtitle: Text(
       "Personaliza el mensaje que \nenviarás a tus contactos.",
       style: AppTheme.nunitoFamilySubtitle,
     ),
+
     //Icon
     icon: SvgPicture.asset(
       'assets/icons/config_icons/mensajes.svg',
       fit: BoxFit.contain,
     ),
-    //Opciones del menú:
+    //--------
+
+    //Configuraciones de la sección:
     showedConfigurations: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
@@ -141,11 +155,13 @@ final appSettingsItems = <MenuItem>[
             final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
               color: dynamicColor,
             );
+            //-------------------------
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Grupo: Movilidad Integrada y MOVIMEX
+
                 // Switch Reactivo
                 Text("Movilidad Integrada y MOVIMEX", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
@@ -166,60 +182,37 @@ final appSettingsItems = <MenuItem>[
                     activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
+                //-------------------------------------
 
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
 
                 // Grupo: Cuerpo del mensaje
+
                 // TextField Varchar
                 Text("Cuerpo del Mensaje", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 SizedBox(height: 2),
                 _MessageBodyField(style: dynamicStyle),
+                //------------------------------
 
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
 
                 //Grupo: Aplicación usada para el envío del mensaje
+
+                //Menú de selección de la app de mensajería.
                 Text(
                   "Aplicación usada para el envío del mensaje",
                   style: dynamicStyle,
                 ),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
-                ValueListenableBuilder<String>(
-                  valueListenable:
-                      PreferencesService.whatMessagingAppYouWillUse,
-                  builder: (context, value, _) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text('Enviar mensaje por', style: dynamicStyle),
-                    trailing: DropdownButton<String>(
-                      value: value,
-                      dropdownColor:
-                          Theme.of(context).brightness == Brightness.dark
-                          ? const Color(0xFF1E1E1E)
-                          : Colors.white,
-                      style: dynamicStyle.copyWith(color: Color(0xFFF26400)),
-                      underline: const SizedBox(),
-                      icon: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: dynamicColor,
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: "SMS", child: Text("SMS")),
-                        DropdownMenuItem(
-                          value: "WhatsApp",
-                          child: Text("WhatsApp"),
-                        ),
-                        DropdownMenuItem(value: "Otros", child: Text("Otros")),
-                      ],
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          PreferencesService.setDefaultMessagingApp(newValue);
-                        }
-                      },
-                    ),
-                  ),
+                _MessagingAppSelector(
+                  style: dynamicStyle,
+                  dynamicColor: dynamicColor,
                 ),
+                
+                //---------------------------------------
 
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
@@ -257,6 +250,8 @@ final appSettingsItems = <MenuItem>[
                     );
                   },
                 ),
+
+                //------------------------------------
               ],
             );
           },
@@ -265,17 +260,20 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
   //------
-  // ------ Opción: Contacto ------
+
+  // ------ Sección: Contacto ------
   MenuItem(
-    title: Text('CONTACTO', style: AppTheme.metroStyle),
+    title: Text('INFORMACIÓN Y CONTACTO', style: AppTheme.metroStyle.copyWith(fontSize: 19)),
     subtitle: Text(
-      'Manda sugerencias y reporta \nerrores, o conoce el código \nde la aplicación',
+      'Da sugerencias, reporta errores o \nconoce el código de la aplicación',
       style: AppTheme.nunitoFamilySubtitle,
     ),
     icon: SvgPicture.asset(
       'assets/icons/config_icons/contacto.svg',
       fit: BoxFit.contain,
     ),
+
+    //Configuraciones de la sección:
     showedConfigurations: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
@@ -287,6 +285,7 @@ final appSettingsItems = <MenuItem>[
             final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
               color: dynamicColor,
             );
+            //------------------------------
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,6 +293,7 @@ final appSettingsItems = <MenuItem>[
                 // Grupo: Aplicación
                 Text("Aplicación", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
+                //------------------------------
 
                 //Mandar correo
                 ListTile(
@@ -334,10 +334,7 @@ final appSettingsItems = <MenuItem>[
                 //Mandar a la página de github
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    "Ir al Github de la app",
-                    style: dynamicStyle,
-                  ),
+                  title: Text("Ir al Github de la app", style: dynamicStyle),
                   leading: Icon(Icons.code_outlined, color: dynamicColor),
                   onTap: () async {
                     final Uri webUri = Uri.parse(
@@ -361,6 +358,8 @@ final appSettingsItems = <MenuItem>[
                   },
                 ),
                 //------------------------------
+
+                //Sección del creador :D :
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
@@ -370,8 +369,10 @@ final appSettingsItems = <MenuItem>[
                   leading: SvgPicture.asset(
                     'assets/icons/config_icons/mi_pfp.svg',
                     width: 40,
-                    ),
-                )
+                  ),
+                ),
+
+                //------------------------
               ],
             );
           },
@@ -380,7 +381,9 @@ final appSettingsItems = <MenuItem>[
     ),
   ),
 ];
+//------------------------------
 
+//--------------- Cuerpo del mensaje ---------------
 class _MessageBodyField extends StatefulWidget {
   const _MessageBodyField({required this.style});
 
@@ -485,7 +488,146 @@ class _MessageBodyFieldState extends State<_MessageBodyField> {
     );
   }
 }
+//------------------------------
 
+//---- Selector de la app de mensajería ----
+class _MessagingAppSelector extends StatefulWidget {
+  final TextStyle style;
+  final Color? dynamicColor;
+
+  const _MessagingAppSelector({
+    required this.style,
+    required this.dynamicColor,
+  });
+
+  @override
+  State<_MessagingAppSelector> createState() => _MessagingAppSelectorState();
+}
+
+//Opción del selector: Valor y el icono que lo representa.
+class _MessagingAppOption {
+  final String value;
+  final IconData icon;
+
+  const _MessagingAppOption(this.value, this.icon);
+}
+//------------------------------
+
+class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
+  static const _apps = <_MessagingAppOption>[
+    _MessagingAppOption(
+      PreferencesService.messagingAppSms,
+      Icons.chat_bubble_outline,
+    ),
+    _MessagingAppOption(
+      PreferencesService.messagingAppWhatsApp,
+      Icons.phone,
+    ),
+    _MessagingAppOption(
+      PreferencesService.messagingAppAny,
+      Icons.ios_share,
+    ),
+  ];
+
+  static const Color _accentColor = Color(0xFFF26400);
+
+  static final Color _metroColor = AppTheme.metroStyle.color!;
+
+  final MenuController _menuController = MenuController();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String>(
+      valueListenable: PreferencesService.whatMessagingAppYouWillUse,
+      builder: (context, value, _) {
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text('Enviar mensaje por', style: widget.style),
+          trailing: CupertinoMenuAnchor(
+            controller: _menuController,
+            menuChildren: [
+              for (final app in _apps)
+                CupertinoMenuItem(
+                  onPressed: () =>
+                      PreferencesService.setDefaultMessagingApp(app.value),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  leading: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Icon(
+                      app.icon,
+                      size: 20,
+                      color: widget.dynamicColor,
+                    ),
+                  ),
+                  trailing: value == app.value
+                      ? const Icon(
+                          Icons.check_rounded,
+                          size: 18,
+                          color: _accentColor,
+                        )
+                      : const SizedBox.shrink(),
+                  child: Text(app.value, style: widget.style),
+                ),
+            ],
+            builder: (context, controller, child) {
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: _metroColor.withValues(alpha: 0.12),
+                  highlightColor: _metroColor.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 4,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: widget.style.copyWith(color: _metroColor),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        AnimatedRotation(
+                          turns: controller.isOpen ? 0.5 : 0.0,
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutCubic,
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 18,
+                            color: _metroColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+//------------------------------
+
+//Icono de la sección de apariencia y su animación al cambiar entre modos:
 class AppearanceIcon extends StatelessWidget {
   const AppearanceIcon({super.key});
 
@@ -519,3 +661,4 @@ class AppearanceIcon extends StatelessWidget {
     );
   }
 }
+//------------------------------
