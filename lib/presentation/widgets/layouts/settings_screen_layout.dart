@@ -15,9 +15,10 @@ class SettingsScreenLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+    bottom: false,
     child: Column(
       children: [
-        const SizedBox(height: 40),
+        const SizedBox(height: 30),
         Stack(
           children: [
             Center(child: GearIcon()),

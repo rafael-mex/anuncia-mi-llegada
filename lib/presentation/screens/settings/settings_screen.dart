@@ -86,37 +86,32 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        top: false,
-        //Resguardo extra para la barra de navegación del dispositivo:
-      minimum: const EdgeInsets.only(bottom: 10),
-        child: ListView.builder(
-          padding: EdgeInsets.zero,
-          //+1 para el botón de restablecer configuraciones:
-          itemCount: appSettingsItems.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            //Botón fijo debajo de la última opción (Apariencia):
-            if (index == appSettingsItems.length) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Center(child: _ResetSettingsButton()),
-                  ),
-                  // Versión de la aplicación
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Center(child: _ApplicationVersion(version: version)),
-                  ),
-                ],
-              );
-            }
-
-            final menuItem = appSettingsItems[index];
-            return _CustomListTitle(menuItem: menuItem);
-          },
-      ),
-    );
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      //+1 para el botón de restablecer configuraciones:
+      itemCount: appSettingsItems.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        //Botón fijo debajo de la última opción (Apariencia):
+        if (index == appSettingsItems.length) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Center(child: _ResetSettingsButton()),
+              ),
+              // Versión de la aplicación
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Center(child: _ApplicationVersion(version: version)),
+              ),
+            ],
+          );
+        }
+    
+        final menuItem = appSettingsItems[index];
+        return _CustomListTitle(menuItem: menuItem);
+      },
+          );
   }
 }
 
