@@ -1,5 +1,6 @@
 import 'package:anuncia_mi_llegada/presentation/widgets/icons/history_icon.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/keyboard_return_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/settings_button.dart';
 import 'package:flutter/material.dart';
 
 class HistoryScreenLayout extends StatelessWidget {
@@ -14,9 +15,10 @@ class HistoryScreenLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Column(
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
           Stack(
             children: [
               //RecordIcon
@@ -31,6 +33,13 @@ class HistoryScreenLayout extends StatelessWidget {
                 ),
               ),
               //---------------------
+              Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 28, top: 20),
+                child: SettingsButton(),
+              ),
+            ),
             ],
           ),
           SizedBox(height: 20,),
