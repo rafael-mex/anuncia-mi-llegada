@@ -383,7 +383,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const SizedBox(
                     width: 340,
-                    height: 336,
+                    height: double.infinity,
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
