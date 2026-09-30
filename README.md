@@ -498,3 +498,56 @@ En los selectores, al elegir una estación el registro del historial se guarda c
 
 **Cómo funciona en la aplicación:**
 El usuario que ya había elegido "Otros" antes del renombrado ya no necesita hacer nada: al abrir la app, `PreferencesService.init()` detecta el valor antiguo, lo traduce a "Cualquier app de mensajería" y lo guarda, de modo que su elección sigue vigente y el envío del mensaje sigue yendo a la app que él había escogido. A partir de ese momento la opción se elige desde un `CupertinoMenuAnchor`: se ve como un texto naranja junto al chevron, al pulsarlo aparece un ripple suave y encima un menú con las tres opciones (SMS, WhatsApp y cualquier app de mensajería) donde la activa tiene un check; al tocar una, el menú se cierra con la animación nativa y la preferencia queda guardada, tanto para enviar desde los selectores como para reenviar un registro del historial. El menú se dibuja sobre un panel translúcido con desenfoque cuyo color se adapta al modo claro u oscuro de la app, porque el `CupertinoTheme` se inyecta en el `MaterialApp` y alcanza también al `Overlay` donde se pinta el panel.
+
+#### Decimosegunda sesión — 29 de septiembre de 2026
+
+**Objetivo de la sesión** (reconstruido a partir del inicio de sesión, que se retomó desde un resumen):
+> Ajustar el layout de la pantalla de selección (`SelectorScreenLayout`) para que el selector quede lo más centrado posible, que el botón "Retroceder" tenga una separación simétrica de ~40px arriba y abajo, y que nada se rompa ni se desborde en ningún dispositivo. Verificar en iPhone SE 3 (375x667) y en Pixel 10 Pro (427x952).
+
+**Prompts enviados:**
+> "Por favor, haz que el settings button tenga el espacio que antes tenía cuando había un Spacer, pero este cambio como tal no debe de afectar estas implementaciones que hiciste, el selector debe seguir centrado y el botón de reset debe de ser simetrico"
+
+> "Vale, ahora agrega esta sesión en el README en el apartado del "Uso de la IA" , recuerda que debes de poner fecha, prompts exatctos, qué cambios hiciste y como es que estos funcionan, cuando termines harás git commit diciendo "docs(readme): se agregó una nueva sesión en el apartado de "Uso de la IA"" No harás git push aún"
+
+*(La sesión se interrumpió dos veces para pausar el trabajo y se reanudó a petición del usuario, sin que eso cambiara el alcance.)*
+
+**Decisión de diseño tomada durante la sesión** (opción elegida entre varias propuestas sobre cuánto espacio dejar bajo el botón de ajustes): **"Elástico como el Spacer viejo"** — el espacio bajo el settings button vuelve a ser elástico y crece con el espacio que sobra en la pantalla, como el `Spacer` del diseño anterior; el selector conserva su tamaño de diseño y solo se reduce en pantallas cortas.
+
+**Cambios realizados:**
+
+1. **Diagnóstico: por qué el `Spacer` "rotaba" espacio al selector (`lib/presentation/widgets/layouts/selector_screen_layout.dart`):**
+   - `RenderFlex` **no reparte** el espacio sobrante entre los hijos flexibles. Ese sobrante se entrega a `mainAxisAlignment` (por defecto `start`, es decir, se queda al final de la pantalla). Por eso un `Spacer()` al final se quedaba con la mitad del espacio libre y el `Expanded` del selector se quedaba sin él: el selector medía 139px en iPhone SE 3 y 264px en Pixel 10 Pro.
+   - Se descartó envolver la pantalla en `IntrinsicHeight` + `SingleChildScrollView` porque **`LayoutBuilder` devuelve 0 en los cálculos intrínsecos**: el selector, que se mide con `LayoutBuilder`, habría recibido altura 0 y se habría roto el layout.
+   - Se descartó también `MainAxisAlignment.spaceBetween` con el selector dentro de un hijo flexible, porque el sobrante se reparte en **tres** huecos y el selector quedaba descentrado respecto a la pantalla.
+
+2. **Layout final de `SelectorScreenLayout` (`lib/presentation/widgets/layouts/selector_screen_layout.dart`):**
+   - Estructura: `SafeArea > Column[ bloque superior, Spacer(flex:1), selector, bloque inferior, Spacer(flex:1) ]`, que es la del diseño original. Los **dos `Spacer` reparten el sobrante 50/50**, de modo que el selector queda centrado entre el ícono del mapa y el botón de retroceder y el botón de ajustes recupera su espacio elástico inferior.
+   - El selector **no** es un hijo flexible: es un `SizedBox` con la altura calculada. Si fuera flexible, los tres hijos elásticos dividirían el espacio y el selector se encogería a ~72px en iPhone SE 3 y ~155px en Pixel, perdiendo la lista de opciones. Con `flex: 0` el `LayoutBuilder` interno recibía restricciones infinitas y el selector desbordaba 76px por abajo.
+   - La altura se calcula con un `LayoutBuilder` externo: `(available - header - footer).clamp(0, 386 + 2*16)`. Alturas fijas usadas: header = `40 + 95` (separación superior + `MapIcon`) y footer = `40 + 42 + 40 + 48 + 30` (separaciones del botón de retroceder, botón, botón de ajustes y separación inferior).
+   - El `42` del botón "Retroceder" no es un dato inventado: se midió con un test de widget y da exactamente `42.0px`, porque el botón usa `height: 1.3` con `fontSize: 17` (22.1px de línea) más 20px de padding vertical. Al ser un `line-height` fijo, el valor no depende de la fuente que resuelva `google_fonts` en tiempo de ejecución.
+   - Separaciones resultantes: el botón de retroceder conserva **40px arriba y 40px abajo** (`EdgeInsets.symmetric(vertical: 40)`) y el settings button mantiene 30px como separación mínima, por encima de los cuales se añade el espacio elástico.
+
+3. **Selector adaptable a pantallas cortas (`lib/presentation/widgets/selector/selector_widget.dart`):**
+   - Se eliminó el campo `glassContainerHeight` y se añadió un `LayoutBuilder` que calcula el tamaño a partir del espacio que le da el layout, en lugar de usar medidas fijas: contenedor naranja `min(360, maxWidth) x min(386, maxHeight)` y contenedor de vidrio `min(320, ancho - 40) x max(alto - 66 - 15, 0)`.
+   - Se declararon las constantes de diseño `_designHeight = 386`, `_glassTopOffset = 66` y `_glassBottomOffset = 15`, que documentan de dónde sale el `386 = 66 + 305 + 15` del diseño original.
+   - A tamaño completo los valores son idénticos a los anteriores, así que **en pantallas altas no cambia ni un píxel**; en pantallas cortas el selector se encoge en lugar de desbordar. El listado es un `ListView.separated`, de modo que al reducirse el vidrio la lista simplemente se vuelve desplazable, sin recortar contenido.
+
+4. **Placeholder de carga adaptable (`lib/presentation/screens/selectors/selector_screen/selector_screen.dart`):**
+   - El `SizedBox` de altura fija (336) que se mostraba mientras llegan las opciones pasó a `height: double.infinity` con un `CircularProgressIndicator` centrado, para que no compita con el alto del selector real.
+
+5. **Prueba de regresión (`test/selector_screen_layout_test.dart`, nuevo):**
+   - Recorre cuatro dispositivos (iPhone SE 3, iPhone 15 Pro, Pixel 10 Pro e iPhone SE 1) simulando tamaño de pantalla, `devicePixelRatio` y las medidas seguras (`status bar` / barra de gestos) de cada uno.
+   - Intercepta `FlutterError.onError` y exige que no haya ninguna excepción: así se detecta cualquier `RenderFlex overflowed` aunque el test no lo pinte.
+   - Comprueba que los dos `Spacer` miden lo mismo (centrado real del selector), que el settings button respeta su separación mínima, que el botón de retroceder conserva 40/40, que el selector nunca excede 386px ni baja de un alto útil, y que queda centrado horizontalmente.
+   - Se validó que la prueba **detecta el problema**: con el layout anterior fallaba con `A RenderFlex overflowed by 44 pixels on the bottom` en iPhone SE 3 y `143 pixels` en iPhone SE 1.
+
+6. **Verificación en dispositivos reales:**
+   - La app se ejecutó en el simulador de **iPhone SE 3** y en el emulador de **Pixel 10 Pro** con los cambios aplicados: ninguna excepción ni desbordamiento en ninguno de los dos, y el selector llega a su tamaño completo de diseño (386px) en Pixel y se encoge limpiamente en SE 3.
+
+7. **Nota sobre pruebas preexistentes que fallan (no forman parte de este cambio):**
+   - Tres pruebas de `test/map_icon_svg_test.dart` fallan porque el `MapIcon` se cambió a una altura de 95px y esas pruebas exigen la proporción 96:112 del `viewBox` del SVG.
+   - Una prueba de `test/theme_visual_test.dart` falla porque no encuentra el texto "Apariencia" en la pantalla de ajustes.
+   - Se confirmó que ambas fallos ocurren **igual sin los cambios de esta sesión**, por lo que no son una regresión.
+
+**Cómo funciona en la aplicación:**
+Al abrir cualquier pantalla de selección, la pantalla queda dividida en cuatro bandas: el ícono del mapa arriba, el selector (contenedor naranja) al centro, el botón "Retroceder" debajo y el botón de ajustes al final. El espacio que sobra en la pantalla se reparte exactamente a la mitad entre el hueco superior (entre el ícono y el selector) y el hueco inferior (bajo el botón de ajustes), y por eso el selector aparece siempre centrado entre el ícono y el botón de retroceder, sin importar el tamaño de la pantalla. En un iPhone alto como el Pixel 10 Pro el selector conserva su tamaño de diseño completo y el botón de ajustes queda flotando con bastante aire debajo; en un iPhone SE 3, donde no cabe todo, el selector reduce su altura (la lista se vuelve desplazable) y el botón de ajustes queda a 30px del borde inferior. En ningún caso aparecen las franjas amarillas de desborde que se veían antes, y el botón "Retroceder" siempre respeta 40px por arriba y por abajo.
