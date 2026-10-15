@@ -43,7 +43,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (result == SendMessageResult.whatsappUnavailable ||
         result == SendMessageResult.failed) {
       if (mounted) {
-        await SendMessageHelper().showSendMessageError(context, result);
+        await SendMessageHelper.showSendMessageError(context, result);
       }
       return;
     }

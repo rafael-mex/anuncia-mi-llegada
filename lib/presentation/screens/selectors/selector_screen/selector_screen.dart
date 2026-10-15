@@ -291,7 +291,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
                     mensajeFinal,
                   );
 
-                  if (result == SendMessageResult.succes) {
+                  if (result == SendMessageResult.success) {
                     final newHistoryItem = HistoryItems(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       stationName: line.lineNameInMessage,
@@ -301,6 +301,8 @@ class _SelectorScreenState extends State<SelectorScreen> {
                       messageTime: DateTime.now(),
                     );
                     await PreferencesService.saveToHistoryItems(newHistoryItem);
+                  } else if (mounted) {
+                    await SendMessageHelper.showSendMessageError(context, result);
                   }
                 },
               ),
@@ -336,7 +338,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
                     mensajeFinal,
                   );
 
-                  if (result == SendMessageResult.succes) {
+                  if (result == SendMessageResult.success) {
                     final newHistoryItem = HistoryItems(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       stationName: station,
@@ -347,7 +349,7 @@ class _SelectorScreenState extends State<SelectorScreen> {
                     );
                     await PreferencesService.saveToHistoryItems(newHistoryItem);
                   } else if (mounted) {
-                    await SendMessageHelper().showSendMessageError(
+                    await SendMessageHelper.showSendMessageError(
                       context,
                       result,
                     );
