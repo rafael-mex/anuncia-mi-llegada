@@ -1,3 +1,4 @@
+import 'package:anuncia_mi_llegada/config/connectivity/connectivity_service.dart';
 import 'package:anuncia_mi_llegada/config/menu/custom_location_items.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/layouts/custom_location_screen_layout.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
@@ -58,33 +59,59 @@ class _CustomListTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          
-          onTap: menuItem.onTap == null ? null : () => menuItem.onTap!(context),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 12.0,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: 70, height: 90, child: menuItem.icon),
-                SizedBox(width: MediaQuery.sizeOf(context).width * 0.08),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [menuItem.title, menuItem.widget],
+    return ValueListenableBuilder<bool>(
+      valueListenable: ConnectivityService.isOnline,
+      builder: (context, isOnline, _) {
+        final disabled = menuItem.requiresNetwork && !isOnline;
+        final onTap = disabled
+            ? null
+            : menuItem.onTap == null
+                ? null
+                : () => menuItem.onTap!(context);
+
+        return Column(
+          children: [
+            InkWell(
+              onTap: onTap,
+              child: Opacity(
+                opacity: disabled ? 0.4 : 1.0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 70, height: 90, child: menuItem.icon),
+                      SizedBox(
+                        width: MediaQuery.sizeOf(context).width * 0.08,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            menuItem.title,
+                            if (disabled)
+                              const Text(
+                                'No disponible sin conexion',
+                                style: AppTheme.nunitoFamilySubtitle,
+                              )
+                            else
+                              menuItem.widget,
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
+

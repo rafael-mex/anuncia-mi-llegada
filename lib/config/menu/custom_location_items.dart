@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:anuncia_mi_llegada/config/connectivity/connectivity_service.dart';
 import 'package:anuncia_mi_llegada/config/mapbox_geocoding.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/data/models/history_items.dart';
 import 'package:anuncia_mi_llegada/data/repositories/geojson_repository.dart';
 import 'package:anuncia_mi_llegada/presentation/screens/selectors/custom_location/map_screen.dart';
-//import 'package:anuncia_mi_llegada/presentation/widgets/dialogs/gps_loading_dialog.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/dialogs/gps_loading_dialog.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:anuncia_mi_llegada/utils/send_message_helper.dart';
 import 'package:flutter/material.dart';
@@ -30,12 +29,11 @@ class MenuItem {
 }
 
 final appCustomLocationItems = <MenuItem>[
-  //------ Ubicación manual ------
   MenuItem(
     title: Column(
       children: [
         const SizedBox(height: 40),
-        Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle),
+        Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle),
       ],
     ),
     icon: SvgPicture.asset(
@@ -43,24 +41,22 @@ final appCustomLocationItems = <MenuItem>[
     ),
     widget: ManualLocationText(),
   ),
-
   MenuItem(
     title: Text("UBICAR EN EL \nMAPA", style: AppTheme.metroStyle),
     icon: SvgPicture.asset(
       'assets/icons/custom_location_icons/uso_del_mapa.svg',
     ),
     onTap: _openMapAndSend,
-    widget: SizedBox(height: 0),
+    widget: const SizedBox(height: 0),
     requiresNetwork: true,
   ),
-
   MenuItem(
-    title: Text("USAR UBICACIÓN ACTUAL", style: AppTheme.metroStyle),
+    title: Text("USAR UBICACIÓN ACTUAL", style: AppTheme.metroStyle),
     icon: SvgPicture.asset(
       'assets/icons/custom_location_icons/ubicacion_actual.svg',
     ),
     onTap: _getCurrentLocationAndSend,
-    widget: SizedBox(height: 0),
+    widget: const SizedBox(height: 0),
     requiresNetwork: true,
   ),
 ];
@@ -76,7 +72,7 @@ Future<void> _sendLocation(
   final sendedMessage = "$messageBody ${locationText.trim()}";
   final result = await SendMessageHelper.sendMessage(sendedMessage);
 
-  if (result == SendMessageResult.succes) {
+  if (result == SendMessageResult.success) {
     final newHistoryItem = HistoryItems(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       category: "UBI.PERSONALIZADA",
@@ -88,12 +84,11 @@ Future<void> _sendLocation(
     return;
   }
 
-  /* if (context.mounted) {
+  if (context.mounted) {
     await SendMessageHelper.showSendMessageError(context, result);
-  } */
+  }
 }
 
-//Feature 3: resuelve el texto del mensaje, priorizando la estación cercana.
 Future<(String location, String type)> _resolveLocationText({
   required double lat,
   required double lng,
@@ -106,7 +101,7 @@ Future<(String location, String type)> _resolveLocationText({
       maxMeters: GeojsonRepository.nearbyStationMaxMeters,
     );
     if (nearest != null && nearest.trim().isNotEmpty) {
-      return (nearest, 'Estación cercana');
+      return (nearest, 'Estacion cercana');
     }
   }
 
@@ -119,9 +114,9 @@ Future<(String location, String type)> _resolveLocationText({
 }
 
 Future<void> _openMapAndSend(BuildContext context) async {
-  final selectedPoint = await Navigator.of(
-    context,
-  ).push<LatLng>(MaterialPageRoute(builder: (_) => const MapScreen()));
+  final selectedPoint = await Navigator.of(context).push<LatLng>(
+    MaterialPageRoute(builder: (_) => const MapScreen()),
+  );
   if (selectedPoint == null) return;
 
   final (locationText, type) = await _resolveLocationText(
@@ -139,9 +134,7 @@ Future<void> _getCurrentLocationAndSend(BuildContext context) async {
     if (!isServiceEnabled) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('El servicio de ubicación está desactivado'),
-          ),
+          const SnackBar(content: Text('El servicio de ubicacion esta desactivado')),
         );
       }
       return;
@@ -150,42 +143,34 @@ Future<void> _getCurrentLocationAndSend(BuildContext context) async {
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        return;
-      }
     }
-    if (permission == LocationPermission.deniedForever) return;
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
 
-    //Feature 5: modal de carga con cancelación.
-  /*  final cancelled = ValueNotifier<bool>(false);
-    unawaited(showGpsLoadingDialog(context, cancelled: cancelled)); */
+    final cancelled = ValueNotifier<bool>(false);
+    unawaited(showGpsLoadingDialog(context, cancelled: cancelled));
 
     Position? position;
     try {
       position = await Geolocator.getCurrentPosition(
-        locationSettings: LocationSettings(
+        locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
-          timeLimit: const Duration(seconds: 15),
+          timeLimit: Duration(seconds: 15),
         ),
       );
     } catch (e) {
-      debugPrint("Parece que hubo un error con tu ubicación actual :( : $e");
       position = null;
     }
 
-    //Si el usuario canceló, se aborta sin geocodificar ni enviar.
-    // if (cancelled.value) return;
-
-    //Cierra el modal de carga (si sigue abierto).
+    if (cancelled.value) return;
     if (context.mounted) Navigator.of(context).pop();
 
     if (position == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No se pudo obtener tu ubicación actual'),
-          ),
+          const SnackBar(content: Text('No se pudo obtener tu ubicacion actual')),
         );
       }
       return;
@@ -194,15 +179,14 @@ Future<void> _getCurrentLocationAndSend(BuildContext context) async {
     final (locationText, type) = await _resolveLocationText(
       lat: position.latitude,
       lng: position.longitude,
-      defaultType: 'Ubicación actual',
+      defaultType: 'Ubicacion actual',
     );
 
     await _sendLocation(context, locationText, type);
   } catch (e) {
-    debugPrint("Parece que hubo un error con tu ubicación actual :( : $e");
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo obtener tu ubicación actual')),
+        const SnackBar(content: Text('Error al obtener la ubicacion')),
       );
     }
   }
@@ -225,60 +209,49 @@ class _ManualLocationTextState extends State<ManualLocationText> {
     super.dispose();
   }
 
-  Future<void> _categorizingLocation(String locationText, String type) {
-    if (locationText.trim().isEmpty) return Future.value();
-    return _sendLocation(context, locationText, type);
+  Future<void> _categorizingLocation(String locationText, String type) async {
+    if (locationText.trim().isEmpty) return;
+    await _sendLocation(context, locationText, type);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 5),
-        ValueListenableBuilder<String>(
-          valueListenable: PreferencesService.messageBody,
-          builder: (context, messageBody, _) {
-            return SizedBox(
-              height: 45,
-              child: TextField(
-                controller: _manualUbicationController,
-                style: AppTheme.nunitoFamilySubtitle,
-                textInputAction: TextInputAction.send,
-                onSubmitted: (value) =>
-                    _categorizingLocation(value, 'Ubicación manual'),
-                decoration: InputDecoration(
-                  prefixText: '$messageBody ',
-                  prefixStyle: const TextStyle(
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                  hintStyle: const TextStyle(color: Colors.white30),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFF69346)),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color(0xFFB6A3A3),
-                      width: 2,
-                    ),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(
-                      Icons.send_rounded,
-                      color: Color(0xFFB6A3A3),
-                    ),
-                    onPressed: () => _categorizingLocation(
-                      _manualUbicationController.text,
-                      'Ubicación manual',
-                    ),
-                  ),
+    return ValueListenableBuilder<String>(
+      valueListenable: PreferencesService.messageBody,
+      builder: (context, messageBody, _) {
+        return SizedBox(
+          height: 45,
+          child: TextField(
+            controller: _manualUbicationController,
+            style: AppTheme.nunitoFamilySubtitle,
+            textInputAction: TextInputAction.send,
+            onSubmitted: (val) =>
+                _categorizingLocation(val, 'Ubicacion manual'),
+            decoration: InputDecoration(
+              prefixText: '$messageBody ',
+              prefixStyle: const TextStyle(
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFFF69346)),
+              ),
+              focusedBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFFB6A3A3), width: 2),
+              ),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.send_rounded, color: Color(0xFFB6A3A3)),
+                onPressed: () => _categorizingLocation(
+                  _manualUbicationController.text,
+                  'Ubicacion manual',
                 ),
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
+

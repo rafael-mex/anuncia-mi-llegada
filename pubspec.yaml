@@ -73,6 +73,7 @@ flutter:
     - assets/icons/config_icons/
     - assets/icons/history_icons/
     - assets/icons/custom_location_icons/
+    - assets/icons/wifi_off/
     - assets/data/
     - assets/data/ubications/
     - assets/fonts/
