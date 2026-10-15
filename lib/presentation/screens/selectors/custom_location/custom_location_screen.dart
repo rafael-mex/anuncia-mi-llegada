@@ -92,14 +92,7 @@ class _CustomListTitle extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            menuItem.title,
-                            if (disabled)
-                              const Text(
-                                'No disponible sin conexion',
-                                style: AppTheme.nunitoFamilySubtitle,
-                              )
-                            else
-                              menuItem.widget,
+                            menuItem.title, menuItem.widget,
                           ],
                         ),
                       ),
