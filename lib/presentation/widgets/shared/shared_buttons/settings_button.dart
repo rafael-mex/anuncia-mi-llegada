@@ -23,7 +23,7 @@ class SettingsButton extends StatelessWidget {
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
               width: 48,
-              height: 48,
+              height: 30,
               decoration: BoxDecoration(
                 color: isDark
                     ? Colors.transparent
@@ -40,7 +40,7 @@ class SettingsButton extends StatelessWidget {
                       assetPath,
                       key: ValueKey<String>(assetPath),
                       width: 25,
-                      height: 25,
+                      height: 28,
                     ),
                   ),
                 ),
