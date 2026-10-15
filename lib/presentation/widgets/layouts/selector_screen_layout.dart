@@ -1,4 +1,6 @@
+import 'package:anuncia_mi_llegada/config/connectivity/connectivity_service.dart';
 import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/custom_button.dart';
+import 'package:anuncia_mi_llegada/presentation/widgets/shared/shared_buttons/wifi_off_button.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../icons/map_icon.dart';
@@ -11,7 +13,7 @@ class SelectorScreenLayout extends StatelessWidget {
   final VoidCallback? onReturnTap;
 
   //Separación entre el borde superior de la pantalla y el ícono del mapa
-  static const double _topSpacing = 25;
+  static const double _topSpacing = 20;
   //Separación mínima entre el selector y el ícono del mapa / el botón de retroceder
   static const double _selectorSpacing = 16;
   //Separación simétrica del botón de retroceder: 40px arriba y 40px abajo
@@ -46,17 +48,59 @@ class SelectorScreenLayout extends StatelessWidget {
             const Center(child: MapIcon()),
             //-------
 
-            //History Button
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 38, top: 16),
-                child: HistoryButton(),
-              ),
-            ),
-            //--------------
-          ],
-        ),
+            //------- History Button y Wifi Off Button: --------
+                    ValueListenableBuilder<bool>(
+                      valueListenable: ConnectivityService.isOnline,
+                      builder: (context, isOnline, _) {
+                        return Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            if (!isOnline)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Column(
+                                  children: [
+                            //----- History Button: -----
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 38,
+                                        top: 5,
+                                        bottom: 4,
+                                      ),
+                                      child: HistoryButton(),
+                                    ),
+                            //----- Wifi Off Icon: -----
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 38,
+                                        top: 5,
+                                      ),
+                                      child: WifiOffButton(
+                                        textContent: "Hola mi nombre es annie")
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                            //----- History Button: -----
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: 38,
+                                    top: 26,
+                                  ),
+                                  child: HistoryButton(),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                            //-----------------------
+                  ],
+                ),
+            //--------------------------------------------------
       ],
     );
 
@@ -126,10 +170,11 @@ class SelectorScreenLayout extends StatelessWidget {
           //descontados los bloques fijos. Los 2 Spacer reparten 50/50 lo que
           //sobra, dejando el selector centrado entre el header y el footer y
           //devolviendo al settings button su espacio elástico inferior.
-          final double selectorBlockHeight = (constraints.maxHeight -
-                  headerHeight -
-                  footerHeight)
-              .clamp(0.0, _designSelectorHeight + _selectorSpacing * 2);
+          final double selectorBlockHeight =
+              (constraints.maxHeight - headerHeight - footerHeight).clamp(
+                0.0,
+                _designSelectorHeight + _selectorSpacing * 2,
+              );
 
           return Column(
             children: [
@@ -146,7 +191,9 @@ class SelectorScreenLayout extends StatelessWidget {
               SizedBox(
                 height: selectorBlockHeight,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: _selectorSpacing),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: _selectorSpacing,
+                  ),
                   child: selector,
                 ),
               ),
