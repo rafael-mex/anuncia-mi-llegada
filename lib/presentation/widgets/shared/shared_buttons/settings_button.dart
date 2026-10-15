@@ -1,6 +1,4 @@
-import 'package:anuncia_mi_llegada/config/connectivity/connectivity_service.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
-import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -8,18 +6,6 @@ import '../../../screens/screens.dart';
 
 class SettingsButton extends StatelessWidget {
   const SettingsButton({super.key});
-
-  void _showOfflineDialog(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      title: 'Sin conexión a Internet',
-      content: 'No hay conexión a red en este momento. Sin conexión no podrás: '
-          'ubicar una estación en el mapa, usar tu ubicación actual, '
-          'contactar por correo ni ir a GitHub. El resto de la aplicación '
-          'sigue funcionando normalmente.',
-      actions: [PlatformDialogAction(text: 'Aceptar')],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
