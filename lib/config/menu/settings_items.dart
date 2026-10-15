@@ -1,3 +1,4 @@
+import 'package:anuncia_mi_llegada/config/connectivity/connectivity_service.dart';
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
@@ -95,7 +96,21 @@ final appSettingsItems = <MenuItem>[
                 /* Separación: */ const SizedBox(height: 12),
                 //------------------------------
 
-                //Espacio entre configuraciones
+                ValueListenableBuilder<bool>(
+                  valueListenable: PreferencesService.detectNearbyStation,
+                  builder: (context, value, _) => SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      "Detectar estacion cercana al enviar\nla ubicacion",
+                      style: dynamicStyle,
+                    ),
+                    value: value,
+                    onChanged: PreferencesService.setDetectNearbyStation,
+                    activeThumbColor: const Color(0xFFF26400),
+                  ),
+                ),
+
+                 //Espacio entre configuraciones
                 SizedBox(height: 20),
 
                 // Grupo: STC Metro
@@ -211,7 +226,7 @@ final appSettingsItems = <MenuItem>[
                   style: dynamicStyle,
                   dynamicColor: dynamicColor,
                 ),
-                
+
                 //---------------------------------------
 
                 //Espacio entre configuraciones
@@ -263,7 +278,10 @@ final appSettingsItems = <MenuItem>[
 
   // ------ Sección: Información y Contacto ------
   MenuItem(
-    title: Text('INFORMACIÓN Y CONTACTO', style: AppTheme.metroStyle.copyWith(fontSize: 19)),
+    title: Text(
+      'INFORMACIÓN Y CONTACTO',
+      style: AppTheme.metroStyle.copyWith(fontSize: 19),
+    ),
     subtitle: Text(
       'Da sugerencias, reporta errores o \nconoce el código de la aplicación',
       style: AppTheme.nunitoFamilySubtitle,
@@ -296,66 +314,78 @@ final appSettingsItems = <MenuItem>[
                 //------------------------------
 
                 //Mandar correo
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    "Contactar por correo para sugerir o reportar errores",
-                    style: dynamicStyle,
-                  ),
-                  leading: Icon(
-                    Icons.mail_outline_rounded,
-                    color: dynamicColor,
-                  ),
-                  onTap: () async {
-                    final Uri emailLaunchUri = Uri(
-                      scheme: 'mailto',
-                      path: 'rmdeveloper08@gmail.com',
-                      query:
-                          'subject=${Uri.encodeComponent('Sugerencia/Reporte - Anuncia Mi Llegada')}',
-                    );
-
-                    if (await canLaunchUrl(emailLaunchUri)) {
-                      await launchUrl(emailLaunchUri);
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'No se encontró una aplicación de correo instalada.',
-                            ),
-                          ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: ConnectivityService.isOnline,
+                  builder: (context, isOnline, _) => Opacity(
+                    opacity: isOnline ? 1.0 : 0.4,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Contactar por correo", style: dynamicStyle),
+                      leading: Icon(
+                        Icons.mail_outline_rounded,
+                        color: dynamicColor,
+                      ),
+                      onTap: () async {
+                        final Uri emailLaunchUri = Uri(
+                          scheme: 'mailto',
+                          path: 'rmdeveloper08@gmail.com',
+                          query:
+                              'subject=${Uri.encodeComponent('Sugerencia/Reporte - Anuncia Mi Llegada')}',
                         );
-                      }
-                    }
-                  },
+
+                        if (await canLaunchUrl(emailLaunchUri)) {
+                          await launchUrl(emailLaunchUri);
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'No se encontró una aplicación de correo instalada.',
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 //---------------------
 
                 //Mandar a la página de github
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text("Ir al Github de la app", style: dynamicStyle),
-                  leading: Icon(Icons.code_outlined, color: dynamicColor),
-                  onTap: () async {
-                    final Uri webUri = Uri.parse(
-                      'https://github.com/rafael-mex/anuncia-mi-llegada',
-                    );
-
-                    if (await canLaunchUrl(webUri)) {
-                      await launchUrl(
-                        webUri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No se pudo abrir el enlace.'),
-                          ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: ConnectivityService.isOnline,
+                  builder: (context, isOnline, _) => Opacity(
+                    opacity: isOnline ? 1.0 : 0.4,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Ir al Github de la app",
+                        style: dynamicStyle,
+                      ),
+                      leading: Icon(Icons.code_outlined, color: dynamicColor),
+                      onTap: () async {
+                        final Uri webUri = Uri.parse(
+                          'https://github.com/rafael-mex/anuncia-mi-llegada',
                         );
-                      }
-                    }
-                  },
+
+                        if (await canLaunchUrl(webUri)) {
+                          await launchUrl(
+                            webUri,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No se pudo abrir el enlace.'),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 //------------------------------
 
@@ -519,14 +549,8 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
       PreferencesService.messagingAppSms,
       Icons.chat_bubble_outline,
     ),
-    _MessagingAppOption(
-      PreferencesService.messagingAppWhatsApp,
-      Icons.phone,
-    ),
-    _MessagingAppOption(
-      PreferencesService.messagingAppAny,
-      Icons.ios_share,
-    ),
+    _MessagingAppOption(PreferencesService.messagingAppWhatsApp, Icons.phone),
+    _MessagingAppOption(PreferencesService.messagingAppAny, Icons.ios_share),
   ];
 
   static const Color _accentColor = Color(0xFFF26400);
@@ -556,11 +580,7 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
                   ),
                   leading: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                      app.icon,
-                      size: 20,
-                      color: widget.dynamicColor,
-                    ),
+                    child: Icon(app.icon, size: 20, color: widget.dynamicColor),
                   ),
                   trailing: value == app.value
                       ? const Icon(
