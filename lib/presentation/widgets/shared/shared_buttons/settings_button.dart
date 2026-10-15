@@ -60,32 +60,6 @@ class SettingsButton extends StatelessWidget {
                 ),
               ),
             ),
-            ValueListenableBuilder<bool>(
-              valueListenable: ConnectivityService.isOnline,
-              builder: (context, isOnline, _) {
-                if (isOnline) return const SizedBox.shrink();
-                return Positioned(
-                  right: -2,
-                  bottom: -2,
-                  child: Material(
-                    color: const Color(0xFFD32F2F),
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () => _showOfflineDialog(context),
-                      child: const Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Icon(
-                          Icons.wifi_off_rounded,
-                          color: Colors.white,
-                          size: 13,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
           ],
         );
       },
