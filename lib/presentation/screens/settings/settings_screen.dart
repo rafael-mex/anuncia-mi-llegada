@@ -17,21 +17,24 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       //Implementación del backgroundColor
       backgroundColor: Colors.transparent,
-      body: ValueListenableBuilder<bool>(
-        valueListenable: isTrueDarkMode,
-        builder: (context, isDark, _) => AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            color: isDark ? null : AppTheme.backgroundColorLM,
-            gradient: isDark ? AppTheme.backgroundColorDM : null,
-          ),
+      body: ValueListenableBuilder<ThemeMode>(
+        valueListenable: PreferencesService.isTrueDarkMode,
+        builder: (context, themeMode, _) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: isDark ? null : AppTheme.backgroundColorLM,
+              gradient: isDark ? AppTheme.backgroundColorDM : null,
+            ),
           //-------------------------------------
           child: SettingsScreenLayout(
             settingsView: _SettingsView(version: version),
             version: '',
           ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -143,9 +146,10 @@ class _CustomListTitleState extends State<_CustomListTitle> {
   Widget build(BuildContext context) {
     final theWidthOfYourScreen = MediaQuery.of(context).size.width;
 
-    return ValueListenableBuilder<bool>(
-      valueListenable: isTrueDarkMode,
-      builder: (context, isDark, _) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: PreferencesService.isTrueDarkMode,
+      builder: (context, themeMode, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final titleColor = isDark
             ? const Color.fromRGBO(204, 204, 204, 100)
             : Colors.black;
@@ -157,9 +161,7 @@ class _CustomListTitleState extends State<_CustomListTitle> {
           children: [
             InkWell(
               onTap: () {
-                if (widget.menuItem.icon is AppearanceIcon) {
-                  isTrueDarkMode.value = !isTrueDarkMode.value;
-                } else if (widget.menuItem.showedConfigurations != null) {
+                if (widget.menuItem.showedConfigurations != null) {
                   setState(() {
                     _areShowedThePreferences = !_areShowedThePreferences;
                   });
@@ -189,7 +191,6 @@ class _CustomListTitleState extends State<_CustomListTitle> {
                         ],
                       ),
                     ),
-                    if (widget.menuItem.icon is! AppearanceIcon)
                       AnimatedRotation(
                         turns: _areShowedThePreferences ? 0.25 : 0.0,
                         duration: const Duration(milliseconds: 300),

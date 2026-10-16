@@ -35,14 +35,42 @@ final appSettingsItems = <MenuItem>[
     nombre que recibirá su grupo va a ser el del elemento al que afecta.
   */
 
-  //------ Sección: Apariencia ------
+  //------ Sección: Tema ------
   MenuItem(
     title: Text("APARIENCIA", style: AppTheme.metroStyle),
     subtitle: Text(
-      "Cambia entre el modo claro y \nobscuro.",
+      "Elige el tema de la aplicación.",
       style: AppTheme.nunitoFamilySubtitle,
     ),
     icon: const AppearanceIcon(),
+    //Configuraciones de la sección:
+    showedConfigurations: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        type: MaterialType.transparency,
+        child: Builder(
+          builder: (context) {
+            final dynamicColor = Theme.of(context).textTheme.bodyMedium?.color;
+            final dynamicStyle = AppTheme.nunitoFamilySubtitle.copyWith(
+              color: dynamicColor,
+            );
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Tema", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.center,
+                  child: _ThemeSegmentedControl(),
+                ),
+                const SizedBox(height: 20),
+              ],
+            );
+          },
+        ),
+      ),
+    ),
   ),
   //------
 
@@ -110,7 +138,7 @@ final appSettingsItems = <MenuItem>[
                   ),
                 ),
 
-                 //Espacio entre configuraciones
+                //Espacio entre configuraciones
                 SizedBox(height: 20),
 
                 // Grupo: STC Metro
@@ -316,76 +344,93 @@ final appSettingsItems = <MenuItem>[
                 //Mandar correo
                 ValueListenableBuilder<bool>(
                   valueListenable: ConnectivityService.isOnline,
-                  builder: (context, isOnline, _) => Opacity(
-                    opacity: isOnline ? 1.0 : 0.4,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text("Contactar por correo", style: dynamicStyle),
-                      leading: Icon(
-                        Icons.mail_outline_rounded,
-                        color: dynamicColor,
-                      ),
-                      onTap: () async {
-                        final Uri emailLaunchUri = Uri(
-                          scheme: 'mailto',
-                          path: 'rmdeveloper08@gmail.com',
-                          query:
-                              'subject=${Uri.encodeComponent('Sugerencia/Reporte - Anuncia Mi Llegada')}',
-                        );
+                  builder: (context, isOnline, _) {
+                    final disabled = !isOnline;
+                    return InkWell(
+                      onTap: disabled
+                          ? null
+                          : () async {
+                              final Uri emailLaunchUri = Uri(
+                                scheme: 'mailto',
+                                path: 'rmdeveloper08@gmail.com',
+                                query:
+                                    'subject=${Uri.encodeComponent('Sugerencia/Reporte - Anuncia Mi Llegada')}',
+                              );
 
-                        if (await canLaunchUrl(emailLaunchUri)) {
-                          await launchUrl(emailLaunchUri);
-                        } else {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'No se encontró una aplicación de correo instalada.',
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                    ),
-                  ),
+                              if (await canLaunchUrl(emailLaunchUri)) {
+                                await launchUrl(emailLaunchUri);
+                              } else {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'No se encontró una aplicación de correo instalada.',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                      child: Opacity(
+                        opacity: disabled ? 0.4 : 1.0,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            "Contactar por correo",
+                            style: dynamicStyle,
+                          ),
+                          leading: Icon(
+                            Icons.mail_outline_rounded,
+                            color: dynamicColor,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 //---------------------
 
                 //Mandar a la página de github
                 ValueListenableBuilder<bool>(
                   valueListenable: ConnectivityService.isOnline,
-                  builder: (context, isOnline, _) => Opacity(
-                    opacity: isOnline ? 1.0 : 0.4,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "Ir al Github de la app",
-                        style: dynamicStyle,
-                      ),
-                      leading: Icon(Icons.code_outlined, color: dynamicColor),
-                      onTap: () async {
-                        final Uri webUri = Uri.parse(
-                          'https://github.com/rafael-mex/anuncia-mi-llegada',
-                        );
+                  builder: (context, isOnline, _) {
+                    final disabled = !isOnline;
+                    return InkWell(
+                      onTap: disabled
+                          ? null
+                          : () async {
+                              final Uri webUri = Uri.parse(
+                                'https://github.com/rafael-mex/anuncia-mi-llegada',
+                              );
 
-                        if (await canLaunchUrl(webUri)) {
-                          await launchUrl(
-                            webUri,
-                            mode: LaunchMode.externalApplication,
-                          );
-                        } else {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('No se pudo abrir el enlace.'),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                    ),
-                  ),
+                              if (await canLaunchUrl(webUri)) {
+                                await launchUrl(
+                                  webUri,
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              } else {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('No se pudo abrir el enlace.'),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                      child: Opacity(
+                        opacity: disabled ? 0.4 : 1.0,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            "Ir al Github de la app",
+                            style: dynamicStyle,
+                          ),
+                          leading: Icon(Icons.code_outlined, color: dynamicColor),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 //------------------------------
 
@@ -664,20 +709,81 @@ class AppearanceIcon extends StatelessWidget {
           fit: BoxFit.contain,
         ),
 
-        ValueListenableBuilder<bool>(
+        ValueListenableBuilder<ThemeMode>(
           valueListenable: PreferencesService.isTrueDarkMode,
-          builder: (context, isTrueDark, _) => /* Animación del icono:*/
-              LightDarkThemeToggle(
-                value: !isTrueDark,
-                onChanged: (value) =>
-                    (PreferencesService.isTrueDarkMode.value = !value),
-                themeIconType: ThemeIconType.classic,
-                color: Colors.white,
-                size: 41,
-              ),
+          builder: (context, themeMode, _) {
+            final isDark =
+                themeMode == ThemeMode.dark ||
+                (themeMode == ThemeMode.system &&
+                    Theme.of(context).brightness == Brightness.dark);
+            return /* Animación del icono:*/ LightDarkThemeToggle(
+              value: isDark,
+              onChanged: (value) => (PreferencesService.isTrueDarkMode.value =
+                  value ? ThemeMode.dark : ThemeMode.light),
+              themeIconType: ThemeIconType.classic,
+              color: Colors.white,
+              size: 41,
+            );
+          },
         ),
         //------
       ],
+    );
+  }
+}
+
+//------------------------------
+
+//Selecto de tema: Claro | Oscuro | Sistema
+class _ThemeSegmentedControl extends StatelessWidget {
+  const _ThemeSegmentedControl();
+
+  static const Map<int, ThemeMode> _options = {
+    0: ThemeMode.light,
+    1: ThemeMode.dark,
+    2: ThemeMode.system,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: PreferencesService.isTrueDarkMode,
+      builder: (context, currentMode, _) {
+        final isDark = currentMode == ThemeMode.dark ||
+            (currentMode == ThemeMode.system &&
+                Theme.of(context).brightness == Brightness.dark);
+        final int selected = _options.entries
+            .firstWhere(
+              (e) => e.value == currentMode,
+              orElse: () => const MapEntry(2, ThemeMode.system),
+            )
+            .key;
+
+        return CupertinoTheme(
+          data: CupertinoThemeData(
+            brightness: isDark ? Brightness.dark : Brightness.light,
+          ),
+          child: CupertinoSlidingSegmentedControl<int>(
+            backgroundColor: isDark
+                ? Color(0xFFF26400)
+                : Color(0xFFF69346),
+            thumbColor: isDark
+                ? Color.fromARGB(255, 140, 61, 0)
+                : Color.fromARGB(255, 247, 176, 123),
+            children: {
+              0: Text('Claro', style: AppTheme.nunitoFamilySubtitle.copyWith(color: Colors.white)),
+              1: Text('Oscuro', style: AppTheme.nunitoFamilySubtitle.copyWith(color: Colors.white)),
+              2: Text('Sistema', style: AppTheme.nunitoFamilySubtitle.copyWith(color: Colors.white)),
+            },
+            onValueChanged: (int? value) {
+              if (value != null) {
+                PreferencesService.isTrueDarkMode.value = _options[value]!;
+              }
+            },
+            groupValue: selected,
+          ),
+        );
+      },
     );
   }
 }
