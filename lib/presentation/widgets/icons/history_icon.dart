@@ -1,4 +1,4 @@
-import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 
 class HistoryIcon extends StatelessWidget {
@@ -6,9 +6,10 @@ class HistoryIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isTrueDarkMode,
-      builder: (context, isDark, _) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: PreferencesService.isTrueDarkMode,
+      builder: (context, themeMode, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final assetPath = isDark
             ? 'assets/icons/history_icons/history_icon_dark.png'
             : 'assets/icons/history_icons/history_icon.png';

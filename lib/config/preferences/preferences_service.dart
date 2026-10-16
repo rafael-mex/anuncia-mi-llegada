@@ -27,7 +27,7 @@ class PreferencesService {
   };
 
   //Configuraciones predeterminadas:
-  static const bool defaultIsTrueDarkMode = false;
+  static const ThemeMode defaultThemeMode = ThemeMode.system;
   static const String defaultMessageBody = "Ya estoy en";
   static const bool defaultWillBeShowedTransportName = true;
   static const bool defaultWillBeShowedLineNamesInMessage = true;
@@ -36,7 +36,8 @@ class PreferencesService {
   static const bool defaultDetectNearbyStation = true;
 
   //------- ValueNotifiers: -------
-  static final isTrueDarkMode = ValueNotifier<bool>(defaultIsTrueDarkMode);
+  static final isTrueDarkMode = ValueNotifier<ThemeMode>(defaultThemeMode);
+
   static final messageBody = ValueNotifier<String>(defaultMessageBody);
 
   static final willBeShowedTransportName = ValueNotifier<bool>(
@@ -62,10 +63,27 @@ class PreferencesService {
 
   //--------------------------------
 
+  static ThemeMode _resolveThemeMode(String? value) {
+  switch (value) {
+    case 'light': return ThemeMode.light;
+    case 'dark':  return ThemeMode.dark;
+    case 'system':
+    default:      return ThemeMode.system;
+  }
+}
+
+static String _themeModeToString(ThemeMode mode) {
+  switch (mode) {
+    case ThemeMode.light: return 'light';
+    case ThemeMode.dark:  return 'dark';
+    case ThemeMode.system:return 'system';
+  }
+}
+
   // ------- hasModifiedSettings: Indica si alguna configuración difiere de su valor de fábrica. -------
   static bool get hasModifiedSettings =>
 
-      isTrueDarkMode.value != defaultIsTrueDarkMode ||
+      isTrueDarkMode.value != defaultThemeMode ||
 
       messageBody.value != defaultMessageBody ||
 
@@ -98,9 +116,12 @@ class PreferencesService {
     _initialized = true;
     _preferences = await SharedPreferences.getInstance();
 
+  
+
     // Lectura de las preferencias
     isTrueDarkMode.value =
-        _preferences.getBool('isTrueDarkMode') ?? defaultIsTrueDarkMode;
+        _resolveThemeMode(_preferences.getString('theme_mode'));
+
     messageBody.value =
         _preferences.getString('messageBody') ?? defaultMessageBody;
 
@@ -121,7 +142,7 @@ class PreferencesService {
         defaultDetectNearbyStation;
 
     isTrueDarkMode.addListener(() {
-      _preferences.setBool('isTrueDarkMode', isTrueDarkMode.value);
+      _preferences.setString('theme_mode', _themeModeToString(isTrueDarkMode.value));
     });
 
     //Migración: el valor guardado puede venir de una versión anterior de la
@@ -210,7 +231,7 @@ class PreferencesService {
 
   // Restablecimiento de todas las configuraciones a su estado original
   static Future<void> resetAll() async {
-    isTrueDarkMode.value = defaultIsTrueDarkMode;
+    isTrueDarkMode.value = defaultThemeMode;
 
     messageBody.value = defaultMessageBody;
 
@@ -225,7 +246,10 @@ class PreferencesService {
 
     detectNearbyStation.value = defaultDetectNearbyStation;
 
-    await _preferences.setBool('isTrueDarkMode', defaultIsTrueDarkMode);
+    await _preferences.setString(
+      'theme_mode',
+      _themeModeToString(defaultThemeMode),
+    );
     await _preferences.setString('messageBody', defaultMessageBody);
     await _preferences.setBool(
       'willBeShowedTransportName',

@@ -76,19 +76,25 @@ class _MapScreenState extends State<MapScreen> {
     isTrueDarkMode.addListener(_applyMapTheme);
   }
 
-  String get _styleForTheme =>
-      isTrueDarkMode.value ? mapboxStyleDarkUri : mapboxStyleLightUri;
+  bool get _isDark {
+    final mode = isTrueDarkMode.value;
+    if (mode == ThemeMode.dark) return true;
+    if (mode == ThemeMode.light) return false;
+    return Theme.of(context).brightness == Brightness.dark;
+  }
+
+  String get _styleForTheme => _isDark ? mapboxStyleDarkUri : mapboxStyleLightUri;
 
   Future<void> _applyMapTheme() async {
     final map = _mapboxMap;
     if (map == null) return;
     final uri = _styleForTheme;
     try {
-      if (await map.style.getStyleURI() == uri) return;
+      if (await map.getStyleURI() == uri) return;
     } catch (_) {
       // Estilo aún cargando; se aplica directamente.
     }
-    await map.style.setStyleURI(uri).catchError((_) {});
+    await map.setStyleURI(uri).catchError((_) {});
   }
 
   Future<void> _confirmSelection() async {
@@ -176,7 +182,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   zoom: 16.0,
                 ),
-                styleUri: isTrueDarkMode.value
+                styleUri: _isDark
                     ? mapboxStyleDarkUri
                     : mapboxStyleLightUri,
                 onMapCreated: _onMapCreated,
@@ -214,7 +220,7 @@ class _MapScreenState extends State<MapScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isTrueDarkMode.value
+                      color: _isDark
                           ? Color.fromARGB(255, 27, 26, 27)
                           : Colors.white,
                       borderRadius: BorderRadius.circular(30),
@@ -230,7 +236,7 @@ class _MapScreenState extends State<MapScreen> {
                       controller: _searchController,
                       onChanged: _onSearchChanged,
                       style: AppTheme.nunitoFamilySubtitle.copyWith(
-                        color: isTrueDarkMode.value
+                        color: _isDark
                             ? Color(0xFFF69346)
                             : Color.fromRGBO(91, 79, 79, 100),
                       ),
@@ -273,9 +279,9 @@ class _MapScreenState extends State<MapScreen> {
               child: Material(
                 elevation: 4,
                 borderRadius: BorderRadius.circular(16),
-                color: isTrueDarkMode.value 
-                ? Color.fromARGB(255, 27, 26, 27)
-                : Colors.white,
+                color: _isDark
+                    ? Color.fromARGB(255, 27, 26, 27)
+                    : Colors.white,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 260),
                   child: ListView.separated(
@@ -294,7 +300,7 @@ class _MapScreenState extends State<MapScreen> {
                         title: Text(
                           place.name,
                           style: AppTheme.nunitoFamilySubtitle.copyWith(
-                            color: isTrueDarkMode.value
+                            color: _isDark
                                 ? Color.fromARGB(255, 246, 245, 245)
                                 : Color.fromRGBO(91, 79, 79, 100),
                             fontSize: 12,
@@ -348,13 +354,13 @@ class _MapScreenState extends State<MapScreen> {
           Align(
             alignment: AlignmentGeometry.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 60.0),
+              padding: const EdgeInsets.only(bottom: 80.0),
               child: CustomButton(
-                forcedColor: isTrueDarkMode.value 
-                ? const Color.fromARGB(255, 33, 16, 3)
-                : Color(0xFFF69346),
+                forcedColor: _isDark
+                    ? const Color.fromARGB(255, 33, 16, 3)
+                    : Color(0xFFF69346),
                 textOfButton: Text(
-                  'Confirmar \nubicación',
+                  'Confirmar ubicación',
                   textAlign: TextAlign.center,
                   style: AppTheme.nunitoFamilyCustomButton.copyWith(
                     fontSize: 17,

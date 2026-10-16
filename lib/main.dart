@@ -31,22 +31,20 @@ class AnunciaMiLlegadaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
+    return ValueListenableBuilder<ThemeMode>(
       valueListenable: isTrueDarkMode,
-      builder: (context, isDark, _) {
+      builder: (context, themeMode, _) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-          themeAnimationDuration: const Duration(milliseconds: 700),
+          themeMode: themeMode,
+          themeAnimationDuration: const Duration(milliseconds: 400),
           //Los menús de Cupertino (p. ej. CupertinoMenuAnchor) se dibujan en
           //el Overlay, fuera del Theme de Material: sin este CupertinoTheme
           //el panel se pintaría siempre con los colores del modo claro.
           builder: (context, child) => CupertinoTheme(
-            data: CupertinoThemeData(
-              brightness: isDark ? Brightness.dark : Brightness.light,
-            ),
+            data: CupertinoThemeData(brightness: Theme.of(context).brightness),
             child: child!,
           ),
           routerConfig: appRouter,

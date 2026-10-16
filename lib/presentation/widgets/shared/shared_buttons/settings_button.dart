@@ -1,4 +1,4 @@
-import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -9,9 +9,10 @@ class SettingsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isTrueDarkMode,
-      builder: (context, isDark, _) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: PreferencesService.isTrueDarkMode,
+      builder: (context, themeMode, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final assetPath = isDark
             ? 'assets/icons/config_icons/settings_Icon_dark.svg'
             : 'assets/icons/config_icons/settings_Icon.svg';

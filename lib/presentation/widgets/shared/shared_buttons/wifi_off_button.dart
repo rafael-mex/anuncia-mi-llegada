@@ -1,4 +1,4 @@
-import 'package:anuncia_mi_llegada/theme/app_theme.dart';
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,7 +9,7 @@ class WifiOffButton extends StatelessWidget {
   void showOfflineDialog(BuildContext context) {
     showPlatformDialog(
       context: context,
-      title: 'Sin conexión a Internet',
+      title: 'No tienes conexión',
       content: textContent,
       actions: [PlatformDialogAction(text: 'Aceptar')],
     );
@@ -22,9 +22,10 @@ class WifiOffButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isTrueDarkMode,
-      builder: (context, isDark, _) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: PreferencesService.isTrueDarkMode,
+      builder: (context, themeMode, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final assetPath = isDark
             ? 'assets/icons/wifi_off/wifi_off_dark.svg'
             : 'assets/icons/wifi_off/wifi_off.svg';

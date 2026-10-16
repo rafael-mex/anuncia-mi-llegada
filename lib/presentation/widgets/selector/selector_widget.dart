@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
@@ -85,9 +86,11 @@ class SelectorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ValueListenableBuilder<bool>(
-        valueListenable: isTrueDarkMode,
-        builder: (context, isDark, _) => LayoutBuilder(
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: PreferencesService.isTrueDarkMode,
+        builder: (context, themeMode, _) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          return LayoutBuilder(
           builder: (context, constraints) {
             //El selector nunca excede el espacio que le da el layout: si el
             //disponible es menor que su tamaño de diseño (pantallas cortas),
@@ -219,8 +222,9 @@ class SelectorWidget extends StatelessWidget {
               ),
             );
           },
+        );
+          },
         ),
-      ),
     );
   }
 }

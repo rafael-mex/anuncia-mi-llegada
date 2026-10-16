@@ -368,15 +368,17 @@ class _SelectorScreenState extends State<SelectorScreen> {
     return Scaffold(
       //Implementación del backgroundColor
       backgroundColor: Colors.transparent,
-      body: ValueListenableBuilder<bool>(
+      body: ValueListenableBuilder<ThemeMode>(
         valueListenable: isTrueDarkMode,
-        builder: (context, isDark, _) => AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            color: isDark ? null : AppTheme.backgroundColorLM,
-            gradient: isDark ? AppTheme.backgroundColorDM : null,
-          ),
+        builder: (context, themeMode, _) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: isDark ? null : AppTheme.backgroundColorLM,
+              gradient: isDark ? AppTheme.backgroundColorDM : null,
+            ),
           //-------------------------------------
           child: SelectorScreenLayout(
             /* Return Button: */ showReturnButton:
@@ -433,9 +435,9 @@ class _SelectorScreenState extends State<SelectorScreen> {
                   //----------------
                 );
               },
-            ),
-          ),
-        ),
+            ))
+          );
+        },
       ),
     );
   }

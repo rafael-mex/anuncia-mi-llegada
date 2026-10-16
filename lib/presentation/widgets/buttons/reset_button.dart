@@ -1,5 +1,4 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
-import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
@@ -16,9 +15,10 @@ class ResetButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Opacity(
       opacity: 0.87,
-      child: ValueListenableBuilder<bool>(
-        valueListenable: isTrueDarkMode,
-        builder: (context, isDark, _) {
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: PreferencesService.isTrueDarkMode,
+        builder: (context, themeMode, _) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
           return TweenAnimationBuilder<Color?>(
             tween: ColorTween(
               begin: isDark ? _darkColor : _lightColor,

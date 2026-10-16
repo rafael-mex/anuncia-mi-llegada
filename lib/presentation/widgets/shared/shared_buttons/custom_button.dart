@@ -23,9 +23,10 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Opacity(
       opacity: 0.87,
-      child: ValueListenableBuilder<bool>(
+      child: ValueListenableBuilder<ThemeMode>(
         valueListenable: isTrueDarkMode,
-        builder: (context, isDark, _) {
+        builder: (context, themeMode, _) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
           final Color effectiveColor = forcedColor ?? (isDark ? _darkColor : _lightColor);
           return TweenAnimationBuilder<Color?>(
             tween: ColorTween(
