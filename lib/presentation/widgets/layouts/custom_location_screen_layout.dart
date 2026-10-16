@@ -61,7 +61,7 @@ class CustomLocationScreenLayout extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                         right: 38,
                                         top: 28,
-                                        bottom: 4
+                                        bottom: 5
                                       ),
                                       child: HistoryButton(),
                                     ),
@@ -71,7 +71,7 @@ class CustomLocationScreenLayout extends StatelessWidget {
                                         right: 38,
                                       ),
                                       child: WifiOffButton(
-                                        textContent: "Hola mi nombre es annie")
+                                        textContent: "Habrán algunas opciones que no esten disponibles")
                                     ),
                                   ],
                                 ),

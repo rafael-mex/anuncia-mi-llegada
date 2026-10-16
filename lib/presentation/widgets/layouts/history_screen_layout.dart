@@ -51,8 +51,8 @@ class HistoryScreenLayout extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(
                                   right: 38,
-                                  top: 26,
-                                  bottom: 2,
+                                  top: 25,
+                                  bottom: 5,
                                   
                                 ),
                                 child: SettingsButton(),
@@ -64,7 +64,7 @@ class HistoryScreenLayout extends StatelessWidget {
                                   top: 3
                                 ),
                                 child: WifiOffButton(
-                                  textContent: "Hola mi nombre es annie",
+                                  textContent: "Si la aplicación en la que enviarás tu mensaje no es SMS, puedes presentar problemas en el envío",
                                 ),
                               ),
                             ],

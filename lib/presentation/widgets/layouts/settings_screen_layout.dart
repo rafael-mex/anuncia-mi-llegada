@@ -57,7 +57,7 @@ class SettingsScreenLayout extends StatelessWidget {
                                   top: 45,
                                 ),
                                 child: WifiOffButton(
-                                  textContent: "Hola mi nombre es annie",
+                                  textContent: "Las opciones de la sección \"Información y Contacto\" no estarán disponibles",
                                 ),
                               ),
                             ],
