@@ -18,13 +18,14 @@ Future<void> showPlatformDialog({
   required String title,
   required String content,
   required List<PlatformDialogAction> actions,
+  bool barrierDismissible = true,
 }) {
   final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
   if (isIOS) {
     return showCupertinoDialog<void>(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: barrierDismissible,
       builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(title),
         content: Text(content),
@@ -46,6 +47,7 @@ Future<void> showPlatformDialog({
 
   return showDialog<void>(
     context: context,
+    barrierDismissible: barrierDismissible,
     builder: (dialogContext) => AlertDialog(
       title: Text(title),
       content: Text(content),
