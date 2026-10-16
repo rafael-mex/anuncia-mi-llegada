@@ -53,7 +53,7 @@ void main() {
 
   testWidgets('MapIcon picks the theme asset and keeps 96:112 ratio',
       (tester) async {
-    isTrueDarkMode.value = false;
+    isTrueDarkMode.value = ThemeMode.light;
     await tester.pumpWidget(const MaterialApp(home: MapIcon()));
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 300)));
@@ -67,13 +67,13 @@ void main() {
       92,
     );
 
-    isTrueDarkMode.value = true;
+    isTrueDarkMode.value = ThemeMode.dark;
     await tester.pump(const Duration(milliseconds: 600));
     await tester.pump(const Duration(milliseconds: 600));
     final dLoader = tester
         .widget<SvgPicture>(find.byType(SvgPicture).first)
         .bytesLoader;
     expect((dLoader as dynamic).assetName, 'assets/icons/map_icon_dark.svg');
-    isTrueDarkMode.value = false;
+    isTrueDarkMode.value = ThemeMode.light;
   });
 }

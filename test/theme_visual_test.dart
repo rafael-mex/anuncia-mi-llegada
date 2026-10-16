@@ -46,7 +46,7 @@ void main() {
 
   void resetGlobalState(WidgetTester tester) {
     addTearDown(() {
-      isTrueDarkMode.value = false;
+      isTrueDarkMode.value = ThemeMode.light;
       appRouter.go('/splash');
     });
 
@@ -68,7 +68,7 @@ void main() {
   testWidgets('Ruta real: botón de configuración -> toggle -> visuales', (
     tester,
   ) async {
-    isTrueDarkMode.value = false;
+    isTrueDarkMode.value = ThemeMode.light;
     resetGlobalState(tester);
 
     await reachTransportsScreen(tester);
@@ -79,16 +79,16 @@ void main() {
     await tester.tap(find.byType(SettingsButton));
     await advance(tester, const Duration(seconds: 1));
 
-    expect(find.text('Apariencia'), findsOneWidget);
+    expect(find.text('TEMA'), findsOneWidget);
 
     expect(gearAsset(tester), 'assets/icons/config_icons/gear_white.png');
     expect(
-      tester.widget<Text>(find.text('Apariencia')).style?.color,
+      tester.widget<Text>(find.text('TEMA')).style?.color,
       Colors.black,
     );
     expect(
       tester
-          .widget<Text>(find.text('Cambia entre el modo claro y \nobscuro.'))
+          .widget<Text>(find.text('Elige la apariencia de la aplicación.'))
           .style
           ?.color,
       const Color.fromRGBO(91, 79, 79, 100),
@@ -101,12 +101,12 @@ void main() {
     expect(backgroundOf(tester)?.gradient, AppTheme.backgroundColorDM);
     expect(backgroundOf(tester)?.color, isNull);
     expect(
-      tester.widget<Text>(find.text('Apariencia')).style?.color,
+      tester.widget<Text>(find.text('TEMA')).style?.color,
       const Color.fromRGBO(204, 204, 204, 100),
     );
     expect(
       tester
-          .widget<Text>(find.text('Cambia entre el modo claro y \nobscuro.'))
+          .widget<Text>(find.text('Elige la apariencia de la aplicación.'))
           .style
           ?.color,
       const Color.fromRGBO(151, 145, 145, 100),
@@ -125,7 +125,7 @@ void main() {
         )
         .isNotEmpty;
 
-    isTrueDarkMode.value = false;
+    isTrueDarkMode.value = ThemeMode.light;
     resetGlobalState(tester);
 
     await reachTransportsScreen(tester);
@@ -135,11 +135,11 @@ void main() {
 
     expect(hasMaterialColor(lightColor), isTrue);
 
-    isTrueDarkMode.value = true;
+    isTrueDarkMode.value = ThemeMode.dark;
     await advance(tester);
     expect(hasMaterialColor(darkColor), isTrue);
 
-    isTrueDarkMode.value = false;
+    isTrueDarkMode.value = ThemeMode.light;
     await advance(tester);
     expect(hasMaterialColor(lightColor), isTrue);
   });
@@ -161,7 +161,7 @@ void main() {
         )
         .isNotEmpty;
 
-    isTrueDarkMode.value = false;
+    isTrueDarkMode.value = ThemeMode.light;
     resetGlobalState(tester);
 
     await reachTransportsScreen(tester);
@@ -169,7 +169,7 @@ void main() {
     expect(hasIcon('assets/icons/config_icons/settings_Icon.svg'), isTrue);
     expect(hasTileBackground(Colors.white.withValues(alpha: 0.15)), isTrue);
 
-    isTrueDarkMode.value = true;
+    isTrueDarkMode.value = ThemeMode.dark;
     await advance(tester);
 
     expect(hasIcon('assets/icons/config_icons/settings_Icon_dark.svg'), isTrue);
