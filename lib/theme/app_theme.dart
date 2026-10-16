@@ -1,7 +1,7 @@
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:flutter/material.dart';
 
-final ValueNotifier<bool> isTrueDarkMode = PreferencesService.isTrueDarkMode;
+final ValueNotifier<ThemeMode> isTrueDarkMode = PreferencesService.isTrueDarkMode;
 
 class AppTheme {
   
