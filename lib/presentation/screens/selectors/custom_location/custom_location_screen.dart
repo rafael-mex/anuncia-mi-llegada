@@ -80,7 +80,7 @@ class _CustomListTitle extends StatelessWidget {
                 opacity: disabled ? 0.4 : 1.0,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
+                    horizontal: 25.0,
                     vertical: 12.0,
                   ),
                   child: Row(

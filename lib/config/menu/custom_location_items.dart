@@ -33,7 +33,7 @@ final appCustomLocationItems = <MenuItem>[
     title: Column(
       children: [
         const SizedBox(height: 40),
-        Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle),
+        Text("UBICACIÓN \nMANUAL", style: AppTheme.metroStyle.copyWith(fontSize: 21)),
       ],
     ),
     icon: SvgPicture.asset(
@@ -51,7 +51,7 @@ final appCustomLocationItems = <MenuItem>[
     requiresNetwork: true,
   ),
   MenuItem(
-    title: Text("USAR UBICACIÓN ACTUAL", style: AppTheme.metroStyle),
+    title: Text("USAR UBICACIÓN ACTUAL", style: AppTheme.metroStyle.copyWith(fontSize: 21)),
     icon: SvgPicture.asset(
       'assets/icons/custom_location_icons/ubicacion_actual.svg',
     ),
