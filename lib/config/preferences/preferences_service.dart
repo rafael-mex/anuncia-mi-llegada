@@ -34,6 +34,7 @@ class PreferencesService {
   static const bool defaultWillBeShowedInstitutionsName = true;
   static const String defaultWhatMessagingAppYouWillUse = messagingAppSms;
   static const bool defaultDetectNearbyStation = true;
+  static const bool defShowTheDynamicIcon = false;
 
   //------- ValueNotifiers: -------
   static final isTrueDarkMode = ValueNotifier<ThemeMode>(defaultThemeMode);
@@ -60,6 +61,8 @@ class PreferencesService {
   );
 
   static final historyList = ValueNotifier<List<HistoryItems>>([]);
+
+  static final showDynamicIcon = ValueNotifier<bool>(defShowTheDynamicIcon);
 
   //--------------------------------
 
@@ -97,7 +100,9 @@ static String _themeModeToString(ThemeMode mode) {
 
       detectNearbyStation.value != defaultDetectNearbyStation ||
 
-      whatMessagingAppYouWillUse.value != defaultWhatMessagingAppYouWillUse;
+      whatMessagingAppYouWillUse.value != defaultWhatMessagingAppYouWillUse ||
+
+      showDynamicIcon.value != defShowTheDynamicIcon;
 
   ///Normaliza un valor de app de mensajería guardado o seleccionado.
   ///Aplica la traducción de valores antiguos y, si el resultado no está
@@ -141,8 +146,15 @@ static String _themeModeToString(ThemeMode mode) {
         _preferences.getBool('detectNearbyStation') ??
         defaultDetectNearbyStation;
 
+    showDynamicIcon.value =
+        _preferences.getBool('showDynamicIcon') ?? defShowTheDynamicIcon;
+
     isTrueDarkMode.addListener(() {
       _preferences.setString('theme_mode', _themeModeToString(isTrueDarkMode.value));
+    });
+
+    showDynamicIcon.addListener(() {
+      _preferences.setBool('showDynamicIcon', showDynamicIcon.value);
     });
 
     //Migración: el valor guardado puede venir de una versión anterior de la
@@ -202,6 +214,11 @@ static String _themeModeToString(ThemeMode mode) {
     await _preferences.setBool('detectNearbyStation', value);
   }
 
+  static Future<void> setDynamicIcon(bool value) async {
+    showDynamicIcon.value = value;
+    await _preferences.setBool('showDynamicIcon', value);
+  }
+
   //Guardar los nuevos mensajes al RecordItems
   static Future<void> saveToHistoryItems(HistoryItems newItem) async {
     final updateList = [newItem, ...historyList.value];
@@ -246,6 +263,8 @@ static String _themeModeToString(ThemeMode mode) {
 
     detectNearbyStation.value = defaultDetectNearbyStation;
 
+    showDynamicIcon.value = defShowTheDynamicIcon;
+
     await _preferences.setString(
       'theme_mode',
       _themeModeToString(defaultThemeMode),
@@ -273,5 +292,7 @@ static String _themeModeToString(ThemeMode mode) {
       defaultDetectNearbyStation,
     );
 
+    await _preferences.setBool(
+      'showDynamicIcon', defShowTheDynamicIcon);
   }
 }
