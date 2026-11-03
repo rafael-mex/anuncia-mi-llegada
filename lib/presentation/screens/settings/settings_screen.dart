@@ -66,6 +66,8 @@ class _ResetSettingsButton extends StatelessWidget {
         PreferencesService.willBeShowedLineNamesInMessage,
         PreferencesService.willBeShowedInstitutionsName,
         PreferencesService.whatMessagingAppYouWillUse,
+        PreferencesService.detectNearbyStation,
+        PreferencesService.showDynamicIcon
       ]),
       builder: (context, _) {
         final showButton = PreferencesService.hasModifiedSettings;
@@ -169,7 +171,7 @@ class _CustomListTitleState extends State<_CustomListTitle> {
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 19.0,
+                  horizontal: 25.0,
                   vertical: 10.0,
                 ),
                 child: Row(
