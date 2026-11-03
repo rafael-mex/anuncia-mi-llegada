@@ -35,14 +35,14 @@ final appSettingsItems = <MenuItem>[
     nombre que recibirá su grupo va a ser el del elemento al que afecta.
   */
 
-  //------ Sección: Tema ------
+  //------ Sección: Aplicación ------
   MenuItem(
-    title: Text("APARIENCIA", style: AppTheme.metroStyle),
+    title: Text("APLICACIÓN", style: AppTheme.metroStyle),
     subtitle: Text(
-      "Elige el tema de la aplicación.",
+      "Modifica el aspecto y algunas de \nlas funciones de la app.",
       style: AppTheme.nunitoFamilySubtitle,
     ),
-    icon: const AppearanceIcon(),
+    icon: const AppIcon(),
     //Configuraciones de la sección:
     showedConfigurations: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -57,14 +57,77 @@ final appSettingsItems = <MenuItem>[
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Tema", style: dynamicStyle),
+                //Grupo: Apariencia
+                Text("Apariencia", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.center,
                   child: _ThemeSegmentedControl(),
                 ),
+                //------------------
+
+                //Espacio entre grupos
                 const SizedBox(height: 20),
+
+                //Grupo: Icono de la sección
+                Text("Icono de la sección", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _IconOption(
+                        label: 'Dinámico',
+                        icon: const AppearanceIcon(toggleOnTap: false),
+                        isSelected: true, 
+                        onTap: () =>
+                            PreferencesService.showDynamicIcon.value = true,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Opción 2: Estático
+                    Expanded(
+                      child: _IconOption(
+                        label: 'Estático',
+                        icon: SvgPicture.asset(
+                          'assets/icons/config_icons/aplicacion.svg',
+                          width: 66,
+                          height: 66,
+                          fit: BoxFit.contain,
+                        ),
+                        isSelected: false, 
+                        onTap: () =>
+                            PreferencesService.showDynamicIcon.value = false,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                //--------------------------------
+
+                //Espacio entre grupos
+                const SizedBox(height: 20),
+
+                //Grupo: Localización
+                Text("Localización", style: dynamicStyle),
+                Divider(color: dynamicColor, thickness: 1, height: 8),
+                ValueListenableBuilder<bool>(
+                  valueListenable: PreferencesService.detectNearbyStation,
+                  builder: (context, value, _) => SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      "Detectar estacion cercana al enviar\nla ubicacion",
+                      style: dynamicStyle,
+                    ),
+                    value: value,
+                    onChanged: PreferencesService.setDetectNearbyStation,
+                    activeThumbColor: const Color(0xFFF26400),
+                  ),
+                ),
+                //--------------------------------
               ],
             );
           },
@@ -123,20 +186,6 @@ final appSettingsItems = <MenuItem>[
                 ),
                 /* Separación: */ const SizedBox(height: 12),
                 //------------------------------
-
-                ValueListenableBuilder<bool>(
-                  valueListenable: PreferencesService.detectNearbyStation,
-                  builder: (context, value, _) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Detectar estacion cercana al enviar\nla ubicacion",
-                      style: dynamicStyle,
-                    ),
-                    value: value,
-                    onChanged: PreferencesService.setDetectNearbyStation,
-                    activeThumbColor: const Color(0xFFF26400),
-                  ),
-                ),
 
                 //Espacio entre configuraciones
                 SizedBox(height: 20),
@@ -412,7 +461,9 @@ final appSettingsItems = <MenuItem>[
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('No se pudo abrir el enlace.'),
+                                      content: Text(
+                                        'No se pudo abrir el enlace.',
+                                      ),
                                     ),
                                   );
                                 }
@@ -426,7 +477,10 @@ final appSettingsItems = <MenuItem>[
                             "Ir al Github de la app",
                             style: dynamicStyle,
                           ),
-                          leading: Icon(Icons.code_outlined, color: dynamicColor),
+                          leading: Icon(
+                            Icons.code_outlined,
+                            color: dynamicColor,
+                          ),
                         ),
                       ),
                     );
@@ -694,7 +748,10 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
 
 //Icono de la sección de apariencia y su animación al cambiar entre modos:
 class AppearanceIcon extends StatelessWidget {
-  const AppearanceIcon({super.key});
+
+  final bool toggleOnTap;
+
+  const AppearanceIcon({super.key,  this.toggleOnTap = true});
 
   @override
   Widget build(BuildContext context) {
@@ -712,17 +769,21 @@ class AppearanceIcon extends StatelessWidget {
         ValueListenableBuilder<ThemeMode>(
           valueListenable: PreferencesService.isTrueDarkMode,
           builder: (context, themeMode, _) {
-            final isDark =
-                themeMode == ThemeMode.dark ||
+            final isDark = themeMode == ThemeMode.dark ||
                 (themeMode == ThemeMode.system &&
                     Theme.of(context).brightness == Brightness.dark);
-            return /* Animación del icono:*/ LightDarkThemeToggle(
-              value: isDark,
-              onChanged: (value) => (PreferencesService.isTrueDarkMode.value =
-                  value ? ThemeMode.dark : ThemeMode.light),
-              themeIconType: ThemeIconType.classic,
-              color: Colors.white,
-              size: 41,
+            return IgnorePointer(
+              ignoring: !toggleOnTap,
+              child: /* Animación del icono:*/
+                  LightDarkThemeToggle(
+                value: isDark,
+                onChanged: (value) =>
+                    (PreferencesService.isTrueDarkMode.value =
+                        value ? ThemeMode.dark : ThemeMode.light),
+                themeIconType: ThemeIconType.classic,
+                color: Colors.white,
+                size: 41,
+              ),
             );
           },
         ),
@@ -734,7 +795,88 @@ class AppearanceIcon extends StatelessWidget {
 
 //------------------------------
 
-//Selecto de tema: Claro | Oscuro | Sistema
+// Selector de icono de la sección de Aplicación:
+class _IconOption extends StatelessWidget {
+  final String label;
+  final Widget icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _IconOption({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: PreferencesService.showDynamicIcon,
+      builder: (context, showDynamic, _) {
+        final selected = isSelected ? showDynamic : !showDynamic;
+        return InkWell(
+          onTap: onTap,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? const Color(0xFFF26400).withValues(alpha: 0.15)
+                      : null,
+                  border: Border.all(
+                    color: selected
+                        ? const Color(0xFFF26400)
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: icon,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  color: selected ? const Color(0xFFF26400) : null,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+//---------------------------------
+
+// ------ Ícono de la sección Aplicación ------
+class AppIcon extends StatelessWidget {
+  const AppIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: PreferencesService.showDynamicIcon,
+      builder: (context, showDynamic, _) {
+        return showDynamic
+            ? const AppearanceIcon(toggleOnTap: true)
+            : SvgPicture.asset(
+                'assets/icons/config_icons/aplicacion.svg',
+                width: 66,
+                height: 66,
+                fit: BoxFit.contain,
+              );
+      },
+    );
+  }
+}
+//---------------------------------------------
+
+//Selector de tema: Claro | Oscuro | Sistema
 class _ThemeSegmentedControl extends StatelessWidget {
   const _ThemeSegmentedControl();
 
@@ -749,7 +891,8 @@ class _ThemeSegmentedControl extends StatelessWidget {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: PreferencesService.isTrueDarkMode,
       builder: (context, currentMode, _) {
-        final isDark = currentMode == ThemeMode.dark ||
+        final isDark =
+            currentMode == ThemeMode.dark ||
             (currentMode == ThemeMode.system &&
                 Theme.of(context).brightness == Brightness.dark);
         final int selected = _options.entries
@@ -764,16 +907,29 @@ class _ThemeSegmentedControl extends StatelessWidget {
             brightness: isDark ? Brightness.dark : Brightness.light,
           ),
           child: CupertinoSlidingSegmentedControl<int>(
-            backgroundColor: isDark
-                ? Color(0xFFF26400)
-                : Color(0xFFF69346),
+            backgroundColor: isDark ? Color(0xFFF26400) : Color(0xFFF69346),
             thumbColor: isDark
                 ? Color.fromARGB(255, 140, 61, 0)
                 : Color.fromARGB(255, 247, 176, 123),
             children: {
-              0: Text('Claro', style: AppTheme.nunitoFamilySubtitle.copyWith(color: Colors.white)),
-              1: Text('Oscuro', style: AppTheme.nunitoFamilySubtitle.copyWith(color: Colors.white)),
-              2: Text('Sistema', style: AppTheme.nunitoFamilySubtitle.copyWith(color: Colors.white)),
+              0: Text(
+                'Claro',
+                style: AppTheme.nunitoFamilySubtitle.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              1: Text(
+                'Oscuro',
+                style: AppTheme.nunitoFamilySubtitle.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              2: Text(
+                'Sistema',
+                style: AppTheme.nunitoFamilySubtitle.copyWith(
+                  color: Colors.white,
+                ),
+              ),
             },
             onValueChanged: (int? value) {
               if (value != null) {
