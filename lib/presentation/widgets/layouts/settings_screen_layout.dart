@@ -77,6 +77,7 @@ class SettingsScreenLayout extends StatelessWidget {
           // ------ Settings View ------
           Expanded(child: settingsView),
           //----------------------------
+          const SizedBox(height: 50),
         ],
       ),
     );
