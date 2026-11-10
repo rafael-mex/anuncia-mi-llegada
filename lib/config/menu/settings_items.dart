@@ -489,16 +489,20 @@ final appSettingsItems = <MenuItem>[
                 //------------------------------
 
                 //Sección del creador :D :
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    'Creador de la aplicación: \nMex Lozano Rafael Emilio',
-                    style: dynamicStyle.copyWith(color: Color(0xFFF69346)),
-                  ),
-                  leading: SvgPicture.asset(
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
                     'assets/icons/config_icons/mi_pfp.svg',
                     width: 40,
                   ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Creador de la aplicación: \nMex Lozano Rafael Emilio',
+                    style: dynamicStyle.copyWith(color: Color(0xFFF69346)),
+                  ),
+                  ]
                 ),
 
                 //------------------------
@@ -674,11 +678,11 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
                   onPressed: () =>
                       PreferencesService.setDefaultMessagingApp(app.value),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                    horizontal: 14,
+                    vertical: 10,
                   ),
                   leading: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(right: 9.0),
                     child: Icon(app.icon, size: 20, color: widget.dynamicColor),
                   ),
                   trailing: value == app.value
