@@ -2,7 +2,7 @@ import 'package:anuncia_mi_llegada/config/connectivity/connectivity_service.dart
 import 'package:anuncia_mi_llegada/config/preferences/preferences_service.dart';
 import 'package:anuncia_mi_llegada/theme/app_theme.dart';
 import 'package:anuncia_mi_llegada/utils/platform_dialog_helper.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:light_dark_theme_toggle/light_dark_theme_toggle.dart';
@@ -73,7 +73,7 @@ final appSettingsItems = <MenuItem>[
                 //Grupo: Icono de la sección
                 Text("Icono de la sección", style: dynamicStyle),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
-                
+
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -81,7 +81,7 @@ final appSettingsItems = <MenuItem>[
                       child: _IconOption(
                         label: 'Dinámico',
                         icon: const AppearanceIcon(toggleOnTap: false),
-                        isSelected: true, 
+                        isSelected: true,
                         onTap: () =>
                             PreferencesService.showDynamicIcon.value = true,
                       ),
@@ -97,7 +97,7 @@ final appSettingsItems = <MenuItem>[
                           height: 66,
                           fit: BoxFit.contain,
                         ),
-                        isSelected: false, 
+                        isSelected: false,
                         onTap: () =>
                             PreferencesService.showDynamicIcon.value = false,
                       ),
@@ -116,15 +116,13 @@ final appSettingsItems = <MenuItem>[
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
                   valueListenable: PreferencesService.detectNearbyStation,
-                  builder: (context, value, _) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
+                  builder: (context, value, _) => _AdaptiveSwitchTile(
                     title: Text(
                       "Detectar estacion cercana al enviar\nla ubicacion",
                       style: dynamicStyle,
                     ),
                     value: value,
                     onChanged: PreferencesService.setDetectNearbyStation,
-                    activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
                 //--------------------------------
@@ -172,8 +170,7 @@ final appSettingsItems = <MenuItem>[
                 ValueListenableBuilder<bool>(
                   valueListenable:
                       PreferencesService.willBeShowedLineNamesInMessage,
-                  builder: (context, value, _) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
+                  builder: (context, value, _) => _AdaptiveSwitchTile(
                     title: Text(
                       "Mostrar sugerencia de nombrar \nsolo la línea escogida",
                       style: dynamicStyle,
@@ -181,7 +178,6 @@ final appSettingsItems = <MenuItem>[
 
                     value: value,
                     onChanged: PreferencesService.showLineNamesInMessage,
-                    activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
                 /* Separación: */ const SizedBox(height: 12),
@@ -196,8 +192,7 @@ final appSettingsItems = <MenuItem>[
                 ValueListenableBuilder<bool>(
                   valueListenable:
                       PreferencesService.willBeShowedInstitutionsName,
-                  builder: (context, value, _) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
+                  builder: (context, value, _) => _AdaptiveSwitchTile(
                     //Texto y estilo
                     title: Text(
                       "Mostrar instituciones\nacompañadas de nombres de estaciones",
@@ -206,7 +201,6 @@ final appSettingsItems = <MenuItem>[
 
                     value: value,
                     onChanged: PreferencesService.showInstitutionsName,
-                    activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
 
@@ -259,8 +253,7 @@ final appSettingsItems = <MenuItem>[
                 Divider(color: dynamicColor, thickness: 1, height: 8),
                 ValueListenableBuilder<bool>(
                   valueListenable: PreferencesService.willBeShowedTransportName,
-                  builder: (context, value, _) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
+                  builder: (context, value, _) => _AdaptiveSwitchTile(
                     title: Text(
                       "Mostrar nombre del transporte",
                       style: dynamicStyle,
@@ -271,7 +264,6 @@ final appSettingsItems = <MenuItem>[
                     ),
                     value: value,
                     onChanged: PreferencesService.showTransportName,
-                    activeThumbColor: const Color(0xFFF26400),
                   ),
                 ),
                 //-------------------------------------
@@ -299,10 +291,7 @@ final appSettingsItems = <MenuItem>[
                   style: dynamicStyle,
                 ),
                 Divider(color: dynamicColor, thickness: 1, height: 8),
-                _MessagingAppSelector(
-                  style: dynamicStyle,
-                  dynamicColor: dynamicColor,
-                ),
+                _MessagingAppSelector(style: dynamicStyle),
 
                 //---------------------------------------
 
@@ -331,7 +320,7 @@ final appSettingsItems = <MenuItem>[
                       title: '¿Borrarás el historial de tus mensajes?',
                       content: 'Si lo haces no podrás recuperarlos',
                       actions: [
-                        PlatformDialogAction(text: 'Rechazar'),
+                        PlatformDialogAction(text: 'Rechazar', isCancel: true),
                         PlatformDialogAction(
                           text: 'Continuar',
                           onPressed: () {
@@ -489,21 +478,17 @@ final appSettingsItems = <MenuItem>[
                 //------------------------------
 
                 //Sección del creador :D :
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                  'Creador de la aplicación: \nMex Lozano Rafael Emilio',
+                  style: dynamicStyle.copyWith(color: Color(0xFFF69346)),
+                  ),
+                  leading: SvgPicture.asset(
                     'assets/icons/config_icons/mi_pfp.svg',
                     width: 40,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Creador de la aplicación: \nMex Lozano Rafael Emilio',
-                    style: dynamicStyle.copyWith(color: Color(0xFFF69346)),
-                  ),
-                  ]
-                ),
+                  ),                
+                )
 
                 //------------------------
               ],
@@ -626,12 +611,8 @@ class _MessageBodyFieldState extends State<_MessageBodyField> {
 //---- Selector de la app de mensajería ----
 class _MessagingAppSelector extends StatefulWidget {
   final TextStyle style;
-  final Color? dynamicColor;
 
-  const _MessagingAppSelector({
-    required this.style,
-    required this.dynamicColor,
-  });
+  const _MessagingAppSelector({required this.style});
 
   @override
   State<_MessagingAppSelector> createState() => _MessagingAppSelectorState();
@@ -656,11 +637,7 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
     _MessagingAppOption(PreferencesService.messagingAppAny, Icons.ios_share),
   ];
 
-  static const Color _accentColor = Color(0xFFF26400);
-
   static final Color _metroColor = AppTheme.metroStyle.color!;
-
-  final MenuController _menuController = MenuController();
 
   @override
   Widget build(BuildContext context) {
@@ -670,78 +647,44 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
         return ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text('Enviar mensaje por', style: widget.style),
-          trailing: CupertinoMenuAnchor(
-            controller: _menuController,
-            menuChildren: [
+          trailing: AdaptivePopupMenuButton.widget<String>(
+            items: [
               for (final app in _apps)
-                CupertinoMenuItem(
-                  onPressed: () =>
-                      PreferencesService.setDefaultMessagingApp(app.value),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  leading: Padding(
-                    padding: const EdgeInsets.only(right: 9.0),
-                    child: Icon(app.icon, size: 20, color: widget.dynamicColor),
-                  ),
-                  trailing: value == app.value
-                      ? const Icon(
-                          Icons.check_rounded,
-                          size: 18,
-                          color: _accentColor,
-                        )
-                      : const SizedBox.shrink(),
-                  child: Text(app.value, style: widget.style),
+                AdaptivePopupMenuItem<String>(
+                  label: app.value,
+                  icon: app.icon,
+                  selected: value == app.value,
+                  value: app.value,
                 ),
             ],
-            builder: (context, controller, child) {
-              return Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  splashColor: _metroColor.withValues(alpha: 0.12),
-                  highlightColor: _metroColor.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 4,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            value,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: widget.style.copyWith(color: _metroColor),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        AnimatedRotation(
-                          turns: controller.isOpen ? 0.5 : 0.0,
-                          duration: const Duration(milliseconds: 250),
-                          curve: Curves.easeOutCubic,
-                          child: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 18,
-                            color: _metroColor,
-                          ),
-                        ),
-                      ],
+            onSelected: (_, item) {
+              final selectedApp = item.value;
+              if (selectedApp != null) {
+                PreferencesService.setDefaultMessagingApp(selectedApp);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: widget.style.copyWith(color: _metroColor),
                     ),
                   ),
-                ),
-              );
-            },
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 18,
+                    color: _metroColor,
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -749,6 +692,41 @@ class _MessagingAppSelectorState extends State<_MessagingAppSelector> {
   }
 }
 //------------------------------
+
+// Fila de ajuste con el interruptor nativo de cada plataforma:
+// iOS 26+ usa UISwitch nativo; iOS antiguo, CupertinoSwitch; Android, Material.
+class _AdaptiveSwitchTile extends StatelessWidget {
+  const _AdaptiveSwitchTile({
+    required this.title,
+    required this.value,
+    required this.onChanged,
+    this.subtitle,
+  });
+
+  final Widget title;
+  final Widget? subtitle;
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+
+  static const Color _accentColor = Color(0xFFF26400);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: title,
+      subtitle: subtitle,
+      trailing: AdaptiveSwitch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: _accentColor,
+      ),
+      // Conserva el mismo comportamiento que SwitchListTile: toda la fila
+      // responde al toque, no solo el interruptor.
+      onTap: onChanged == null ? null : () => onChanged!(!value),
+    );
+  }
+}
 
 //Icono de la sección de apariencia y su animación al cambiar entre modos:
 class AppearanceIcon extends StatelessWidget {
@@ -906,42 +884,16 @@ class _ThemeSegmentedControl extends StatelessWidget {
             )
             .key;
 
-        return CupertinoTheme(
-          data: CupertinoThemeData(
-            brightness: isDark ? Brightness.dark : Brightness.light,
-          ),
-          child: CupertinoSlidingSegmentedControl<int>(
-            backgroundColor: isDark ? Color(0xFFF26400) : Color(0xFFF69346),
-            thumbColor: isDark
-                ? Color.fromARGB(255, 140, 61, 0)
-                : Color.fromARGB(255, 247, 176, 123),
-            children: {
-              0: Text(
-                'Claro',
-                style: AppTheme.nunitoFamilySubtitle.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-              1: Text(
-                'Oscuro',
-                style: AppTheme.nunitoFamilySubtitle.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-              2: Text(
-                'Sistema',
-                style: AppTheme.nunitoFamilySubtitle.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-            },
-            onValueChanged: (int? value) {
-              if (value != null) {
-                PreferencesService.isTrueDarkMode.value = _options[value]!;
-              }
-            },
-            groupValue: selected,
-          ),
+        return AdaptiveSegmentedControl(
+          labels: const ['Claro', 'Oscuro', 'Sistema'],
+          selectedIndex: selected,
+          onValueChanged: (index) {
+            PreferencesService.isTrueDarkMode.value = _options[index]!;
+          },
+          color: isDark ? const Color(0xFFF26400) : const Color(0xFFF69346),
+          selectedTextColor: Colors.white,
+          height: 36,
+          shrinkWrap: true,
         );
       },
     );
