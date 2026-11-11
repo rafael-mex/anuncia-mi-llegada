@@ -1,14 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 
 class PlatformDialogAction {
   final String text;
   final bool isDestructive;
+  final bool isCancel;
   final VoidCallback? onPressed;
 
   const PlatformDialogAction({
     required this.text,
     this.isDestructive = false,
+    this.isCancel = false,
     this.onPressed,
   });
 }
@@ -23,25 +25,26 @@ Future<void> showPlatformDialog({
   final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
   if (isIOS) {
-    return showCupertinoDialog<void>(
+    // Usa el alert nativo en iOS 26+ y CupertinoAlertDialog en versiones
+    // anteriores. El paquete cierra el diálogo antes de invocar onPressed.
+    return AdaptiveAlertDialog.show(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (dialogContext) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: actions
-            .map(
-              (action) => CupertinoDialogAction(
-                isDestructiveAction: action.isDestructive,
-                onPressed: () {
-                  Navigator.pop(dialogContext);
-                  action.onPressed?.call();
-                },
-                child: Text(action.text),
-              ),
-            )
-            .toList(),
-      ),
+      title: title,
+      message: content,
+      actions: actions
+          .map(
+            (action) => AlertAction(
+              title: action.text,
+              style: action.isDestructive
+                  ? AlertActionStyle.destructive
+                  : action.isCancel
+                  ? AlertActionStyle.cancel
+                  : AlertActionStyle.defaultAction,
+              onPressed: () => action.onPressed?.call(),
+            ),
+          )
+          .toList(),
     );
   }
 

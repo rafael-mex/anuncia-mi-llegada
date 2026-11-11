@@ -49,9 +49,13 @@ class ResetButton extends StatelessWidget {
                           content:
                               'Si lo haces, tus configuraciones personalizadas se restablecerán a su valor predeterminado',
                           actions: [
-                            PlatformDialogAction(text: 'Rechazar'),
+                            PlatformDialogAction(
+                              text: 'Rechazar',
+                              isCancel: true,
+                            ),
                             PlatformDialogAction(
                               text: 'Continuar',
+                              isDestructive: true,
                               onPressed: () {
                                 PreferencesService.resetAll();
                               },

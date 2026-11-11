@@ -68,6 +68,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       actions: [
         PlatformDialogAction(
           text: 'Rechazar',
+          isCancel: true,
           onPressed: () => completer.complete(false),
         ),
         PlatformDialogAction(
