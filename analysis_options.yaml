@@ -18,6 +18,8 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    # Copia local de adaptive_platform_ui (código de terceros, ver PATCHES.md).
+    - third_party/**
 include: package:flutter_lints/flutter.yaml
 
 linter:

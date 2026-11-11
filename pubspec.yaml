@@ -49,6 +49,14 @@ dependencies:
   mapbox_maps_flutter: ^3.0.1
   http: ^1.6.0
   connectivity_plus: ^7.3.1
+  adaptive_platform_ui: ^1.0.2
+
+
+# El paquete publicado usa un build.gradle incompatible con AGP 9/Gradle 9.
+# Se usa una copia local con el build de Android corregido (ver PATCHES.md).
+dependency_overrides:
+  adaptive_platform_ui:
+    path: third_party/adaptive_platform_ui
 
 dev_dependencies:
   flutter_test:
