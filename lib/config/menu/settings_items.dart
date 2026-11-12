@@ -323,6 +323,7 @@ final appSettingsItems = <MenuItem>[
                         PlatformDialogAction(text: 'Rechazar', isCancel: true),
                         PlatformDialogAction(
                           text: 'Continuar',
+                          isDestructive: true,
                           onPressed: () {
                             PreferencesService.deleteHistory();
                           },
